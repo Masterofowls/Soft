@@ -1,0 +1,3 @@
+// simple //
+
+exports.simple = function () {}
