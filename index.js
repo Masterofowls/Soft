@@ -1,3 +1,5 @@
 // simple //
 
-exports.simple = function () {}
+exports.simple = function () {
+    return 'Hello World!';
+}
