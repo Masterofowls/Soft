@@ -17,30 +17,31 @@
     <button type="submit">Submit</button>
   </form>
 
-  <script type="module">
-    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
-
-    const supabaseUrl = 'https://aws-0-ap-south-1.pooler.supabase.com';
-    const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inlmamlzd3ZzdGltcGxxam1ibXdnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTc3OTkwMjgsImV4cCI6MjAzMzM3NTAyOH0.wzI068jpF2iTUDOrA8-JpKj2Q75rP-c6Zdyrsq72U5Q';
-    const supabase = createClient(supabaseUrl, supabaseAnonKey);
-
+  <script>
     document.getElementById('dataForm').addEventListener('submit', async function (event) {
       event.preventDefault();
 
       const name = document.getElementById('name').value;
       const description = document.getElementById('description').value;
 
-      const { data, error } = await supabase
-        .from('gbgtable')
-        .insert([
-          { name: name, description: description }
-        ]);
+      try {
+        const response = await fetch('https://soft-xdk1.onrender.com/submit', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ name, description })
+        });
 
-      if (error) {
-        alert('Ошибка при вставке данных: ' + error.message);
-      } else {
-        alert('Данные успешно вставлены!');
-        document.getElementById('dataForm').reset();
+        if (response.ok) {
+          alert('Data successfully inserted!');
+          document.getElementById('dataForm').reset();
+        } else {
+          alert('Error inserting data: ' + response.statusText);
+        }
+      } catch (error) {
+        alert('Error inserting data: ' + error.message);
+        console.error(error);
       }
     });
   </script>
