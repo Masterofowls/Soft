@@ -11,6 +11,12 @@
     <label for="name">Name:</label>
     <input type="text" id="name" name="name" required>
     <br>
+    <label for="format">Format:</label>
+    <input type="text" id="format" name="format" required>
+    <br>
+    <label for="type">Type:</label>
+    <input type="text" id="type" name="type" required>
+    <br>
     <label for="description">Description:</label>
     <input type="text" id="description" name="description">
     <br>
@@ -22,6 +28,8 @@
       event.preventDefault();
 
       const name = document.getElementById('name').value;
+      const format = document.getElementById('format').value;
+      const type = document.getElementById('type').value;
       const description = document.getElementById('description').value;
 
       try {
@@ -30,7 +38,7 @@
           headers: {
             'Content-Type': 'application/json'
           },
-          body: JSON.stringify({ name, description })
+          body: JSON.stringify({ name, format, type, description })
         });
 
         if (response.ok) {
