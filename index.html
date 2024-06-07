@@ -40,11 +40,11 @@
                 } else {
                     const errorText = await response.text();
                     console.error('Failed to submit data:', errorText);
-                    alert('Failed to submit data');
+                    alert(`Failed to submit data: ${errorText}`);
                 }
             } catch (error) {
                 console.error('Error:', error);
-                alert('An error occurred');
+                alert(`An error occurred: ${error.message}`);
             }
         });
     </script>
