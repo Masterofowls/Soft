@@ -27,7 +27,7 @@
             };
 
             try {
-                const response = await fetch('http://31.134.142.165:3000/submit', { // Укажите внешний IP-адрес вашего маршрутизатора
+                const response = await fetch('https://soft-xdk1.onrender.com/submit', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -38,6 +38,8 @@
                 if (response.ok) {
                     alert('Data submitted successfully');
                 } else {
+                    const errorText = await response.text();
+                    console.error('Failed to submit data:', errorText);
                     alert('Failed to submit data');
                 }
             } catch (error) {
