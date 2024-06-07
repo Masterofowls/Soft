@@ -45,7 +45,8 @@
           alert('Data successfully inserted!');
           document.getElementById('dataForm').reset();
         } else {
-          alert('Error inserting data: ' + response.statusText);
+          const errorText = await response.text();
+          alert('Error inserting data: ' + errorText);
         }
       } catch (error) {
         alert('Error inserting data: ' + error.message);
