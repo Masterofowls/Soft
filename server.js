@@ -1,26 +1,14 @@
 const express = require('express');
 const cors = require('cors');
 const { createClient } = require('@supabase/supabase-js');
-const { Pool } = require('pg');
+const { v4: uuidv4 } = require('uuid');
 const app = express();
 require('dotenv').config(); // Загрузка переменных окружения из .env файла
-
-// Вывод переменных окружения для отладки
-console.log('SUPABASE_URL:', process.env.SUPABASE_URL);
-console.log('SUPABASE_ANON_KEY:', process.env.SUPABASE_ANON_KEY);
 
 // Настройка Supabase
 const supabaseUrl = process.env.SUPABASE_URL;
 const supabaseAnonKey = process.env.SUPABASE_ANON_KEY;
 const supabase = createClient(supabaseUrl, supabaseAnonKey);
-
-// Настройка PostgreSQL
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl: {
-    rejectUnauthorized: false
-  }
-});
 
 // Настройка CORS
 app.use(cors());
@@ -31,14 +19,15 @@ app.get('/', (req, res) => {
 });
 
 app.post('/submit', async (req, res) => {
-  const { name, format, type, description } = req.body;
+  const { user_name } = req.body;
+  const created_at = new Date().toISOString();
 
-  console.log('Received data:', { name, format, type, description });
+  console.log('Received data:', { user_name, created_at });
 
   try {
     const { data, error } = await supabase
       .from('gbgtable')
-      .insert([{ name, format, type, description }]);
+      .insert([{ user_name, created_at }]);
 
     if (error) {
       console.error('Supabase error:', error);
