@@ -1,6 +1,6 @@
 function openGamePage(gameId) {
     localStorage.setItem('selectedGame', gameId);
-    window.location.href = '/public/game.html';
+    window.location.href = 'game.html';
 }
 
 window.onload = function() {
