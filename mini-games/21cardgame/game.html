@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Карточная игра 21</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0; /* Убираем отступы по умолчанию */
+            padding: 0; /* Убираем внутренние отступы по умолчанию */
+        }
+
+        #game {
+            text-align: center;
+            margin-top: 50px;
+            display: flex;
+            flex-direction: column; /* Поля располагаются одно над другим */
+            align-items: center; /* Центрирование по горизонтали */
+        }
+
+        .player-field,
+        .dealer-field {
+            background-color: #90ee90;
+            padding: 20px;
+            border: 2px solid #ffd700; /* Золотая рамка */
+            border-radius: 10px;
+            margin-bottom: 20px;
+            width: 100%; /* Растягиваем поля на всю ширину страницы */
+            overflow-y: auto; /* Включение вертикального скролла, если карты не помещаются */
+        }
+
+        .player-avatar,
+        .dealer-avatar {
+            width: 100px;
+            height:100px;
+            margin-bottom: 10px;
+        }
+
+        #player-cards,
+        #dealer-cards {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap; /* Карты переносятся на новую строку при необходимости */
+            align-items: center; /* Центрирование карт по горизонтали */
+        }
+
+        img {
+            width: 150px;
+            height: auto;
+            margin: 5px; /* Небольшое расстояние между картами */
+        }
+
+        #buttons {
+            margin-top: 20px;
+        }
+
+        button {
+            padding: 10px 20px;
+            margin: 0 5px;
+            font-size: 16px;
+        }
+
+        #result {
+            font-size: 24px;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div id="game">
+        <div class="player-field">
+            <img class="player-avatar" src="images/player.png" alt="Player Avatar">
+        
+            <div id="player-cards"></div>
+            <div id="player-score"></div>
+        </div>
+        <div class="dealer-field">
+            <img class="dealer-avatar" src="images/computer.png" alt="Dealer Avatar">
+         
+            <div id="dealer-cards"></div>
+            <div id="dealer-score"></div>
+        </div>
+        <div id="buttons">
+            <button id="start-btn">Начать игру</button>
+            <button id="hit-btn" style="display: none;">Взять</button>
+            <button id="stand-btn" style="display: none;">Достаточно</button>
+            <button id="restart-btn" style="display: none;">Начать заново</button>
+        </div>
+        <div id="result"></div>
+    </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const playerCardContainer = document.getElementById("player-cards");
+            const dealerCardContainer = document.getElementById("dealer-cards");
+            const playerScoreDisplay = document.getElementById("player-score");
+            const dealerScoreDisplay = document.getElementById("dealer-score");
+            const startBtn = document.getElementById("start-btn");
+            const hitBtn = document.getElementById("hit-btn");
+            const standBtn = document.getElementById("stand-btn");
+            const restartBtn = document.getElementById("restart-btn");
+            const resultDiv = document.getElementById("result");
+            const playerCards = [];
+            const dealerCards = [];
+            let playerScore = 0;
+            let dealerScore = 0;
+
+            startBtn.addEventListener("click", function() {
+                startGame();
+                startBtn.style.display = "none";
+                hitBtn.style.display = "inline-block";
+                standBtn.style.display = "inline-block";
+            });
+
+            hitBtn.addEventListener("click", function() {
+                takeCard(playerCards, playerCardContainer);
+                updateScoreDisplay();
+                if (playerScore > 21) {
+                    endGame("Вы проиграли!");
+                }
+            });
+
+            standBtn.addEventListener("click", function() {
+                dealerTurn();
+            });
+
+            restartBtn.addEventListener("click", function() {
+                startBtn.style.display = "inline-block";
+                hitBtn.style.display = "none";
+                standBtn.style.display = "none";
+                restartBtn.style.display = "none";
+                playerCardContainer.innerHTML = "";
+                dealerCardContainer.innerHTML = "";
+                resultDiv.innerText = "";
+                playerScoreDisplay.innerText = "";
+                dealerScoreDisplay.innerText = "";
+                playerCards.length = 0;
+                dealerCards.length = 0;
+                playerScore = 0;
+                dealerScore = 0;
+            });
+
+            function startGame() {
+                takeCard(playerCards, playerCardContainer);
+                takeCard(dealerCards, dealerCardContainer);
+                updateAllCards();
+                updateScoreDisplay();
+            }
+
+            function takeCard(cardsArray, cardContainer) {
+                const cardValue = Math.floor(Math.random() * 9) + 2; 
+                const cardImage = `images/card${cardValue}.png`;
+                cardsArray.push({ value: cardValue, image: cardImage });
+                updateCards(cardsArray, cardContainer);
+            }
+
+            function updateScoreDisplay() {
+                playerScore = calculateScore(playerCards);
+                dealerScore = calculateScore(dealerCards);
+                playerScoreDisplay.innerText = `Счет игрока: ${playerScore}`;
+                dealerScoreDisplay.innerText = `Счет компьютера: ${dealerScore}`;
+            }
+
+            function calculateScore(cardsArray) {
+                let score = 0;
+                for (let i = 0; i < cardsArray.length; i++) {
+                    score += cardsArray[i].value;
+                }
+                return score;
+            }
+
+            function updateAllCards() {
+                updateCards(playerCards, playerCardContainer);
+                updateCards(dealerCards, dealerCardContainer);
+            }
+
+            function updateCards(cardsArray, cardContainer) {
+                let cardImages = "";
+                for (let i = 0; i < cardsArray.length; i++) {
+                    cardImages += `<img src="${cardsArray[i].image}" alt="Карта: ${cardsArray[i].value}">`;
+                }
+                cardContainer.innerHTML = cardImages;
+            }
+
+            function endGame(message) {
+                resultDiv.innerText = message;
+                hitBtn.style.display = "none";
+                standBtn.style.display = "none";
+                restartBtn.style.display = "inline-block";
+            }
+
+            function dealerTurn() {
+                while (dealerScore < 17) {
+                    takeCard(dealerCards, dealerCardContainer);
+                    updateScoreDisplay();
+                }
+                if (dealerScore > 21 || playerScore > dealerScore) {
+                    endGame("Вы выиграли!");
+                } else if (playerScore < dealerScore) {
+                    endGame("Вы проиграли!");
+                } else {
+                    endGame("Ничья!");
+                }
+            }
+        });
+    </script>
+</body>
+</html>
