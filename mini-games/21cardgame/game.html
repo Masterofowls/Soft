@@ -4,82 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Карточная игра 21</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f0f0f0;
-            margin: 0; /* Убираем отступы по умолчанию */
-            padding: 0; /* Убираем внутренние отступы по умолчанию */
-        }
-
-        #game {
-            text-align: center;
-            margin-top: 50px;
-            display: flex;
-            flex-direction: column; /* Поля располагаются одно над другим */
-            align-items: center; /* Центрирование по горизонтали */
-        }
-
-        .player-field,
-        .dealer-field {
-            background-color: #90ee90;
-            padding: 20px;
-            border: 2px solid #ffd700; /* Золотая рамка */
-            border-radius: 10px;
-            margin-bottom: 20px;
-            width: 100%; /* Растягиваем поля на всю ширину страницы */
-            overflow-y: auto; /* Включение вертикального скролла, если карты не помещаются */
-        }
-
-        .player-avatar,
-        .dealer-avatar {
-            width: 100px;
-            height:100px;
-            margin-bottom: 10px;
-        }
-
-        #player-cards,
-        #dealer-cards {
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap; /* Карты переносятся на новую строку при необходимости */
-            align-items: center; /* Центрирование карт по горизонтали */
-        }
-
-        img {
-            width: 150px;
-            height: auto;
-            margin: 5px; /* Небольшое расстояние между картами */
-        }
-
-        #buttons {
-            margin-top: 20px;
-        }
-
-        button {
-            padding: 10px 20px;
-            margin: 0 5px;
-            font-size: 16px;
-        }
-
-        #result {
-            font-size: 24px;
-            font-weight: bold;
-            margin-top: 20px;
-        }
-    </style>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div id="game">
         <div class="player-field">
             <img class="player-avatar" src="images/player.png" alt="Player Avatar">
-        
             <div id="player-cards"></div>
             <div id="player-score"></div>
         </div>
         <div class="dealer-field">
             <img class="dealer-avatar" src="images/computer.png" alt="Dealer Avatar">
-         
             <div id="dealer-cards"></div>
             <div id="dealer-score"></div>
         </div>

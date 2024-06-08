@@ -1,65 +1,62 @@
-/* Стили для игры 21 */
-
 body {
-    font-family: sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #f0f0f0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-  }
-  
-  #game {
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    text-align: center;
-  }
-  
-  .hand {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    margin-bottom: 20px;
-  }
-  
-  .card {
-    width: 100px;
-    height: 150px;
-    margin: 5px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    background-color: #fff;
-    cursor: pointer;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  }
-  
-  .card img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-  
-  #buttons button {
-    margin: 10px;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    background-color: #4CAF50; /* Green */
-    color: white;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-  }
-  
-  #buttons button:hover {
-    background-color: #45a049; /* Darker green */
-  }
-  
-  #message {
-    font-size: 18px;
-    margin-top: 20px;
-  }
-  
+  font-family: Arial, sans-serif;
+  background-color: #f0f0f0;
+  margin: 0;
+  padding: 0;
+}
+
+#game {
+  text-align: center;
+  margin-top: 50px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.player-field,
+.dealer-field {
+  background-color: #90ee90;
+  padding: 20px;
+  border: 2px solid #ffd700;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  width: 100%;
+  overflow-y: auto;
+}
+
+.player-avatar,
+.dealer-avatar {
+  width: 100px;
+  height: 100px;
+  margin-bottom: 10px;
+}
+
+#player-cards,
+#dealer-cards {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+img {
+  width: 150px;
+  height: auto;
+  margin: 5px;
+}
+
+#buttons {
+  margin-top: 20px;
+}
+
+button {
+  padding: 10px 20px;
+  margin: 0 5px;
+  font-size: 16px;
+}
+
+#result {
+  font-size: 24px;
+  font-weight: bold;
+  margin-top: 20px;
+}
