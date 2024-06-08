@@ -12,7 +12,7 @@ const maxGuesses = 6;
 const resetGame = () => {
     correctLetters = [];
     wrongGuessCount = 0;
-    hangmanImage.src = "images/hangman-0.svg";
+    hangmanImage.src = "/public/images/hangman-0.svg";
     guessesText.innerText = `${wrongGuessCount} / ${maxGuesses}`;
     wordDisplay.innerHTML = currentWord.split("").map(() => `<li class="letter"></li>`).join("");
     keyboardDiv.querySelectorAll("button").forEach(btn => btn.disabled = false);
@@ -30,7 +30,7 @@ const getRandomWord = () => {
 const gameOver = (isVictory) => {
     // After game complete.. showing modal with relevant details
     const modalText = isVictory ? `You found the word:` : 'The correct word was:';
-    gameModal.querySelector("img").src = `images/${isVictory ? 'victory' : 'lost'}.gif`;
+    gameModal.querySelector("img").src = `/public/images/${isVictory ? 'victory' : 'lost'}.gif`;
     gameModal.querySelector("h4").innerText = isVictory ? 'Congrats!' : 'Game Over!';
     gameModal.querySelector("p").innerHTML = `${modalText} <b>${currentWord}</b>`;
     gameModal.classList.add("show");
@@ -50,7 +50,7 @@ const initGame = (button, clickedLetter) => {
     } else {
         // If clicked letter doesn't exist then update the wrongGuessCount and hangman image
         wrongGuessCount++;
-        hangmanImage.src = `images/hangman-${wrongGuessCount}.svg`;
+        hangmanImage.src = `/public/images/hangman-${wrongGuessCount}.svg`;
     }
     button.disabled = true; // Disabling the clicked button so user can't click again
     guessesText.innerText = `${wrongGuessCount} / ${maxGuesses}`;
