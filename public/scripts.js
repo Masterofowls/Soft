@@ -1,6 +1,6 @@
 function openGamePage(gameId) {
     localStorage.setItem('selectedGame', gameId);
-    window.location.href = '/public/Hangman/game.html';
+    window.location.href = 'Hangman/game.html';
 }
 
 window.onload = function() {
