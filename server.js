@@ -10,7 +10,7 @@ app.get('/', (req, res) => {
 });
 
 app.get('/game', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'Hangman', 'game.html'));
+    res.sendFile(path.join(__dirname, 'public', 'game.html'));
 });
 
 const PORT = process.env.PORT || 4000;
