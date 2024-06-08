@@ -1,14 +1,18 @@
 const express = require('express');
 const cors = require('cors');
-const { createClient } = require('@supabase/supabase-js');
+const { Pool } = require('pg');
 const path = require('path');
-const app = express();
 require('dotenv').config(); // Load environment variables from .env file
 
-// Setup Supabase
-const supabaseUrl = process.env.SUPABASE_URL;
-const supabaseAnonKey = process.env.SUPABASE_ANON_KEY;
-const supabase = createClient(supabaseUrl, supabaseAnonKey);
+const app = express();
+
+// Setup PostgreSQL connection
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: {
+    rejectUnauthorized: false
+  }
+});
 
 // Setup CORS
 app.use(cors());
@@ -27,16 +31,14 @@ app.post('/submit', async (req, res) => {
   console.log('Received data:', { user_name, created_at });
 
   try {
-    const { data, error } = await supabase
-      .from('gbgtable')
-      .insert([{ user_name, created_at }]);
-
-    if (error) {
-      console.error('Supabase error:', error);
-      throw error;
-    }
-
-    console.log('Data inserted successfully:', data);
+    const client = await pool.connect();
+    const result = await client.query(
+      'INSERT INTO gbgtable (user_name, created_at) VALUES ($1, $2) RETURNING *',
+      [user_name, created_at]
+    );
+    client.release();
+    
+    console.log('Data inserted successfully:', result.rows);
     res.status(200).send('Data received and inserted');
   } catch (error) {
     console.error('Error inserting data:', error);
@@ -47,16 +49,11 @@ app.post('/submit', async (req, res) => {
 // Endpoint to fetch data
 app.get('/data', async (req, res) => {
   try {
-    const { data, error } = await supabase
-      .from('gbgtable')
-      .select('*');
-
-    if (error) {
-      console.error('Supabase error:', error);
-      throw error;
-    }
-
-    res.status(200).json(data);
+    const client = await pool.connect();
+    const result = await client.query('SELECT * FROM gbgtable');
+    client.release();
+    
+    res.status(200).json(result.rows);
   } catch (error) {
     console.error('Error fetching data:', error);
     res.status(500).send('Error fetching data: ' + error.message);
