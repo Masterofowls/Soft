@@ -3,44 +3,53 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Submit Data to Supabase</title>
+  <title>Submit Data</title>
 </head>
 <body>
-  <h1>Submit Data to Supabase</h1>
+  <h1>Submit User Data</h1>
   <form id="dataForm">
     <label for="user_name">User Name:</label>
     <input type="text" id="user_name" name="user_name" required>
-    <br>
     <button type="submit">Submit</button>
   </form>
-
+  <p id="response"></p>
+  <h2>Submitted Data</h2>
+  <ul id="dataList"></ul>
   <script>
-    document.getElementById('dataForm').addEventListener('submit', async function (event) {
-      event.preventDefault();
+    document.getElementById('dataForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
 
       const user_name = document.getElementById('user_name').value;
 
-      try {
-        const response = await fetch('https://soft-xdk1.onrender.com/submit', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({ user_name })
-        });
+      const response = await fetch('/submit', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ user_name }),
+      });
 
-        if (response.ok) {
-          alert('Data successfully inserted!');
-          document.getElementById('dataForm').reset();
-        } else {
-          const errorText = await response.text();
-          alert('Error inserting data: ' + errorText);
-        }
-      } catch (error) {
-        alert('Error inserting data: ' + error.message);
-        console.error(error);
-      }
+      const result = await response.text();
+      document.getElementById('response').innerText = result;
+
+      // Fetch and display updated data
+      fetchData();
     });
+
+    async function fetchData() {
+      const response = await fetch('/data');
+      const data = await response.json();
+      const dataList = document.getElementById('dataList');
+      dataList.innerHTML = '';
+      data.forEach(item => {
+        const listItem = document.createElement('li');
+        listItem.textContent = `Name: ${item.user_name}, Created at: ${item.created_at}`;
+        dataList.appendChild(listItem);
+      });
+    }
+
+    // Fetch and display data on page load
+    fetchData();
   </script>
 </body>
 </html>
