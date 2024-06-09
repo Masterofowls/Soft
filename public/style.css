@@ -47,3 +47,10 @@ body {
 .game-item:hover .info {
     display: block;
 }
+
+.form {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+}
