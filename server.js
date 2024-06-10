@@ -1,6 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const path = require('path');
+const cors = require('cors');
 const { Pool } = require('pg');
 
 const app = express();
@@ -18,6 +19,9 @@ const pool = new Pool({
 
 // Middleware for parsing JSON bodies
 app.use(bodyParser.json());
+
+// Enable CORS for all routes
+app.use(cors());
 
 // Middleware for serving static files from the "public" directory
 app.use(express.static(path.join(__dirname, 'public')));
