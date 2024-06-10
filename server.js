@@ -1,19 +1,33 @@
 const express = require('express');
-const path = require('path');
+const bodyParser = require('body-parser');
+const { Pool } = require('pg');
+
 const app = express();
+const port = process.env.PORT || 3000;
 
-// Настройка для обслуживания статических файлов
-app.use(express.static(path.join(__dirname, 'public')));
-
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+const pool = new Pool({
+  host: process.env.DATABASE_HOST,
+  port: process.env.DATABASE_PORT,
+  database: process.env.DATABASE_NAME,
+  user: process.env.DATABASE_USER,
+  password: process.env.DATABASE_PASSWORD,
+  ssl: { rejectUnauthorized: false }
 });
 
-app.get('/game', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'game.html'));
+app.use(bodyParser.json());
+
+app.post('/submit', async (req, res) => {
+  const { name, email } = req.body;
+
+  try {
+    const result = await pool.query('INSERT INTO users (name, email) VALUES ($1, $2) RETURNING *', [name, email]);
+    res.status(200).json(result.rows[0]);
+  } catch (error) {
+    console.error('Error inserting data:', error);
+    res.status(500).send('Error inserting data');
+  }
 });
 
-const PORT = process.env.PORT || 4000;
-app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
+app.listen(port, () => {
+  console.log(`Server running at http://localhost:${port}/`);
 });
