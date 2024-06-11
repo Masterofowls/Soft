@@ -34,8 +34,11 @@
             padding: 20px;
             border-radius: 10px;
             width: 45%;
-            overflow-y: auto;
+            height: 350px;
+            overflow: hidden;
             text-align: center;
+            background-color: transparent;
+            position: relative;
         }
 
         .player-avatar,
@@ -50,7 +53,7 @@
         #dealer-cards {
             display: flex;
             justify-content: center;
-            flex-wrap: wrap
+            flex-wrap: wrap;
             align-items: center;
             filter: grayscale(100%);
         }
@@ -80,11 +83,26 @@
             font-weight: bold;
             margin-top: 20px;
             position: absolute;
-            top: 50%;
+            top: 20px;
             left: 50%;
-            transform: translate(-50%, -50%);
+            transform: translateX(-50%);
             padding: 10px 20px;
             border-radius: 20px;
+            background-color: rgba(255, 255, 255, 0.9);
+            display: none; /* Hide result initially */
+        }
+
+        .score {
+            position: absolute;
+            bottom: 10px;
+            width: 100%;
+            text-align: center;
+            font-size: 20px;
+            font-weight: bold;
+            background-color: rgba(255, 255, 255, 0.7);
+            padding: 5px 0;
+            border-radius: 10px;
+            display: none; /* Hide scores initially */
         }
 
         .backtable {
@@ -105,12 +123,12 @@
         <div class="player-field">
             <img class="player-avatar" src="images3/player.png" alt="Player Avatar">
             <div id="player-cards"></div>
-            <div id="player-score"></div>
+            <div id="player-score" class="score"></div>
         </div>
         <div class="dealer-field">
             <img class="dealer-avatar" src="images3/computer.png" alt="Dealer Avatar">
             <div id="dealer-cards"></div>
-            <div id="dealer-score"></div>
+            <div id="dealer-score" class="score"></div>
         </div>
         <div id="buttons">
             <button id="start-btn">Начать игру</button>
@@ -141,6 +159,8 @@
                 startBtn.style.display = "none";
                 hitBtn.style.display = "inline-block";
                 standBtn.style.display = "inline-block";
+                playerScoreDisplay.style.display = "block";
+                dealerScoreDisplay.style.display = "block";
             });
 
             hitBtn.addEventListener("click", function () {
@@ -163,8 +183,11 @@
                 playerCardContainer.innerHTML = "";
                 dealerCardContainer.innerHTML = "";
                 resultDiv.innerText = "";
+                resultDiv.style.display = "none";
                 playerScoreDisplay.innerText = "";
                 dealerScoreDisplay.innerText = "";
+                playerScoreDisplay.style.display = "none";
+                dealerScoreDisplay.style.display = "none";
                 playerCards.length = 0;
                 dealerCards.length = 0;
                 playerScore = 0;
@@ -215,6 +238,7 @@
 
             function endGame(message) {
                 resultDiv.innerText = message;
+                resultDiv.style.display = "block";
                 hitBtn.style.display = "none";
                 standBtn.style.display = "none";
                 restartBtn.style.display = "inline-block";
