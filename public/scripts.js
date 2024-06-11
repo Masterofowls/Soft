@@ -1,6 +1,11 @@
 function openGamePage(gameId) {
     localStorage.setItem('selectedGame', gameId);
-    window.location.href = 'game.html';
+    if (gameId === 'game1') {
+        window.location.href = 'game.html';
+    } else if (gameId === 'game2') {
+        window.location.href = 'cardgame.html';
+    }
+    // Add more conditions here for other games if needed
 }
 
 window.onload = function() {
