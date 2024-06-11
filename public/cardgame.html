@@ -89,7 +89,7 @@
             padding: 10px 20px;
             border-radius: 20px;
             background-color: rgba(255, 255, 255, 0.9);
-            display: none; /* Hide result initially */
+            display: none;
         }
 
         .score {
@@ -102,7 +102,7 @@
             background-color: rgba(255, 255, 255, 0.7);
             padding: 5px 0;
             border-radius: 10px;
-            display: none; /* Hide scores initially */
+            display: none;
         }
 
         .backtable {
@@ -168,11 +168,23 @@
                 updateScoreDisplay();
                 if (playerScore > 21) {
                     endGame("Вы проиграли!");
+                } else {
+                    dealerTurn();
                 }
             });
 
             standBtn.addEventListener("click", function () {
-                dealerTurn();
+                while (dealerScore < 17) {
+                    takeCard(dealerCards, dealerCardContainer, true);
+                    updateScoreDisplay();
+                }
+                if (dealerScore > 21 || playerScore > dealerScore) {
+                    endGame("Вы выиграли!");
+                } else if (playerScore < dealerScore) {
+                    endGame("Вы проиграли!");
+                } else {
+                    endGame("Ничья!");
+                }
             });
 
             restartBtn.addEventListener("click", function () {
@@ -196,16 +208,16 @@
 
             function startGame() {
                 takeCard(playerCards, playerCardContainer);
-                takeCard(dealerCards, dealerCardContainer);
+                takeCard(dealerCards, dealerCardContainer, true);
                 updateAllCards();
                 updateScoreDisplay();
             }
 
-            function takeCard(cardsArray, cardContainer) {
+            function takeCard(cardsArray, cardContainer, isDealer = false) {
                 const cardValue = Math.floor(Math.random() * 9) + 2;
                 const cardImage = `images3/card${cardValue}.png`;
                 cardsArray.push({ value: cardValue, image: cardImage });
-                updateCards(cardsArray, cardContainer);
+                updateCards(cardsArray, cardContainer, isDealer);
             }
 
             function updateScoreDisplay() {
@@ -224,14 +236,18 @@
             }
 
             function updateAllCards() {
-                updateCards(playerCards, playerCardContainer);
-                updateCards(dealerCards, dealerCardContainer);
+                updateCards(playerCards, playerCardContainer, false);
+                updateCards(dealerCards, dealerCardContainer, true);
             }
 
-            function updateCards(cardsArray, cardContainer) {
+            function updateCards(cardsArray, cardContainer, isDealer) {
                 let cardImages = "";
                 for (let i = 0; i < cardsArray.length; i++) {
-                    cardImages += `<img src="${cardsArray[i].image}" alt="Карта: ${cardsArray[i].value}">`;
+                    if (isDealer) {
+                        cardImages += `<img src="images3/card_back.png" alt="Пустая карта">`;
+                    } else {
+                        cardImages += `<img src="${cardsArray[i].image}" alt="Карта: ${cardsArray[i].value}">`;
+                    }
                 }
                 cardContainer.innerHTML = cardImages;
             }
@@ -242,19 +258,18 @@
                 hitBtn.style.display = "none";
                 standBtn.style.display = "none";
                 restartBtn.style.display = "inline-block";
+                updateCards(dealerCards, dealerCardContainer, false); // Открыть карты дилера после завершения игры
             }
 
             function dealerTurn() {
-                while (dealerScore < 17) {
-                    takeCard(dealerCards, dealerCardContainer);
-                    updateScoreDisplay();
-                }
-                if (dealerScore > 21 || playerScore > dealerScore) {
-                    endGame("Вы выиграли!");
-                } else if (playerScore < dealerScore) {
-                    endGame("Вы проиграли!");
-                } else {
-                    endGame("Ничья!");
+                if (dealerScore < 17) {
+                    setTimeout(() => {
+                        takeCard(dealerCards, dealerCardContainer, true);
+                        updateScoreDisplay();
+                        if (dealerScore > 21) {
+                            endGame("Вы выиграли!");
+                        }
+                    }, 1000); // Задержка в 1 секунду между ходами дилера
                 }
             }
         });
