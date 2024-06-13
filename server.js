@@ -26,6 +26,9 @@ app.use(cors());
 // Middleware for serving static files from the "public" directory
 app.use(express.static(path.join(__dirname, 'public')));
 
+// Middleware for serving static files from the root directory
+app.use(express.static(__dirname));
+
 // Route to serve the main page
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
@@ -33,7 +36,7 @@ app.get('/', (req, res) => {
 
 // Route to serve the form page
 app.get('/form', (req, res) => {
-  res.sendFile(path.join(__dirname, 'form.html'));
+  res.sendFile(path.join(__dirname, 'public', 'form.html'));
 });
 
 // Route to serve the question form page
