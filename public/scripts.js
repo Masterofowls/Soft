@@ -5,9 +5,14 @@ function openGamePage(gameId) {
     } else if (gameId === 'game2') {
         window.location.href = 'cardgame.html';
     } else if (gameId === 'game3') {
-        window.location.href =  '/src/mini-games/snake/index.html';
+        window.location.href =  '/src/mini-games/snake/snake.html';
+    }  else if (gameId === 'game4') {
+        window.location.href = '/src/mini-games/nfs/nfc.html';
+    }  else if (gameId === 'game5') {
+        window.location.href = 'darts.html';
     }
 }
+
 
 window.onload = function() {
     const gameId = localStorage.getItem('selectedGame');
