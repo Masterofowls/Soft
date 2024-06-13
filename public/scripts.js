@@ -4,8 +4,9 @@ function openGamePage(gameId) {
         window.location.href = 'game.html';
     } else if (gameId === 'game2') {
         window.location.href = 'cardgame.html';
+    } else if (gameId === 'game3') {
+        window.location.href = 'src/mini-games/snake/index.html';
     }
-    // Add more conditions here for other games if needed
 }
 
 window.onload = function() {
