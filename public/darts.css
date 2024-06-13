@@ -1,0 +1,40 @@
+body, html {
+    height: 100%;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: Arial, sans-serif;
+    background-color:lightslategray;
+}
+
+.container {
+    text-align: center;
+}
+
+#target {
+    max-width: 700px;
+    height: auto;
+    position:static;
+}
+
+#animation {
+    max-width: 100%;
+    height: auto;
+    margin-top: 20px;
+}
+
+#playButton, #restartButton {
+    display: block;
+    margin: 20px auto;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+#result {
+    margin-top: 20px;
+    font-size: 24px;
+    font-weight: bold;
+}
+

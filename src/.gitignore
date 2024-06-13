@@ -1,0 +1,8 @@
+node_modules
+# stryker temp files
+.stryker-tmp
+# reports from stryker
+reports
+# coverage for jest --colors
+coverage
+.env

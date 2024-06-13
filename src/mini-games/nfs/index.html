@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8"/>
+
+	<title>Racing game</title>
+	<link rel="icon" href="icon.png">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.css"/>
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Press+Start+2P"/>
+	<link rel="stylesheet" href="/nfs/style.css">
+</head>
+
+<body translate="no">
+	<div id="overlay">
+		<div id="progstat"></div>
+		<div class="overlay__container">
+			<div id="progress"></div>
+		</div>
+	</div>
+	<div id="game">
+		<div id="road">
+			<div id="cloud"></div>
+			<div id="hero"></div>
+		</div>
+
+		<div id="hud">
+			<span id="time" class="topUI">0</span>
+			<span id="score" class="topUI">0</span>
+			<span id="lap" class="topUI">0'00"000</span>
+			<span id="tacho">0</span>
+		</div>
+
+		<div id="home">
+			<h1>Старт</h1>
+			<p id="text"></p>
+
+			<div id="highscore"></div>
+		</div>
+	</div>
+
+	<div id="controls">
+		<span><span>C</span>Начать играть</span>
+		<span><span>R</span> Восстановить</span>
+		<span><span>Esc</span> Сброс</span>
+		<span><span>M</span>Звук</span>
+		<span><span>A</span><span>D</span>Влево/Вправо</span>
+		<span><span>S</span><span>W</span>Вперед/Назад</span>
+		<span><span>&lt;</span><span>&gt;</span>Влево/Вправо</span>
+		<span><span>&lt;</span><span>&gt;</span>Вперед/Назад</span>
+        <audio src="/src/mini-games/nfs/audio/Ariis - Manda Bala.mp3" controls></audio>
+	</div>
+
+	<script src="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.js"></script>
+	<script type="module" src="/src/mini-games/nfs/js/game.js"></script>
+</body>
+</html>

@@ -1,0 +1,58 @@
+[
+  {
+    "reports": 0,
+    "stars": 0,
+    "question": "2 plus 2",
+    "type": "number",
+    "author": "Dima",
+    "correctAnswer": 4,
+    "answers": [
+      "1",
+      "2",
+      "3",
+      "4",
+      "5",
+      "6",
+      "7"
+    ]
+  },
+  {
+    "reports": 0,
+    "stars": 0,
+    "question": "is parice the capital of france?",
+    "type": "boolean",
+    "author": "Dima",
+    "correctAnswer": false,
+    "answers": [
+      "true",
+      "false"
+    ]
+  },
+  {
+    "reports": 0,
+    "stars": 0,
+    "question": "is nagiev a man or a woman?",
+    "type": "string",
+    "author": "Dima",
+    "correctAnswer": "woman",
+    "answers": [
+      "man",
+      "woman",
+      "what"
+    ]
+  },
+  {
+    "reports": 0,
+    "stars": 0,
+    "question": "how long is",
+    "type": "number",
+    "author": "Dima",
+    "correctAnswer": 100,
+    "answers": [
+      "10",
+      "200",
+      "60000000",
+      "-5"
+    ]
+  }
+]

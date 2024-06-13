@@ -1,0 +1,66 @@
+@import url('https://fonts.googleapis.com/css2?family=New+Tegomin&display=swap');
+
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+.body {
+    background: url("/src/mini-games/snake/img/1674336097_catherineasquithgallery-com-p-fon-serii-minimalizm-foto-121.jpg");
+    min-height: 100vh;
+    background-size: 100vw 100vh;
+    background-repeat: no-repeat;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#scoreBox {
+    position: absolute;
+    top: 9px;
+    right: 5%;
+    font-size: 4vw;
+    font-weight: bold;
+    font-family: 'New Tegomin', serif;
+}
+
+#hiscoreBox {
+    position: absolute;
+    top: 59px;
+    right: 5%;
+    font-size: 4vw;
+    font-weight: bold;
+    font-family: 'New Tegomin', serif;
+}
+
+#board {
+    background: linear-gradient(rgb(170, 236, 170), rgb(236, 236, 167));
+    width: 90vw;
+    height: 90vw;
+    max-width: 400px; /* Adjust the max-width based on your design */
+    max-height: 400px; /* Adjust the max-height based on your design */
+    border: 2px solid black;
+    display: grid;
+    grid-template-rows: repeat(18, 1fr);
+    grid-template-columns: repeat(18, 1fr);
+}
+
+.head {
+    background: linear-gradient(rgb(240, 124, 124), rgb(228, 228, 129));
+    border: 2px solid rgb(34, 4, 34);
+    transform: scale(1.02);
+    border-radius: 9px;
+}
+
+.snake {
+    background-color: purple;
+    border: 1vw solid white;
+    border-radius: 4vw;
+}
+
+.food {
+    background: linear-gradient(red, purple);
+    border: 1vw solid black;
+    border-radius: 3vw;
+}
