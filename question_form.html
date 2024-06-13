@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Make A Question</title>
+</head>
+<body>
+    <h1>Make A Question</h1>
+    <form id="questionForm">
+        <label for="question">Question: </label>
+        <input type="text" id="question" name="question" required>
+        <p>By <span id="author">Anonymous</span></p>
+        
+        <fieldset>
+            <legend>Type:</legend>
+            <div>
+                <input type="radio" id="text" name="type" value="text" checked>
+                <label for="text">Text</label>
+            </div>
+            <div>
+                <input type="radio" id="number" name="type" value="number">
+                <label for="number">Number</label>
+            </div>
+            <div>
+                <input type="radio" id="range" name="type" value="range">
+                <label for="range">Range</label>
+            </div>
+        </fieldset>
+        
+        <label for="category">Category: </label>
+        <select id="category" name="category" required>
+            <option value="science">Science</option>
+            <option value="history">History</option>
+            <option value="it">IT</option>
+            <option value="social_studies">Social Studies</option>
+            <option value="art">Art</option>
+            <option value="geography">Geography</option>
+            <option value="general">General</option>
+        </select>
+        
+        <label for="answer">Correct Answer: </label>
+        <input type="text" id="answer" name="answer" required>
+        
+        <button type="submit">Make the question</button>
+    </form>
+    
+    <script>
+        document.getElementById('questionForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const formData = {
+                question: document.getElementById('question').value,
+                type: document.querySelector('input[name="type"]:checked').value,
+                category: document.getElementById('category').value,
+                answer: document.getElementById('answer').value
+            };
+
+            try {
+                const response = await fetch('/submit_question', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                if (response.ok) {
+                    alert('Question submitted successfully');
+                } else {
+                    const errorText = await response.text();
+                    console.error('Failed to submit question:', errorText);
+                    alert(`Failed to submit question: ${errorText}`);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert(`An error occurred: ${error.message}`);
+            }
+        });
+    </script>
+</body>
+</html>

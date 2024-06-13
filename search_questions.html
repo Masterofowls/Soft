@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Questions</title>
+</head>
+<body>
+    <h1>Search Questions</h1>
+    <form id="searchForm">
+        <label for="searchCategory">Category: </label>
+        <select id="searchCategory" name="category" required>
+            <option value="science">Science</option>
+            <option value="history">History</option>
+            <option value="it">IT</option>
+            <option value="social_studies">Social Studies</option>
+            <option value="art">Art</option>
+            <option value="geography">Geography</option>
+            <option value="general">General</option>
+        </select>
+        
+        <label for="searchType">Type: </label>
+        <select id="searchType" name="type" required>
+            <option value="text">Text</option>
+            <option value="number">Number</option>
+            <option value="range">Range</option>
+        </select>
+        
+        <button type="submit">Search</button>
+    </form>
+    
+    <div id="results"></div>
+    
+    <script>
+        document.getElementById('searchForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const searchParams = {
+                category: document.getElementById('searchCategory').value,
+                type: document.getElementById('searchType').value
+            };
+
+            try {
+                const response = await fetch('/search_questions', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(searchParams)
+                });
+
+                if (response.ok) {
+                    const questions = await response.json();
+                    displayResults(questions);
+                } else {
+                    const errorText = await response.text();
+                    console.error('Failed to fetch questions:', errorText);
+                    alert(`Failed to fetch questions: ${errorText}`);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert(`An error occurred: ${error.message}`);
+            }
+        });
+
+        function displayResults(questions) {
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = '';
+
+            questions.forEach(question => {
+                const questionDiv = document.createElement('div');
+                questionDiv.innerHTML = `
+                    <p>Question: ${question.question}</p>
+                    <p>Type: ${question.type}</p>
+                    <p>Category: ${question.category}</p>
+                    <label for="userAnswer">Your Answer: </label>
+                    <input type="text" id="userAnswer_${question.id}">
+                    <button onclick="checkAnswer(${question.id}, '${question.answer}')">Check Answer</button>
+                    <p id="result_${question.id}"></p>
+                `;
+                resultsDiv.appendChild(questionDiv);
+            });
+        }
+
+        function checkAnswer(questionId, correctAnswer) {
+            const userAnswer = document.getElementById(`userAnswer_${questionId}`).value;
+            const resultDiv = document.getElementById(`result_${questionId}`);
+
+            if (userAnswer === correctAnswer) {
+                resultDiv.innerHTML = 'Correct!';
+                resultDiv.style.color = 'green';
+            } else {
+                resultDiv.innerHTML = 'Incorrect!';
+                resultDiv.style.color = 'red';
+            }
+        }
+    </script>
+</body>
+</html>

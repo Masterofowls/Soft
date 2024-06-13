@@ -53,3 +53,35 @@ app.post('/submit', async (req, res) => {
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}/`);
 });
+
+// Route to handle question submissions
+app.post('/submit_question', async (req, res) => {
+  const { question, type, category, answer } = req.body;
+
+  try {
+      const result = await pool.query(
+          'INSERT INTO questions (question, type, category, answer) VALUES ($1, $2, $3, $4) RETURNING *',
+          [question, type, category, answer]
+      );
+      res.status(200).json(result.rows[0]);
+  } catch (error) {
+      console.error('Error inserting question data:', error);
+      res.status(500).send('Error inserting question data');
+  }
+});
+
+// Route to handle question search
+app.post('/search_questions', async (req, res) => {
+  const { category, type } = req.body;
+
+  try {
+      const result = await pool.query(
+          'SELECT * FROM questions WHERE category = $1 AND type = $2',
+          [category, type]
+      );
+      res.status(200).json(result.rows);
+  } catch (error) {
+      console.error('Error fetching questions:', error);
+      res.status(500).send('Error fetching questions');
+  }
+});
