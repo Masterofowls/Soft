@@ -23,15 +23,15 @@ app.use(bodyParser.json());
 // Enable CORS for all routes
 app.use(cors());
 
-// Middleware for serving static files from the root directory
-app.use(express.static(path.join(__dirname)));
+// Middleware for serving static files from the "public" directory
+app.use(express.static(path.join(__dirname, 'public')));
 
 // Route to serve the main page
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'index.html'));
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-// Existing route to serve the form page
+// Route to serve the form page
 app.get('/form', (req, res) => {
   res.sendFile(path.join(__dirname, 'form.html'));
 });
