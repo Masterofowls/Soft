@@ -33,13 +33,38 @@ body {
     justify-content: space-around;
 }
 
+
+#register-title {
+    font-family: Patsy;
+    font-size: 2rem;
+    text-align: center;
+}
+
 #registration-form {
     border-radius: 10px;
     background-color: #1a1717;
     color: white;
 }
 
-.blackout {
+#register-button {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 10px;
+    font-family: Patsy;
+    font-size: 1.2rem;
+    position: relative;
+    transform: 1.5s;
+}
+
+#register-button:hover {
+    background-color: #45a049;
+}
+
+#blackout {
     position: fixed;
     top: 0;
     left: 0;

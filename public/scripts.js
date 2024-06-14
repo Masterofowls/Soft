@@ -86,6 +86,7 @@ document.getElementById('registerForm').addEventListener('submit', function(e) {
         console.log('Registration successful:', data);  // Отладочная информация
         localStorage.setItem('registered', true);
         localStorage.setItem('username', username);
+        document.getElementById('blackout').style.display = 'none';
         document.getElementById('registration-form').style.display = 'none';
     })
     .catch(error => {
