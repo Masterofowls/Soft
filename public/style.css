@@ -1,15 +1,21 @@
+@font-face {
+    font-family: Patsy;
+    src: url(../fonts/PatsySans.otf);
+}
+
 body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
-    background: linear-gradient(to bottom, #f7f7f7, #e6e6e6);
+    background: linear-gradient(to bottom, #1a1717, #000000);
+    display: flex;
+    flex-direction: column;
 }
 
 .header {
     display: flex;
     justify-content: space-around;
-    align-items: center;
-    background-color: #333;
+    background-color: #1a1717;
     color: white;
     padding: 10px 0;
 }
@@ -17,17 +23,43 @@ body {
 .header-menu {
     color: white;
     text-decoration: none;
-    margin: 0 15px;
-    font-size: 18px;
+    font-size: 1.3rem;
+    width: 100%;
+    text-align: center;
+    display: flex;
+    flex-flow: row;
+    height: 100%;
+    align-items: flex-end;
+    justify-content: space-around;
 }
 
-.header-menu:hover {
-    text-decoration: underline;
+.bottom-line {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.bottom-line-l {
+    width: 40%;
+    height: 2px;
+    background-color: white;
+    margin-bottom: 10px;
+    justify-self: center;
+}
+.bottom-line-r {
+    width: 40%;
+    height: 2px;
+    background-color: white;
+    margin-bottom: 10px;
+    justify-self: center;
 }
 
 .logo {
-    width: 80px;
+    width: 100px;
     height: auto;
+    margin: 10px;
+    z-index: 9999;
 }
 
 .main {
@@ -59,9 +91,8 @@ h1 {
 .game-item {
     position: relative;
     background-color: white;
-    border: 1px solid #ddd;
     border-radius: 10px;
-    width: 10%; /* Adjusting for gap and margins */
+    width: 20%; /* Adjusting for gap and margins */
     margin: 10px;
     overflow: hidden;
     cursor: pointer;
@@ -96,7 +127,7 @@ h1 {
 
 .game-item:hover {
     transform: scale(1.05) translateY(-5px) translateX(-5px);
-    box-shadow: 5px 5px 0 rgb(241, 81, 230), 10px 10px 0 rgb(255, 0, 144);
+    box-shadow: 0 0 42px rgb(241, 81, 230);
 }
 
 .game-image-wrapper {
@@ -156,8 +187,39 @@ h1 {
 
 .random_text, .search_text {
     margin: 10px 0;
-    color: #333;
+    color: white;
     font-size: 18px;
+}
+
+a {
+    text-decoration: none;
+    font: bold 20px Patsy, Arial, sans-serif;
+}
+a:visited {
+    text-decoration: none;
+}
+a:active {
+    text-decoration: none;
+}
+a:link {
+    text-decoration: none;
+}
+
+a:hover {
+    cursor: pointer;
+    text-decoration: none;
+    color: white;
+    color: #fff;
+    text-shadow:
+        0 0 7px #fff,
+        0 0 10px #fff,
+        0 0 21px #fff,
+        0 0 42px rgb(241, 81, 230),
+        0 0 82px rgb(241, 81, 230),
+        0 0 92px rgb(241, 81, 230),
+        0 0 102px rgb(241, 81, 230),
+        0 0 151px rgb(241, 81, 230);
+    transform: scale(1.05);
 }
 
 .footer {
