@@ -7,7 +7,6 @@ const { Pool } = require('pg');
 const app = express();
 const port = process.env.PORT || 3000;
 
-// PostgreSQL connection pool
 const pool = new Pool({
   host: process.env.DATABASE_HOST,
   port: process.env.DATABASE_PORT,
@@ -17,60 +16,83 @@ const pool = new Pool({
   ssl: { rejectUnauthorized: false }
 });
 
-// Middleware for parsing JSON bodies
 app.use(bodyParser.json());
-
-// Enable CORS for all routes
 app.use(cors());
-
-// Middleware for serving static files from the "public" directory
 app.use(express.static(path.join(__dirname, 'public')));
-
-// Middleware for serving static files from the root directory
 app.use(express.static(__dirname));
 
-// Route to serve the main page
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-// Route to serve the form page
-app.get('/form', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'form.html'));
-});
-
-// Route to serve the question form page
 app.get('/question_form', (req, res) => {
   res.sendFile(path.join(__dirname, 'question_form.html'));
 });
 
-// Route to serve the search questions page
 app.get('/search_questions', (req, res) => {
   res.sendFile(path.join(__dirname, 'search_questions.html'));
 });
 
-// Route to handle form submissions for users
-app.post('/submit', async (req, res) => {
-  const { name, email } = req.body;
-
+app.get('/get_question_of_the_day', async (req, res) => {
   try {
-    const result = await pool.query('INSERT INTO users (name, email) VALUES ($1, $2) RETURNING *', [name, email]);
-    res.status(200).json(result.rows[0]);
+    const result = await pool.query('SELECT * FROM questions ORDER BY RANDOM() LIMIT 1');
+    res.json(result.rows[0]);
   } catch (error) {
-    console.error('Error inserting data:', error);
-    res.status(500).send('Error inserting data');
+    console.error('Error fetching question of the day:', error);
+    res.status(500).send('Error fetching question of the day');
   }
 });
 
-// Route to handle question submissions
-app.post('/submit_question', async (req, res) => {
-  const { question, type, category, answer } = req.body;
+app.get('/get_all_questions', async (req, res) => {
+  try {
+    const result = await pool.query('SELECT * FROM questions');
+    res.json({ questions: result.rows });
+  } catch (error) {
+    console.error('Error fetching questions:', error);
+    res.status(500).send('Error fetching questions');
+  }
+});
+
+app.get('/get_question_by_id', async (req, res) => {
+  const { id } = req.query;
+  try {
+    const result = await pool.query('SELECT * FROM questions WHERE id = $1', [id]);
+    res.json(result.rows[0]);
+  } catch (error) {
+    console.error('Error fetching question by id:', error);
+    res.status(500).send('Error fetching question by id');
+  }
+});
+
+app.post('/register', async (req, res) => {
+  const { username, password } = req.body;
+
+  console.log('Received registration request:', username, password);  // Отладочная информация
 
   try {
     const result = await pool.query(
-      'INSERT INTO questions (question, type, category, answer) VALUES ($1, $2, $3, $4) RETURNING *',
-      [question, type, category, answer]
+      'INSERT INTO usernames (username, password) VALUES ($1, $2) RETURNING *',
+      [username, password]
     );
+    console.log('User registered successfully:', result.rows[0]);  // Отладочная информация
+    res.status(200).json(result.rows[0]);
+  } catch (error) {
+    console.error('Error registering user:', error);
+    res.status(500).send('Error registering user');
+  }
+});
+
+app.post('/submit_question', async (req, res) => {
+  const { question, type, category, answer, creator } = req.body;
+
+  console.log('Received question submission:', { question, type, category, answer, creator });  // Отладочная информация
+
+  try {
+    const result = await pool.query(
+      'INSERT INTO questions (question, type, category, answer, creator) VALUES ($1, $2, $3, $4, $5) RETURNING *',
+      [question, type, category, answer, creator]
+    );
+    console.log('Question submitted successfully:', result.rows[0]);  // Отладочная информация
     res.status(200).json(result.rows[0]);
   } catch (error) {
     console.error('Error inserting question data:', error);
@@ -78,7 +100,6 @@ app.post('/submit_question', async (req, res) => {
   }
 });
 
-// Route to handle question search
 app.post('/search_questions', async (req, res) => {
   const { category, type } = req.body;
 
@@ -94,7 +115,6 @@ app.post('/search_questions', async (req, res) => {
   }
 });
 
-// Start the server
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}/`);
 });

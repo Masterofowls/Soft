@@ -7,9 +7,19 @@
     <title>Great Brain Games</title>
     <link rel="stylesheet" href="style.css">
     <link rel="icon" href="img/logo_closer.png">
-    <script src="scripts.js"></script>
+    <script defer src="scripts.js"></script>
 </head>
 <body>
+    <div id="registration-form" class="registration-form">
+        <h2>Register</h2>
+        <form id="registerForm">
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" required>
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required>
+            <button type="submit">Register</button>
+        </form>
+    </div>
     <header class="header">
         <div class="header-menu">
         <a class="header-menu header-about_us">About Us</a>
@@ -25,6 +35,21 @@
     </div>
     <div class="main">
         <div class="icons">
+            <div class="icon">
+                <a class="random_question" href="/question_form.html">
+                    <img src="img/random_question.png" alt="Random Question">
+                </a>
+            </div>
+            <h1>Question of the Day</h1>
+            <div class="icon">
+                <a class="search_question" href="javascript:void(0)" onclick="openSearchPopup()">
+                    <img src="img/search.png" alt="Search Question">
+                </a>
+            </div>
+        </div>
+        <div id="question-of-the-day" class="question-of-the-day">
+            <h2 id="question-title">Loading...</h2>
+            <p id="question-text">Please wait while we fetch the question of the day.</p>
         </div>
         <div class="game-list">
             <div class="game-item" id="hangman" onclick="openGamePage('game1')">
@@ -61,14 +86,15 @@
         </div>
         <div class="main-mini_games"></div>
     </div>
-    <footer class="footer">
-        <div class="ask">
-            <a href="/question_form.html"> Ask Question</a>
+   
+
+    <div id="search-popup" class="search-popup">
+        <div class="search-popup-content">
+            <span class="close" onclick="closeSearchPopup()">&times;</span>
+            <h2>Search Questions</h2>
+            <input type="text" id="searchInput" onkeyup="filterQuestions()" placeholder="Search for questions...">
+            <ul id="questionList"></ul>
         </div>
-        <div class="search">
-            <a href ="/search_questions.html"> Search Question Page</a>
-        </div>
-        </div>
-    </footer>
+    </div>
 </body>
 </html>
