@@ -541,3 +541,73 @@ a:hover {
         color:rgb(220, 198, 4)
     }
 }
+
+.lookup {
+    display: flex;
+    justify-content: space-between;
+    margin: 20px 0;
+    font-family: Patsy, sans-serif;
+    vertical-align: center;
+    width: 100%;
+}
+
+.search-question {
+    width: 40%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-items: space-between;
+}
+
+.random-question {
+    width: 40%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#searchInput {
+    font-family: Patsy, sans-serif;
+    width: 100%;
+    height: 50%;
+    border-radius: 10px;
+    margin: 0;
+}
+
+#search {
+    font-family: Patsy, sans-serif;
+    width: 100%;
+    height: 50%;
+    border-radius: 10px;
+    margin: 0;
+    color: white;
+    background-color: #244706;
+    cursor: pointer;
+}
+
+#random {
+    font-family: Patsy, sans-serif;
+    font-size: 1.7rem;
+    width: 100%;
+    height: 100%;
+    border-radius: 10px;
+    cursor: pointer;
+    background-color: #56180c;
+    color: white;
+}
+
+#search-icon {
+    width: 30px;
+    height: auto;
+    border-radius: 10px;
+    margin: 0;
+    position: relative;
+    bottom: 40%;
+    left: 40%;
+}
+
+.or {
+    font-family: Patsy, sans-serif;
+    font-size: 1.5rem;
+    color: white;
+}

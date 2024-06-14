@@ -49,6 +49,18 @@
             <p id="question-text">Please wait while we fetch the question of the day.</p>
         </div>
         </div>
+    <div class="lookup">
+        <div class="search-question">
+            <input сlass="search" type="text" id="searchInput" placeholder="Search for questions...">
+            <img id="search-icon" src="./img/search.jpg">
+            <button id="search">Search</button>
+         
+        </div>
+        <p class="or">OR</p>
+        <div class="random-question">
+            <button id="random" onclick="getRandomQuestion()">Get Random Question</button>
+        </div>
+    </div>
         <div class="game-list">
             <div class="game-item" id="hangman" onclick="openGamePage('game1')">
                 <div class="info">
