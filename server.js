@@ -56,11 +56,14 @@ app.get('/get_all_questions', async (req, res) => {
 app.post('/register', async (req, res) => {
   const { username, password } = req.body;
 
+  console.log('Received registration request:', username, password);  // Отладочная информация
+
   try {
     const result = await pool.query(
       'INSERT INTO usernames (username, password) VALUES ($1, $2) RETURNING *',
       [username, password]
     );
+    console.log('User registered successfully:', result.rows[0]);  // Отладочная информация
     res.status(200).json(result.rows[0]);
   } catch (error) {
     console.error('Error registering user:', error);

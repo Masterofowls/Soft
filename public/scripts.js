@@ -19,46 +19,44 @@ window.onload = function() {
     // Проверка регистрации пользователя
     if (!localStorage.getItem('registered')) {
         document.getElementById('registration-form').style.display = 'block';
-    } else {
-        showMainContent();
-
-        const gameId = localStorage.getItem('selectedGame');
-        if (gameId) {
-            const gameData = {
-                'game1': {
-                    title: 'Game 1',
-                    image: 'game1.png',
-                    description: 'This is the description for Game 1.'
-                },
-                'game2': {
-                    title: 'Game 2',
-                    image: 'game2.png',
-                    description: 'This is the description for Game 2.'
-                }
-                // Add more game data here
-            };
-
-            const game = gameData[gameId];
-            if (game) {
-                document.getElementById('game-title').innerText = game.title;
-                document.getElementById('game-image').src = game.image;
-                document.getElementById('game-description').innerText = game.description;
-            }
-        }
-
-        // Fetch and display the question of the day
-        fetch('/get_question_of_the_day')
-            .then(response => response.json())
-            .then(data => {
-                document.getElementById('question-title').innerText = "Question of the Day";
-                document.getElementById('question-text').innerText = data.question;
-            })
-            .catch(error => {
-                document.getElementById('question-title').innerText = "Error";
-                document.getElementById('question-text').innerText = "Failed to fetch the question of the day.";
-                console.error('Error fetching question of the day:', error);
-            });
     }
+
+    const gameId = localStorage.getItem('selectedGame');
+    if (gameId) {
+        const gameData = {
+            'game1': {
+                title: 'Game 1',
+                image: 'game1.png',
+                description: 'This is the description for Game 1.'
+            },
+            'game2': {
+                title: 'Game 2',
+                image: 'game2.png',
+                description: 'This is the description for Game 2.'
+            }
+            // Add more game data here
+        };
+
+        const game = gameData[gameId];
+        if (game) {
+            document.getElementById('game-title').innerText = game.title;
+            document.getElementById('game-image').src = game.image;
+            document.getElementById('game-description').innerText = game.description;
+        }
+    }
+
+    // Fetch and display the question of the day
+    fetch('/get_question_of_the_day')
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('question-title').innerText = "Question of the Day";
+            document.getElementById('question-text').innerText = data.question;
+        })
+        .catch(error => {
+            document.getElementById('question-title').innerText = "Error";
+            document.getElementById('question-text').innerText = "Failed to fetch the question of the day.";
+            console.error('Error fetching question of the day:', error);
+        });
 };
 
 // Обработка формы регистрации
@@ -89,19 +87,11 @@ document.getElementById('registerForm').addEventListener('submit', function(e) {
         localStorage.setItem('registered', true);
         localStorage.setItem('username', username);
         document.getElementById('registration-form').style.display = 'none';
-        showMainContent();
     })
     .catch(error => {
         console.error('Error registering user:', error);
     });
 });
-
-// Функция для показа основного контента
-function showMainContent() {
-    document.querySelector('.header').style.display = 'block';
-    document.querySelector('.main').style.display = 'block';
-    document.querySelector('.footer').style.display = 'block';
-}
 
 // Функция для открытия всплывающего окна поиска вопросов
 function openSearchPopup() {
