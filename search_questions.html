@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Search Questions</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <h1>Search Questions</h1>
@@ -30,6 +31,16 @@
     </form>
     
     <div id="results"></div>
+    
+    <div id="question-details" style="display:none;">
+        <h2>Question Details</h2>
+        <p><strong>Question:</strong> <span id="questionText"></span></p>
+        <p><strong>Author:</strong> <span id="questionAuthor"></span></p>
+        <label for="userAnswer">Your Answer: </label>
+        <input type="text" id="userAnswer">
+        <button onclick="checkAnswer()">Check Answer</button>
+        <p id="result"></p>
+    </div>
     
     <script>
         document.getElementById('searchForm').addEventListener('submit', async (e) => {
@@ -73,24 +84,30 @@
                     <p>Question: ${question.question}</p>
                     <p>Type: ${question.type}</p>
                     <p>Category: ${question.category}</p>
-                    <label for="userAnswer">Your Answer: </label>
-                    <input type="text" id="userAnswer_${question.id}">
-                    <button onclick="checkAnswer(${question.id}, '${question.answer}')">Check Answer</button>
-                    <p id="result_${question.id}"></p>
+                    <button onclick="showQuestionDetails(${question.id}, '${question.question}', '${question.creator}', '${question.answer}')">Select</button>
                 `;
                 resultsDiv.appendChild(questionDiv);
             });
         }
 
-        function checkAnswer(questionId, correctAnswer) {
-            const userAnswer = document.getElementById(`userAnswer_${questionId}`).value;
-            const resultDiv = document.getElementById(`result_${questionId}`);
+        function showQuestionDetails(id, questionText, creator, answer) {
+            document.getElementById('questionText').innerText = questionText;
+            document.getElementById('questionAuthor').innerText = creator;
+            document.getElementById('question-details').style.display = 'block';
+            document.getElementById('result').innerText = '';
+            
+            window.correctAnswer = answer;
+        }
 
-            if (userAnswer === correctAnswer) {
-                resultDiv.innerHTML = 'Correct!';
+        function checkAnswer() {
+            const userAnswer = document.getElementById('userAnswer').value;
+            const resultDiv = document.getElementById('result');
+
+            if (userAnswer === window.correctAnswer) {
+                resultDiv.innerText = 'Correct!';
                 resultDiv.style.color = 'green';
             } else {
-                resultDiv.innerHTML = 'Incorrect!';
+                resultDiv.innerText = 'Incorrect!';
                 resultDiv.style.color = 'red';
             }
         }
