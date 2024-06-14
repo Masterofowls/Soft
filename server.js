@@ -74,11 +74,14 @@ app.post('/register', async (req, res) => {
 app.post('/submit_question', async (req, res) => {
   const { question, type, category, answer, creator } = req.body;
 
+  console.log('Received question submission:', { question, type, category, answer, creator });  // Отладочная информация
+
   try {
     const result = await pool.query(
       'INSERT INTO questions (question, type, category, answer, creator) VALUES ($1, $2, $3, $4, $5) RETURNING *',
       [question, type, category, answer, creator]
     );
+    console.log('Question submitted successfully:', result.rows[0]);  // Отладочная информация
     res.status(200).json(result.rows[0]);
   } catch (error) {
     console.error('Error inserting question data:', error);

@@ -93,6 +93,41 @@ document.getElementById('registerForm').addEventListener('submit', function(e) {
     });
 });
 
+// Обработка формы создания вопроса
+document.getElementById('questionForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    const question = document.getElementById('question').value;
+    const type = document.querySelector('input[name="type"]:checked').value;
+    const category = document.getElementById('category').value;
+    const answer = document.getElementById('answer').value;
+    const creator = localStorage.getItem('username');  // Получение имени пользователя из localStorage
+
+    console.log('Submitting question:', { question, type, category, answer, creator });  // Отладочная информация
+
+    fetch('/submit_question', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ question, type, category, answer, creator })
+    })
+    .then(response => {
+        console.log('Submit question response status:', response.status);  // Отладочная информация
+        if (response.ok) {
+            return response.json();
+        }
+        throw new Error('Network response was not ok.');
+    })
+    .then(data => {
+        console.log('Question submitted successfully:', data);  // Отладочная информация
+        alert('Question submitted successfully');
+    })
+    .catch(error => {
+        console.error('Error submitting question:', error);
+    });
+});
+
 // Функция для открытия всплывающего окна поиска вопросов
 function openSearchPopup() {
     fetch('/get_all_questions')

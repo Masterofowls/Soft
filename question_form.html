@@ -46,36 +46,43 @@
     </form>
     
     <script>
-        document.getElementById('questionForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
+        document.addEventListener('DOMContentLoaded', () => {
+            const authorSpan = document.getElementById('author');
+            const username = localStorage.getItem('username') || 'Anonymous';
+            authorSpan.textContent = username;
 
-            const formData = {
-                question: document.getElementById('question').value,
-                type: document.querySelector('input[name="type"]:checked').value,
-                category: document.getElementById('category').value,
-                answer: document.getElementById('answer').value
-            };
+            document.getElementById('questionForm').addEventListener('submit', async (e) => {
+                e.preventDefault();
 
-            try {
-                const response = await fetch('/submit_question', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(formData)
-                });
+                const formData = {
+                    question: document.getElementById('question').value,
+                    type: document.querySelector('input[name="type"]:checked').value,
+                    category: document.getElementById('category').value,
+                    answer: document.getElementById('answer').value,
+                    creator: username
+                };
 
-                if (response.ok) {
-                    alert('Question submitted successfully');
-                } else {
-                    const errorText = await response.text();
-                    console.error('Failed to submit question:', errorText);
-                    alert(`Failed to submit question: ${errorText}`);
+                try {
+                    const response = await fetch('/submit_question', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(formData)
+                    });
+
+                    if (response.ok) {
+                        alert('Question submitted successfully');
+                    } else {
+                        const errorText = await response.text();
+                        console.error('Failed to submit question:', errorText);
+                        alert(`Failed to submit question: ${errorText}`);
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert(`An error occurred: ${error.message}`);
                 }
-            } catch (error) {
-                console.error('Error:', error);
-                alert(`An error occurred: ${error.message}`);
-            }
+            });
         });
     </script>
 </body>
