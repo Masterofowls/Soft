@@ -84,13 +84,13 @@
                     <p>Question: ${question.question}</p>
                     <p>Type: ${question.type}</p>
                     <p>Category: ${question.category}</p>
-                    <button onclick="showQuestionDetails(${question.id}, '${question.question}', '${question.creator}', '${question.answer}')">Select</button>
+                    <button onclick="showQuestionDetails('${question.question}', '${question.creator}', '${question.answer}')">Select</button>
                 `;
                 resultsDiv.appendChild(questionDiv);
             });
         }
 
-        function showQuestionDetails(id, questionText, creator, answer) {
+        function showQuestionDetails(questionText, creator, answer) {
             document.getElementById('questionText').innerText = questionText;
             document.getElementById('questionAuthor').innerText = creator;
             document.getElementById('question-details').style.display = 'block';
