@@ -33,6 +33,22 @@ body {
     justify-content: space-around;
 }
 
+#registration-form {
+    border-radius: 10px;
+    background-color: #1a1717;
+    color: white;
+}
+
+.blackout {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.8);
+    z-index: 1;
+}
+
 .bottom-line {
     display: flex;
     justify-content: space-around;
@@ -59,7 +75,6 @@ body {
     width: 100px;
     height: auto;
     margin: 10px;
-    z-index: 9999;
 }
 
 .main {
