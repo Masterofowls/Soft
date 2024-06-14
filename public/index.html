@@ -7,29 +7,43 @@
     <title>Great Brain Games</title>
     <link rel="stylesheet" href="style.css">
     <link rel="icon" href="img/logo_closer.png">
-    <script src="scripts.js"></script>
+    <script defer src="scripts.js"></script>
 </head>
 <body>
-    <header class="header">
+    <div id="registration-form" class="registration-form">
+        <h2>Register</h2>
+        <form id="registerForm">
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" required>
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required>
+            <button type="submit">Register</button>
+        </form>
+    </div>
+    <header class="header" style="display:none;">
         <a class="header-menu header-about_us">About Us</a>
         <a class="header-menu header-games">Brain Game</a>
         <img class="logo" src="img/logo_closer.png" alt="logo">
         <a class="header-menu header-mini_games">Mini Games</a>
         <a class="header-menu header-contacts">Contacts</a>
     </header>
-    <div class="main">
+    <div class="main" style="display:none;">
         <div class="icons">
             <div class="icon">
-                <a class="random_question" href="brain-games.html">
+                <a class="random_question" href="/question_form.html">
                     <img src="img/random_question.png" alt="Random Question">
                 </a>
             </div>
-            <h1>Game List</h1>
+            <h1>Question of the Day</h1>
             <div class="icon">
-                <a class="search_question" href="brain-games.html">
+                <a class="search_question" href="javascript:void(0)" onclick="openSearchPopup()">
                     <img src="img/search.png" alt="Search Question">
                 </a>
             </div>
+        </div>
+        <div id="question-of-the-day" class="question-of-the-day">
+            <h2 id="question-title">Loading...</h2>
+            <p id="question-text">Please wait while we fetch the question of the day.</p>
         </div>
         <div class="game-list">
             <div class="game-item" onclick="openGamePage('game1')">
@@ -70,14 +84,22 @@
         </div>
         <div class="main-mini_games"></div>
     </div>
-    <footer class="footer">
+    <footer class="footer" style="display:none;">
         <div class="ask">
             <a href="/question_form.html"> Ask Question</a>
         </div>
         <div class="search">
-            <a href ="/search_questions.html"> Search Question Page</a>
-        </div>
+            <a href="/search_questions.html"> Search Question Page</a>
         </div>
     </footer>
+
+    <div id="search-popup" class="search-popup">
+        <div class="search-popup-content">
+            <span class="close" onclick="closeSearchPopup()">&times;</span>
+            <h2>Search Questions</h2>
+            <input type="text" id="searchInput" onkeyup="filterQuestions()" placeholder="Search for questions...">
+            <ul id="questionList"></ul>
+        </div>
+    </div>
 </body>
 </html>
