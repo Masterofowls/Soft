@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Search Questions</title>
     <link rel="stylesheet" href="style-search.css">
+    <script defer src="scripts.js"></script>
 </head>
 <body>
     <header class="header">
@@ -18,11 +19,10 @@
                 <a class="header-menu header-contacts">Contacts</a>
             </div>
         </div>
-            <div class="bottom-line">    
-                <div class="bottom-line-l"></div>
-                <img class="logo" src="./public/img/logo_closer.png" alt="logo">
-                <div class="bottom-line-r"></div>
-            </div>
+        <div class="bottom-line">    
+            <div class="bottom-line-l"></div>
+            <img class="logo" src="./public/img/logo_closer.png" alt="logo">
+            <div class="bottom-line-r"></div>
         </div>
     </header>
     <h1>Search Questions</h1>
@@ -59,76 +59,5 @@
         <button onclick="checkAnswer()">Check Answer</button>
         <p id="result"></p>
     </div>
-    
-    <script>
-        document.getElementById('searchForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-
-            const searchParams = {
-                category: document.getElementById('searchCategory').value,
-                type: document.getElementById('searchType').value
-            };
-
-            try {
-                const response = await fetch('/search_questions', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(searchParams)
-                });
-
-                if (response.ok) {
-                    const questions = await response.json();
-                    displayResults(questions);
-                } else {
-                    const errorText = await response.text();
-                    console.error('Failed to fetch questions:', errorText);
-                    alert(`Failed to fetch questions: ${errorText}`);
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                alert(`An error occurred: ${error.message}`);
-            }
-        });
-
-        function displayResults(questions) {
-            const resultsDiv = document.getElementById('results');
-            resultsDiv.innerHTML = '';
-
-            questions.forEach(question => {
-                const questionDiv = document.createElement('div');
-                questionDiv.innerHTML = `
-                    <p>Question: ${question.question}</p>
-                    <p>Type: ${question.type}</p>
-                    <p>Category: ${question.category}</p>
-                    <button onclick="showQuestionDetails('${question.question}', '${question.creator}', '${question.answer}')">Select</button>
-                `;
-                resultsDiv.appendChild(questionDiv);
-            });
-        }
-
-        function showQuestionDetails(questionText, creator, answer) {
-            document.getElementById('questionText').innerText = questionText;
-            document.getElementById('questionAuthor').innerText = creator;
-            document.getElementById('question-details').style.display = 'block';
-            document.getElementById('result').innerText = '';
-            
-            window.correctAnswer = answer;
-        }
-
-        function checkAnswer() {
-            const userAnswer = document.getElementById('userAnswer').value;
-            const resultDiv = document.getElementById('result');
-
-            if (userAnswer === window.correctAnswer) {
-                resultDiv.innerText = 'Correct!';
-                resultDiv.style.color = 'green';
-            } else {
-                resultDiv.innerText = 'Incorrect!';
-                resultDiv.style.color = 'red';
-            }
-        }
-    </script>
 </body>
 </html>
