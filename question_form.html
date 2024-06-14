@@ -4,46 +4,187 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Make A Question</title>
+    <link rel="icon" href="img/logo_closer.png">
+    <style>
+        @font-face {
+            font-family: Patsy;
+            src: url(../fonts/PatsySans.otf);
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(to bottom, #1a1717, #000000);
+            display: flex;
+            flex-direction: column;
+            width: 100vw;
+            height: 100vh;
+            overflow-x: hidden;
+            color: white;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-evenly;
+            flex-flow: column;
+            height: 10%;
+            background-color: #1a1717;
+            color: white;
+            padding: 10px 0;
+        }
+
+        .header-menu {
+            color: white;
+            text-decoration: none;
+            font-size: 1.6rem;
+            width: 100%;
+            text-align: center;
+            display: flex;
+            flex-flow: row;
+            height: 100%;
+            align-items: flex-end;
+            justify-content: space-around;
+        }
+
+        .header-menu-left, .header-menu-right {
+            display: flex;
+            flex-flow: row;
+            height: 100%;
+            width: 40%;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .main {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-grow: 1;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .content {
+            background: #1a1717;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            max-width: 600px;
+            width: 100%;
+        }
+
+        .back-button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-family: Patsy;
+            font-size: 1.2rem;
+        }
+
+        .back-button:hover {
+            background-color: #45a049;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            margin-top: 10px;
+        }
+
+        input[type="text"], select, fieldset {
+            margin-top: 5px;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            background: #1a1717;
+            color: white;
+        }
+
+        button[type="submit"] {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-family: Patsy;
+            font-size: 1.2rem;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #45a049;
+        }
+
+        fieldset {
+            border: 1px solid #ccc;
+            margin-top: 10px;
+            padding: 10px;
+        }
+
+        legend {
+            padding: 0 10px;
+        }
+
+        input[type="radio"] {
+            margin-right: 5px;
+        }
+    </style>
 </head>
 <body>
-    <h1>Make A Question</h1>
-    <form id="questionForm">
-        <label for="question">Question: </label>
-        <input type="text" id="question" name="question" required>
-        <p>By <span id="author">Anonymous</span></p>
-        
-        <fieldset>
-            <legend>Type:</legend>
-            <div>
-                <input type="radio" id="text" name="type" value="text" checked>
-                <label for="text">Text</label>
-            </div>
-            <div>
-                <input type="radio" id="number" name="type" value="number">
-                <label for="number">Number</label>
-            </div>
-            <div>
-                <input type="radio" id="range" name="type" value="range">
-                <label for="range">Range</label>
-            </div>
-        </fieldset>
-        
-        <label for="category">Category: </label>
-        <select id="category" name="category" required>
-            <option value="science">Science</option>
-            <option value="history">History</option>
-            <option value="it">IT</option>
-            <option value="social_studies">Social Studies</option>
-            <option value="art">Art</option>
-            <option value="geography">Geography</option>
-            <option value="general">General</option>
-        </select>
-        
-        <label for="answer">Correct Answer: </label>
-        <input type="text" id="answer" name="answer" required>
-        
-        <button type="submit">Make the question</button>
-    </form>
+    <header class="header">
+    </header>
+    <div class="main">
+        <div class="content">
+            <h1>Make A Question</h1>
+            <form id="questionForm">
+                <label for="question">Question: </label>
+                <input type="text" id="question" name="question" required>
+                <p>By <span id="author">Anonymous</span></p>
+                
+                <fieldset>
+                    <legend>Type:</legend>
+                    <div>
+                        <input type="radio" id="text" name="type" value="text" checked>
+                        <label for="text">Text</label>
+                    </div>
+                    <div>
+                        <input type="radio" id="number" name="type" value="number">
+                        <label for="number">Number</label>
+                    </div>
+                    <div>
+                        <input type="radio" id="range" name="type" value="range">
+                        <label for="range">Range</label>
+                    </div>
+                </fieldset>
+                
+                <label for="category">Category: </label>
+                <select id="category" name="category" required>
+                    <option value="science">Science</option>
+                    <option value="history">History</option>
+                    <option value="it">IT</option>
+                    <option value="social_studies">Social Studies</option>
+                    <option value="art">Art</option>
+                    <option value="geography">Geography</option>
+                    <option value="general">General</option>
+                </select>
+                
+                <label for="answer">Correct Answer: </label>
+                <input type="text" id="answer" name="answer" required>
+                
+                <button type="submit">Make the question</button>
+            </form>
+            <button class="back-button" onclick="window.location.href='/public/index.html'">Back</button>
+        </div>
+    </div>
     
     <script>
         document.addEventListener('DOMContentLoaded', () => {

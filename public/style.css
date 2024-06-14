@@ -3,59 +3,6 @@
     src: url(../fonts/PatsySans.otf);
 }
 
-/* width */
-::-webkit-scrollbar {
-    width: 10px;
-  }
-  
-  /* Track */
-  ::-webkit-scrollbar-track {
-    background: #000000; 
-  }
-   
-  /* Handle */
-  ::-webkit-scrollbar-thumb {
-    background: #888; 
-    border-radius: 10px;
-  }
-  
-  /* Handle on hover */
-  ::-webkit-scrollbar-thumb:hover {
-    background: #555; 
-    border-radius: 10px;
-  }
-
-  .search-question {
-    position: relative;
-}
-
-.search-results {
-    position: absolute;
-    top: 100%;
-    left: 0;
-    right: 0;
-    max-height: 300px; /* Adjust the height as needed */
-    overflow-y: scroll;
-    background: white;
-    border: 1px solid #ccc;
-    z-index: 1000;
-}
-
-.search-results ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
-
-.search-results li {
-    padding: 10px;
-    cursor: pointer;
-}
-
-.search-results li:hover {
-    background: #f0f0f0;
-}
-
 body {
     font-family: Arial, sans-serif;
     margin: 0;
@@ -99,7 +46,6 @@ body {
     align-items: center;
     justify-content: space-between;
 }
-
 
 #register-title {
     font-family: Patsy;
@@ -187,6 +133,109 @@ body {
     text-align: center;
 }
 
+.lookup {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.search-question {
+    width: 50%; /* Adjust width as needed */
+    position: relative;
+}
+
+.search {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.make-question {
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+    font-size: 16px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-family: Patsy;
+}
+
+.make-question:hover {
+    background-color: #45a049;
+}
+
+.search-results {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    max-height: 100px; /* Display only two questions at a time */
+    overflow-y: scroll;
+    background: rgba(255, 255, 255, 0.8); /* Transparent background */
+    border: 1px solid #ccc;
+    z-index: 1000;
+    border-radius: 5px;
+}
+
+.search-results ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.search-results li {
+    padding: 10px;
+    cursor: pointer;
+    color: #00ff00; /* Neon green text color */
+    font-family: 'Courier New', Courier, monospace; /* Optional: Use a different font for a more neon look */
+}
+
+.search-results li:hover {
+    background: rgba(0, 255, 0, 0.1); /* Slightly neon hover effect */
+}
+
+/* width */
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+    background: #000000;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 10px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: #555;
+    border-radius: 10px;
+}
+
+.question-of-the-day-wrapper {
+    width: 50%;
+    margin: 20px auto 0; /* Adjust the margin to position it slightly below the search block */
+    padding: 20px;
+    background: #1a1717; /* Dark background similar to the overall page background */
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: white;
+    font: 1.5rem 'Patsy', sans-serif;
+}
+
 .icons {
     display: flex;
     justify-content: space-between;
@@ -195,9 +244,72 @@ body {
 }
 
 h1 {
-    color: #333;
+    color: #fff;
     flex-grow: 1;
     margin: 0 20px;
+}
+
+#loading {
+    position: relative;
+    margin: auto;
+    width: 100px;
+    height: 100px;
+    
+    --colorA: rgb(241, 81, 230);
+    
+    &::before,
+    &::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        right: 0;
+        border-radius: 50%;
+        border-top: 10px solid #fff;
+        border-right: 10px solid #fff;
+        filter: 
+            drop-shadow(0 0 2px var(--colorA))
+            drop-shadow(0 0 5px var(--colorA))
+            drop-shadow(0 0 10px var(--colorA))
+            drop-shadow(0 0 20px var(--colorA));
+        animation: rotate 3s infinite linear;
+    }
+    
+    &::after {
+        --colorA: rgb(220, 198, 4);
+        animation-delay: -1.5s;
+    }
+}
+
+@keyframes rotate {
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.question-title {
+    position: relative;
+    animation: neon 1s infinite alternate;
+    color: rgb(241, 81, 230);
+}
+
+@keyframes neon {
+    0% {
+        color: rgb(220, 198, 4);
+    }
+    25% {
+        color: rgb(241, 81, 230);
+    }
+    50% {
+        color: rgb(220, 198, 4);
+    }
+    75% {
+        color: rgb(241, 81, 230);
+    }
+    100% {
+        color: rgb(220, 198, 4);
+    }
 }
 
 .game-list {
@@ -489,156 +601,4 @@ a:hover {
 
 .registration-form button:hover {
     background-color: #45a049;
-}
-
-.question-of-the-day-wrapper {
-    margin: 20px 0;
-    padding: 10px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    color: white;
-    font: 1.5rem 'Patsy', sans-serif;
-}
-
-#loading {
-    position: relative;
-    margin: auto;
-    width: 100px;
-    height: 100px;
-    
-    --colorA: rgb(241, 81, 230);
-    
-    &::before,
-    &::after {
-        content: "";
-        position: absolute;
-        top: 0;
-        left: 0;
-        bottom: 0;
-        right: 0;
-        border-radius: 50%;
-        border-top: 10px solid #fff;
-        border-right: 10px solid #fff;
-        filter: 
-            drop-shadow(0 0 2px var(--colorA))
-            drop-shadow(0 0 5px var(--colorA))
-            drop-shadow(0 0 10px var(--colorA))
-            drop-shadow(0 0 20px var(--colorA));
-        animation: rotate 3s infinite linear;
-    }
-    
-    &::after {
-        --colorA: rgb(220, 198, 4);
-        animation-delay: -1.5s;
-    }
-}
-
-@keyframes rotate {
-    100% {
-        transform: rotate(360deg);
-    }
-}
-
-#searchForm {
-    display: flex;
-    justify-content: space-around;
-    font-size: larger;
-    text-align: center;
-    flex-flow: column;
-}
-
-.question-title {
-    position: relative;
-    animation: neon 1s infinite alternate;
-    color:rgb(241, 81, 230)
-}
-
-
-@keyframes neon {
-    0%{
-        color:rgb(220, 198, 4)
-    }
-    25% {
-        color:rgb(241, 81, 230)
-    }
-    50% {
-        color:rgb(220, 198, 4)
-    }
-    75% {
-        color:rgb(241, 81, 230)
-    }
-    100% {
-        color:rgb(220, 198, 4)
-    }
-}
-
-.lookup {
-    display: flex;
-    justify-content: space-between;
-    margin: 20px 0;
-    font-family: Patsy, sans-serif;
-    vertical-align: center;
-    width: 100%;
-}
-
-.search-question {
-    width: 40%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-items: space-between;
-}
-
-.random-question {
-    width: 40%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-#searchInput {
-    font-family: Patsy, sans-serif;
-    width: 100%;
-    height: 50%;
-    border-radius: 10px;
-    margin: 0;
-}
-
-#search {
-    font-family: Patsy, sans-serif;
-    width: 100%;
-    height: 50%;
-    border-radius: 10px;
-    margin: 0;
-    color: white;
-    background-color: #244706;
-    cursor: pointer;
-}
-
-#random {
-    font-family: Patsy, sans-serif;
-    font-size: 1.7rem;
-    width: 100%;
-    height: 100%;
-    border-radius: 10px;
-    cursor: pointer;
-    background-color: #56180c;
-    color: white;
-}
-
-#search-icon {
-    width: 30px;
-    height: auto;
-    border-radius: 10px;
-    margin: 0;
-    position: relative;
-    bottom: 40%;
-    left: 40%;
-}
-
-.or {
-    font-family: Patsy, sans-serif;
-    font-size: 1.5rem;
-    color: white;
 }
