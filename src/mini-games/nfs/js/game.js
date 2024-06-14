@@ -1,5 +1,5 @@
-import { CarsList } from "/src/mini-games/nfs/js/catalog/carsList";
-import { createSlider, swiper } from "/src/nfs/js/sliderjs";
+import { CarsList } from "carsList";
+import { createSlider, swiper } from "sliderjs";
 
 // Создаем функцию preloader
 function preloader() {
