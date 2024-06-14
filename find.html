@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Question Details</title>
+    <link rel="stylesheet" href="style.css">
+    <script defer src="find.js"></script>
+</head>
+<body>
+    <h1>Question Details</h1>
+    <div id="question-details">
+        <p><strong>Question:</strong> <span id="questionText"></span></p>
+        <p><strong>Author:</strong> <span id="questionAuthor"></span></p>
+        <label for="userAnswer">Your Answer: </label>
+        <input type="text" id="userAnswer">
+        <button onclick="checkAnswer()">Check Answer</button>
+        <p id="result"></p>
+    </div>
+    <a href="index.html">Back to Home</a>
+</body>
+</html>

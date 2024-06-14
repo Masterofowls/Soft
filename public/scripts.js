@@ -105,7 +105,7 @@ function openSearchPopup() {
                 const li = document.createElement('li');
                 li.innerText = question.question;
                 li.onclick = () => {
-                    showQuestionDetails(question.question, question.creator, question.answer);
+                    window.location.href = `find.html?id=${question.id}`;
                 };
                 questionList.appendChild(li);
             });
@@ -120,30 +120,6 @@ function openSearchPopup() {
 // Функция для закрытия всплывающего окна поиска вопросов
 function closeSearchPopup() {
     document.getElementById('search-popup').style.display = 'none';
-}
-
-// Функция для отображения деталей вопроса
-function showQuestionDetails(questionText, creator, answer) {
-    document.getElementById('questionText').innerText = questionText;
-    document.getElementById('questionAuthor').innerText = creator;
-    document.getElementById('question-details').style.display = 'block';
-    document.getElementById('result').innerText = '';
-
-    window.correctAnswer = answer;
-}
-
-// Функция для проверки ответа
-function checkAnswer() {
-    const userAnswer = document.getElementById('userAnswer').value;
-    const resultDiv = document.getElementById('result');
-
-    if (userAnswer === window.correctAnswer) {
-        resultDiv.innerText = 'Correct!';
-        resultDiv.style.color = 'green';
-    } else {
-        resultDiv.innerText = 'Incorrect!';
-        resultDiv.style.color = 'red';
-    }
 }
 
 // Функция для фильтрации вопросов в списке
