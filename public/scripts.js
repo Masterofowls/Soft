@@ -57,7 +57,44 @@ window.onload = function() {
             document.getElementById('question-text').innerText = "Failed to fetch the question of the day.";
             console.error('Error fetching question of the day:', error);
         });
+
+    // Fetch and display all questions
+    fetch('/get_all_questions')
+        .then(response => response.json())
+        .then(data => {
+            const questionList = document.getElementById('questionList');
+            questionList.innerHTML = '';
+
+            data.questions.sort((a, b) => a.question.localeCompare(b.question)).forEach(question => {
+                const li = document.createElement('li');
+                li.innerText = question.question;
+                li.onclick = () => {
+                    window.location.href = `find.html?id=${question.id}`;
+                };
+                questionList.appendChild(li);
+            });
+        })
+        .catch(error => {
+            console.error('Error fetching questions:', error);
+        });
 };
+
+// Функция для фильтрации вопросов в списке
+function filterQuestions() {
+    const input = document.getElementById('searchInput');
+    const filter = input.value.toLowerCase();
+    const ul = document.getElementById('questionList');
+    const li = ul.getElementsByTagName('li');
+
+    for (let i = 0; i < li.length; i++) {
+        const txtValue = li[i].textContent || li[i].innerText;
+        if (txtValue.toLowerCase().indexOf(filter) > -1) {
+            li[i].style.display = "";
+        } else {
+            li[i].style.display = "none";
+        }
+    }
+}
 
 // Обработка формы регистрации
 document.getElementById('registerForm').addEventListener('submit', function(e) {
@@ -93,49 +130,3 @@ document.getElementById('registerForm').addEventListener('submit', function(e) {
         console.error('Error registering user:', error);
     });
 });
-
-// Функция для открытия всплывающего окна поиска вопросов
-function openSearchPopup() {
-    fetch('/get_all_questions')
-        .then(response => response.json())
-        .then(data => {
-            const questionList = document.getElementById('questionList');
-            questionList.innerHTML = '';
-
-            data.questions.sort((a, b) => a.question.localeCompare(b.question)).forEach(question => {
-                const li = document.createElement('li');
-                li.innerText = question.question;
-                li.onclick = () => {
-                    window.location.href = `find.html?id=${question.id}`;
-                };
-                questionList.appendChild(li);
-            });
-        })
-        .catch(error => {
-            console.error('Error fetching questions:', error);
-        });
-
-    document.getElementById('search-popup').style.display = 'block';
-}
-
-// Функция для закрытия всплывающего окна поиска вопросов
-function closeSearchPopup() {
-    document.getElementById('search-popup').style.display = 'none';
-}
-
-// Функция для фильтрации вопросов в списке
-function filterQuestions() {
-    const input = document.getElementById('searchInput');
-    const filter = input.value.toLowerCase();
-    const ul = document.getElementById('questionList');
-    const li = ul.getElementsByTagName('li');
-
-    for (let i = 0; i < li.length; i++) {
-        const txtValue = li[i].textContent || li[i].innerText;
-        if (txtValue.toLowerCase().indexOf(filter) > -1) {
-            li[i].style.display = "";
-        } else {
-            li[i].style.display = "none";
-        }
-    }
-}
