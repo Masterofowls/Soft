@@ -130,3 +130,77 @@ document.getElementById('registerForm').addEventListener('submit', function(e) {
         console.error('Error registering user:', error);
     });
 });
+
+document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('searchForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const searchParams = {
+            category: document.getElementById('searchCategory').value,
+            type: document.getElementById('searchType').value
+        };
+
+        try {
+            const response = await fetch('/search_questions', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(searchParams)
+            });
+
+            if (response.ok) {
+                const questions = await response.json();
+                displayResults(questions);
+            } else {
+                const errorText = await response.text();
+                console.error('Failed to fetch questions:', errorText);
+                alert(`Failed to fetch questions: ${errorText}`);
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert(`An error occurred: ${error.message}`);
+        }
+    });
+
+    function displayResults(questions) {
+        const resultsDiv = document.getElementById('results');
+        resultsDiv.innerHTML = '';
+
+        questions.forEach(question => {
+            const questionDiv = document.createElement('div');
+            questionDiv.innerHTML = `
+                <p>Question: ${question.question}</p>
+                <p>Type: ${question.type}</p>
+                <p>Category: ${question.category}</p>
+                <button onclick="showQuestionDetails('${question.question}', '${question.creator}', '${question.answer}')">Select</button>
+            `;
+            resultsDiv.appendChild(questionDiv);
+        });
+    }
+
+    function showQuestionDetails(questionText, creator, answer) {
+        document.getElementById('questionText').innerText = questionText;
+        document.getElementById('questionAuthor').innerText = creator;
+        document.getElementById('question-details').style.display = 'block';
+        document.getElementById('result').innerText = '';
+
+        window.correctAnswer = answer;
+    }
+
+    function checkAnswer() {
+        const userAnswer = document.getElementById('userAnswer').value;
+        const resultDiv = document.getElementById('result');
+
+        if (userAnswer === window.correctAnswer) {
+            resultDiv.innerText = 'Correct!';
+            resultDiv.style.color = 'green';
+        } else {
+            resultDiv.innerText = 'Incorrect!';
+            resultDiv.style.color = 'red';
+        }
+    }
+
+    window.showQuestionDetails = showQuestionDetails;
+    window.checkAnswer = checkAnswer;
+});
