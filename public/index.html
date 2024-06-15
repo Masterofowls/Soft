@@ -28,15 +28,7 @@
         </div>
     </header>
     <div class="main">
-        <div class="lookup">
-            <div class="search-question">
-                <input class="search" type="text" id="searchInput" placeholder="Search for questions..." oninput="filterQuestions()">
-                <div id="search-results" class="search-results">
-                    <ul id="questionList"></ul>
-                </div>
-                <button class="make-question" onclick="window.location.href='/question_form.html'">Make Question</button>
-            </div>
-        </div>
+        <div class="questions">
         <div class="question-of-the-day-wrapper">
             <div class="icons">
                 <h1 class="question-title">Daily brain teaser:</h1>
@@ -45,6 +37,44 @@
                 <div id="loading"></div>
                 <h2 id="question-title">Loading...</h2>
                 <p id="question-text">Please wait while we fetch the question of the day.</p>
+            </div>
+        </div>
+        <div class="random-questions">
+            <div class="icons">
+                <h1 class="question-title">Random questions:</h1>
+            </div>
+            <div id="wrapperRandom">
+                <div id="loading"></div>
+                <h2 id="question-title">Loading...</h2>
+                <p id="question-text">Please wait while we fetch random questions.</p>
+                <ul id="questionList">
+                    <li id="questionListItem"></li>
+                    <li id="questionListItem"></li>
+                    <li id="questionListItem"></li>
+                    <li id="questionListItem"></li>
+                </ul>
+                <button id="refreshButton"><img id="refreshImg" src="./img/refresh.png"></button>
+            </div>
+        </div>
+        </div>
+        <div class="lookup">
+            <div class="search-question">
+                <input class="search" type="text" id="searchInput" placeholder="Search for questions..." required>
+                <div class="search-box">
+                <select id="searchType" name="category" required>
+                    <option value="science">Science</option>
+                    <option value="history">History</option>
+                    <option value="it">IT</option>
+                    <option value="social_studies">Social Studies</option>
+                    <option value="art">Art</option>
+                    <option value="geography">Geography</option>
+                    <option value="general">General</option>
+                </select>
+                <button id="searchButton" onclick="filterQuestions()">Search</button>
+                </div>
+            </div>
+            <div class="make-question">
+                <button id="question-input" onclick="window.location.href='/question_form.html'">Make Question</button>
             </div>
         </div>
         <div class="game-list">
