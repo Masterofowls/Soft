@@ -46,7 +46,18 @@ body {
     align-items: center;
     justify-content: space-between;
 }
-
+.mini-games-menu{
+    display: flex;
+    flex-flow: row;
+    height: 100%;
+    width: 40%;
+    align-items: center;
+    justify-content: space-between;
+    color:white;
+    background: #090808;
+    border-radius: 10px;
+    left: 150px;
+}
 #register-title {
     font-family: Patsy;
     font-size: 2rem;
@@ -120,7 +131,14 @@ body {
     margin-bottom: 10px;
     justify-self: center;
 }
-
+.bottom-line-f{
+    width: 100%;
+    height: 2px;
+    background-color: white;
+    margin-bottom: 10px;
+    justify-self: center;
+    margin-top: 180px;
+}
 .logo {
     width: 100px;
     position: absolute;
