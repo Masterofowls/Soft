@@ -153,6 +153,7 @@ app.post('/increment_answer_count', async (req, res) => {
 });
 
 // Rate a question
+// Rate a question
 app.post('/rate_question', async (req, res) => {
   const { question_id, user_id, rate } = req.body;
 
@@ -178,13 +179,22 @@ app.post('/rate_question', async (req, res) => {
       `UPDATE questions
        SET current_rating = $2,
            total_rating = total_rating + $2,
-           rating_count = total_rating / NULLIF(answer_count, 0) -- Avoid division by zero
+           rating_count = rating_count + 1
        WHERE id = $1
        RETURNING *`,
       [question_id, rate]
     );
 
-    res.status(200).json(result.rows[0]);
+    // Calculate the new rating count
+    const updateRatingCount = await pool.query(
+      `UPDATE questions
+       SET rating_count = total_rating / NULLIF(answer_count, 0) -- Avoid division by zero
+       WHERE id = $1
+       RETURNING *`,
+      [question_id]
+    );
+
+    res.status(200).json(updateRatingCount.rows[0]);
   } catch (error) {
     console.error('Error rating question:', error);
     res.status(500).send('Error rating question');
