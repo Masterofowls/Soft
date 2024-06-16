@@ -10,18 +10,18 @@
     <script defer src="scripts.js"></script>
 </head>
 <body>
+    <div id="blackout"></div>
+    <div id="registration-form" class="registration-form">
+        <h2 id="register-title">Register</h2>
+        <form id="registerForm">
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" placeholder="username" required>
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" placeholder="password" required>
+            <button id="register-button" type="submit">Log in!</button>
+        </form>
+    </div>
     <header class="header">
-        <div id="blackout"></div>
-        <div id="registration-form" class="registration-form">
-            <h2 id="register-title">Register</h2>
-            <form id="registerForm">
-                <label for="username">Username:</label>
-                <input type="text" id="username" name="username" placeholder="username" required>
-                <label for="password">Password:</label>
-                <input type="password" id="password" name="password" placeholder="password" required>
-                <button id="register-button" type="submit">Log in!</button>
-            </form>
-        </div>
         <div class="header-menu">
             <div class="header-menu-left">
                 <a class="header-menu header-about_us" href="about.html">About Us</a>
