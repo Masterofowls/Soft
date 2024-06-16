@@ -70,7 +70,6 @@
             border-radius: 5px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
             max-width: 600px;
-            width: 100%;
         }
 
         .back-button {
@@ -89,27 +88,6 @@
             background-color: #45a049;
         }
 
-        h1 {
-            color: white;
-        }
-
-        label, p {
-            color: white;
-        }
-
-        #rateButtons button {
-            margin: 5px;
-            padding: 10px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        #rateButtons button:hover {
-            background-color: #45a049;
-        }
     </style>
 </head>
 <body>
@@ -140,7 +118,7 @@
             <button class="back-button" onclick="window.location.href='index.html'">Back</button>
         </div>
     </div>
-    
+
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const urlParams = new URLSearchParams(window.location.search);
@@ -215,7 +193,7 @@
             .then(data => {
                 console.log('Question rated successfully:', data);
                 document.getElementById('currentRating').innerText = parseFloat(data.current_rating).toFixed(2);
-                document.getElementById('ratingCount').innerText = data.rating_count;
+                document.getElementById('ratingCount').innerText = parseFloat(data.rating_count).toFixed(2);
             })
             .catch(error => {
                 console.error('Error rating question:', error);

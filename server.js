@@ -33,7 +33,6 @@ app.get('/search_questions', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'search_questions.html'));
 });
 
-// Serve find.html
 app.get('/find', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'find.html'));
 });
@@ -87,14 +86,14 @@ app.get('/get_question_by_id', async (req, res) => {
 app.post('/register', async (req, res) => {
   const { username, password } = req.body;
 
-  console.log('Received registration request:', username, password);  // Debug information
+  console.log('Received registration request:', username, password);
 
   try {
     const result = await pool.query(
       'INSERT INTO usernames (username, password) VALUES ($1, $2) RETURNING *',
       [username, password]
     );
-    console.log('User registered successfully:', result.rows[0]);  // Debug information
+    console.log('User registered successfully:', result.rows[0]);
     res.status(200).json(result.rows[0]);
   } catch (error) {
     console.error('Error registering user:', error);
@@ -105,14 +104,14 @@ app.post('/register', async (req, res) => {
 app.post('/submit_question', async (req, res) => {
   const { question, type, category, answer, creator } = req.body;
 
-  console.log('Received question submission:', { question, type, category, answer, creator });  // Debug information
+  console.log('Received question submission:', { question, type, category, answer, creator });
 
   try {
     const result = await pool.query(
       'INSERT INTO questions (question, type, category, answer, creator) VALUES ($1, $2, $3, $4, $5) RETURNING *',
       [question, type, category, answer, creator]
     );
-    console.log('Question submitted successfully:', result.rows[0]);  // Debug information
+    console.log('Question submitted successfully:', result.rows[0]);
     res.status(200).json(result.rows[0]);
   } catch (error) {
     console.error('Error inserting question data:', error);
@@ -135,7 +134,6 @@ app.post('/search_questions', async (req, res) => {
   }
 });
 
-// Increment answer count
 app.post('/increment_answer_count', async (req, res) => {
   const { question_id } = req.body;
 
@@ -151,30 +149,12 @@ app.post('/increment_answer_count', async (req, res) => {
   }
 });
 
-// Increment answer count
-app.post('/increment_answer_count', async (req, res) => {
-  const { question_id } = req.body;
-
-  try {
-    const result = await pool.query(
-      'UPDATE questions SET answer_count = answer_count + 1 WHERE id = $1 RETURNING *',
-      [question_id]
-    );
-    res.status(200).json(result.rows[0]);
-  } catch (error) {
-    console.error('Error incrementing answer count:', error);
-    res.status(500).send('Error incrementing answer count');
-  }
-});
-
-// Rate a question
 app.post('/rate_question', async (req, res) => {
   const { question_id, user_id, rate } = req.body;
 
   console.log('Received rating:', { question_id, user_id, rate });
 
   try {
-    // Check if the user has already rated this question
     const checkRating = await pool.query(
       'SELECT * FROM question_rate WHERE question_id = $1 AND user_id = $2',
       [question_id, user_id]
@@ -185,7 +165,6 @@ app.post('/rate_question', async (req, res) => {
       return res.status(400).send('User has already rated this question');
     }
 
-    // Insert the new rating into question_rate
     await pool.query(
       'INSERT INTO question_rate (question_id, user_id, rate) VALUES ($1, $2, $3)',
       [question_id, user_id, rate]
@@ -193,19 +172,25 @@ app.post('/rate_question', async (req, res) => {
 
     console.log('New rating inserted into question_rate');
 
-    // Fetch the updated question data
-    const updatedQuestion = await pool.query(
-      'SELECT current_rating, total_rating, rating_count FROM questions WHERE id = $1',
-      [question_id]
+    const result = await pool.query(
+      `UPDATE questions
+       SET current_rating = $2,
+           total_rating = total_rating + $2,
+           rating_count = rating_count + 1
+       WHERE id = $1
+       RETURNING *`,
+      [question_id, rate]
     );
 
-    res.status(200).json(updatedQuestion.rows[0]);
+    const updatedQuestion = result.rows[0];
+    console.log('Questions table updated with new rating:', updatedQuestion);
+
+    res.status(200).json(updatedQuestion);
   } catch (error) {
     console.error('Error rating question:', error);
     res.status(500).send('Error rating question');
   }
 });
-
 
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}/`);
