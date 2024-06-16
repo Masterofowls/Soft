@@ -13,15 +13,26 @@
         <img class="logo" src="/public/img/logo_closer.png" alt="logo">
         <div class="bottom-line-r"></div>
     </div>
-    <h1>Question Details</h1>
-    <div id="question-details">
-        <p><strong>Question:</strong> <span id="questionText"></span></p>
-        <p><strong>Author:</strong> <span id="questionAuthor"></span></p>
-        <label for="userAnswer">Your Answer: </label>
-        <input type="text" id="userAnswer">
-        <button onclick="checkAnswer()">Check Answer</button>
-        <p id="result"></p>
+    <div class="main">
+        <h1>Question Details</h1>
+        <div id="question-details">
+            <p><strong>Question:</strong> <span id="questionText"></span></p>
+            <p><strong>Author:</strong> <span id="questionAuthor"></span></p>
+            <label for="userAnswer">Your Answer: </label>
+            <input type="text" id="userAnswer">
+            <button onclick="checkAnswer()">Check Answer</button>
+            <p id="result"></p>
+            <p><strong>Current Rating:</strong> <span id="currentRating">0</span> (based on <span id="ratingCount">0</span> reviews)</p>
+            <div>
+                <p>Rate this question:</p>
+                <button class="rate-button" data-question-id="1" data-rate="1">1</button>
+                <button class="rate-button" data-question-id="1" data-rate="2">2</button>
+                <button class="rate-button" data-question-id="1" data-rate="3">3</button>
+                <button class="rate-button" data-question-id="1" data-rate="4">4</button>
+                <button class="rate-button" data-question-id="1" data-rate="5">5</button>
+            </div>
+        </div>
+        <button onclick="window.location.href='index.html'">Back to Home</button>
     </div>
-    <a href="index.html">Back to Home</a>
 </body>
 </html>
