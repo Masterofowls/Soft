@@ -54,6 +54,7 @@
                 button.addEventListener('click', () => {
                     const rate = button.getAttribute('data-rate');
                     const userId = localStorage.getItem('user_id'); // Assuming user ID is stored in localStorage
+                    console.log('Sending rating:', { questionId, userId, rate });  // Logging the rating data
                     rateQuestion(questionId, userId, rate);
                 });
             });
@@ -98,8 +99,8 @@
             .then(response => response.json())
             .then(data => {
                 console.log('Question rated successfully:', data);
-                document.getElementById('currentRating').innerText = data.current_rating.toFixed(2);
-                document.getElementById('ratingCount').innerText = data.rating_count.toFixed(2);
+                document.getElementById('currentRating').innerText = parseFloat(data.current_rating).toFixed(2);
+                document.getElementById('ratingCount').innerText = parseFloat(data.rating_count).toFixed(2);
             })
             .catch(error => {
                 console.error('Error rating question:', error);

@@ -136,7 +136,6 @@ app.post('/search_questions', async (req, res) => {
 });
 
 // Increment answer count
-// Increment answer count
 app.post('/increment_answer_count', async (req, res) => {
   const { question_id } = req.body;
 
@@ -152,10 +151,10 @@ app.post('/increment_answer_count', async (req, res) => {
   }
 });
 
-// Rate a question
-// Rate a question
 app.post('/rate_question', async (req, res) => {
   const { question_id, user_id, rate } = req.body;
+
+  console.log('Received rating:', { question_id, user_id, rate });  // Logging the received rating
 
   try {
     // Check if the user has already rated this question
@@ -165,44 +164,39 @@ app.post('/rate_question', async (req, res) => {
     );
 
     if (checkRating.rows.length > 0) {
+      console.log('User has already rated this question');
       return res.status(400).send('User has already rated this question');
     }
 
-    // Insert the new rating
+    // Insert the new rating into question_rate
     await pool.query(
       'INSERT INTO question_rate (question_id, user_id, rate) VALUES ($1, $2, $3)',
       [question_id, user_id, rate]
     );
 
+    console.log('New rating inserted into question_rate');
+
     // Update the questions table with the new rating
     const result = await pool.query(
       `UPDATE questions
-       SET current_rating = $2,
-           total_rating = total_rating + $2,
-           rating_count = rating_count + 1
+       SET total_rating = total_rating + $2,
+           rating_count = rating_count + 1,
+           current_rating = total_rating / rating_count
        WHERE id = $1
        RETURNING *`,
       [question_id, rate]
     );
 
-    // Calculate the new rating count
-    const updateRatingCount = await pool.query(
-      `UPDATE questions
-       SET rating_count = total_rating / NULLIF(answer_count, 0) -- Avoid division by zero
-       WHERE id = $1
-       RETURNING *`,
-      [question_id]
-    );
+    const updatedQuestion = result.rows[0];
 
-    res.status(200).json(updateRatingCount.rows[0]);
+    console.log('Questions table updated with new rating:', updatedQuestion);
+
+    res.status(200).json(updatedQuestion);
   } catch (error) {
     console.error('Error rating question:', error);
     res.status(500).send('Error rating question');
   }
 });
-
-// Rate a question
-
 
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}/`);
