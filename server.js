@@ -132,8 +132,7 @@ app.post('/increment_answer_count', async (req, res) => {
   }
 });
 
-// Rate a question
-app.post('/rate_question', async (req, res) => {
+// Rate a questionapp.post('/rate_question', async (req, res) => {
   const { question_id, user_id, rate } = req.body;
 
   try {
@@ -174,4 +173,31 @@ app.post('/rate_question', async (req, res) => {
 
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}/`);
+});
+
+// Get question details along with rating
+app.get('/get_question_by_id', async (req, res) => {
+  const { id } = req.query;
+  try {
+    const questionResult = await pool.query('SELECT * FROM questions WHERE id = $1', [id]);
+    const ratingResult = await pool.query(
+      'SELECT AVG(rate) as current_rating, COUNT(rate) as rating_count FROM question_rate WHERE question_id = $1',
+      [id]
+    );
+
+    if (questionResult.rows.length === 0) {
+      return res.status(404).send('Question not found');
+    }
+
+    const question = questionResult.rows[0];
+    const rating = ratingResult.rows[0];
+
+    question.current_rating = rating.current_rating ? parseFloat(rating.current_rating).toFixed(2) : 0;
+    question.rating_count = rating.rating_count;
+
+    res.json(question);
+  } catch (error) {
+    console.error('Error fetching question by id:', error);
+    res.status(500).send('Error fetching question by id');
+  }
 });
