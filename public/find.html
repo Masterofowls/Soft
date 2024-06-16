@@ -87,7 +87,6 @@
         .back-button:hover {
             background-color: #45a049;
         }
-
     </style>
 </head>
 <body>
@@ -99,7 +98,7 @@
             <p><strong>Question:</strong> <span id="questionText"></span></p>
             <p><strong>Author:</strong> <span id="questionAuthor"></span></p>
             <p><strong>Answer Count:</strong> <span id="answerCount"></span></p>
-            <p><strong>Current Rating:</strong> <span id="currentRating"></span></p>
+            <p><strong>Total Rating:</strong> <span id="currentRating"></span></p>
             <p><strong>Rating Count:</strong> <span id="ratingCount"></span></p>
             <label for="userAnswer">Your Answer: </label>
             <input type="text" id="userAnswer">
@@ -114,7 +113,7 @@
                 <button class="rate-button" data-rate="4">4</button>
                 <button class="rate-button" data-rate="5">5</button>
             </div>
-            
+            <button class="back-button" onclick="window.location.href='index.html'">Back</button>
         </div>
     </div>
     
@@ -199,6 +198,5 @@
             });
         }
     </script>
-    <button class="back-button" onclick="window.location.href='/public/'">Back</button>
 </body>
 </html>
