@@ -248,3 +248,39 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 });
+
+document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('searchInput').addEventListener('input', filterQuestions);
+});
+
+function filterQuestions() {
+    const query = document.getElementById('searchInput').value.toLowerCase();
+    const category = document.getElementById('searchType').value;
+
+    fetch('/search_questions', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ query, category })
+    })
+    .then(response => response.json())
+    .then(data => {
+        displayResults(data);
+    })
+    .catch(error => {
+        console.error('Error fetching questions:', error);
+    });
+}
+
+function displayResults(questions) {
+    const questionList = document.getElementById('questionList');
+    questionList.innerHTML = '';
+
+    questions.forEach(question => {
+        const li = document.createElement('li');
+        li.innerText = question.question;
+        li.onclick = () => {
+            window.location.href = `find.html?id=${question.id}`;
+        };
+        questionList.appendChild(li);
+    });
+}

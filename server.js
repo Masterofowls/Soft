@@ -101,12 +101,12 @@ app.post('/submit_question', async (req, res) => {
 });
 
 app.post('/search_questions', async (req, res) => {
-  const { category, type } = req.body;
+  const { query, category } = req.body;
 
   try {
     const result = await pool.query(
-      'SELECT * FROM questions WHERE category = $1 AND type = $2',
-      [category, type]
+      'SELECT * FROM questions WHERE LOWER(question) LIKE $1 AND category = $2',
+      [`%${query}%`, category]
     );
     res.status(200).json(result.rows);
   } catch (error) {
@@ -114,6 +114,7 @@ app.post('/search_questions', async (req, res) => {
     res.status(500).send('Error fetching questions');
   }
 });
+
 
 // Increment answer count
 app.post('/increment_answer_count', async (req, res) => {
