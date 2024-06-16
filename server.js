@@ -33,6 +33,7 @@ app.get('/search_questions', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'search_questions.html'));
 });
 
+// Serve find.html
 app.get('/find', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'find.html'));
 });
@@ -61,20 +62,22 @@ app.get('/get_question_by_id', async (req, res) => {
   const { id } = req.query;
   try {
     const questionResult = await pool.query('SELECT * FROM questions WHERE id = $1', [id]);
-    const ratingResult = await pool.query(
-      'SELECT AVG(rate) as current_rating, COUNT(rate) as rating_count FROM question_rate WHERE question_id = $1',
-      [id]
-    );
-
     if (questionResult.rows.length === 0) {
       return res.status(404).send('Question not found');
     }
 
     const question = questionResult.rows[0];
-    const rating = ratingResult.rows[0];
+    const ratingResult = await pool.query(
+      'SELECT * FROM rates WHERE question_id = $1', [id]
+    );
 
-    question.current_rating = rating.current_rating ? parseFloat(rating.current_rating).toFixed(2) : 0;
-    question.rating_count = rating.rating_count;
+    if (ratingResult.rows.length > 0) {
+      question.total_rating = ratingResult.rows[0].total_rating;
+      question.rating_count = ratingResult.rows[0].rating_count;
+    } else {
+      question.total_rating = 0;
+      question.rating_count = 0;
+    }
 
     res.json(question);
   } catch (error) {
@@ -86,14 +89,14 @@ app.get('/get_question_by_id', async (req, res) => {
 app.post('/register', async (req, res) => {
   const { username, password } = req.body;
 
-  console.log('Received registration request:', username, password);
+  console.log('Received registration request:', username, password);  // Debug information
 
   try {
     const result = await pool.query(
       'INSERT INTO usernames (username, password) VALUES ($1, $2) RETURNING *',
       [username, password]
     );
-    console.log('User registered successfully:', result.rows[0]);
+    console.log('User registered successfully:', result.rows[0]);  // Debug information
     res.status(200).json(result.rows[0]);
   } catch (error) {
     console.error('Error registering user:', error);
@@ -104,14 +107,21 @@ app.post('/register', async (req, res) => {
 app.post('/submit_question', async (req, res) => {
   const { question, type, category, answer, creator } = req.body;
 
-  console.log('Received question submission:', { question, type, category, answer, creator });
+  console.log('Received question submission:', { question, type, category, answer, creator });  // Debug information
 
   try {
     const result = await pool.query(
       'INSERT INTO questions (question, type, category, answer, creator) VALUES ($1, $2, $3, $4, $5) RETURNING *',
       [question, type, category, answer, creator]
     );
-    console.log('Question submitted successfully:', result.rows[0]);
+
+    // Insert into rates table
+    await pool.query(
+      'INSERT INTO rates (question_id, question) VALUES ($1, $2)',
+      [result.rows[0].id, question]
+    );
+
+    console.log('Question submitted successfully:', result.rows[0]);  // Debug information
     res.status(200).json(result.rows[0]);
   } catch (error) {
     console.error('Error inserting question data:', error);
@@ -155,6 +165,7 @@ app.post('/rate_question', async (req, res) => {
   console.log('Received rating:', { question_id, user_id, rate });
 
   try {
+    // Check if the user has already rated this question
     const checkRating = await pool.query(
       'SELECT * FROM question_rate WHERE question_id = $1 AND user_id = $2',
       [question_id, user_id]
@@ -165,6 +176,7 @@ app.post('/rate_question', async (req, res) => {
       return res.status(400).send('User has already rated this question');
     }
 
+    // Insert the new rating into question_rate
     await pool.query(
       'INSERT INTO question_rate (question_id, user_id, rate) VALUES ($1, $2, $3)',
       [question_id, user_id, rate]
@@ -172,20 +184,17 @@ app.post('/rate_question', async (req, res) => {
 
     console.log('New rating inserted into question_rate');
 
-    const result = await pool.query(
-      `UPDATE questions
-       SET current_rating = $2,
-           total_rating = total_rating + $2,
-           rating_count = rating_count + 1
-       WHERE id = $1
-       RETURNING *`,
+    // Update the rates table
+    const rateColumn = `rate_${Date.now()}`;  // Create a unique column name for the rating
+    await pool.query(
+      `ALTER TABLE rates ADD COLUMN IF NOT EXISTS ${rateColumn} INTEGER;
+       UPDATE rates SET ${rateColumn} = $2, total_rating = total_rating + $2, rating_count = rating_count + 1 WHERE question_id = $1`,
       [question_id, rate]
     );
 
-    const updatedQuestion = result.rows[0];
-    console.log('Questions table updated with new rating:', updatedQuestion);
+    console.log('Rates table updated with new rating');
 
-    res.status(200).json(updatedQuestion);
+    res.status(200).send('Rating submitted successfully');
   } catch (error) {
     console.error('Error rating question:', error);
     res.status(500).send('Error rating question');
