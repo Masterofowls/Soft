@@ -108,6 +108,7 @@ body {
     height: 100vh;
     background-color: rgba(0, 0, 0, 0.8);
     z-index: 1;
+    display: none;
 }
 
 .bottom-line {
@@ -227,7 +228,7 @@ body {
 
 .search-results {
     height: 30%;
-    width: 20%; /* Initially hidden */
+    width: 100%; /* Initially hidden */
     overflow-y: scroll;
     background: #333; /* Dark gray background */
     border: 1px solid #ccc;
