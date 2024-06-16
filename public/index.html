@@ -10,6 +10,17 @@
     <script defer src="scripts.js"></script>
 </head>
 <body>
+    <div id="blackout"></div>
+    <div id="registration-form" class="registration-form">
+        <h2 id="register-title">Register</h2>
+        <form id="registerForm">
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" placeholder="username" required>
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" placeholder="password" required>
+            <button id="register-button" type="submit">Log in!</button>
+        </form>
+    </div>
     <header class="header">
         <div class="header-menu">
             <div class="header-menu-left">
@@ -41,22 +52,26 @@
         </div>
         <div class="random-questions">
             <div class="icons">
-                <h1 class="question-title">Random questions:</h1>
+                <h1 id="random-question-title" class="question-title">Random question:</h1>
             </div>
             <div id="wrapperRandom">
                 <div id="loading"></div>
                 <h2 id="question-title">Loading...</h2>
-                <p id="question-text">Please wait while we fetch random questions.</p>
-                <ul id="questionList">
-                    <li id="questionListItem"></li>
-                </ul>
+                <p id="question-text">Please wait while we fetch a random question.</p>
                 <button id="refreshButton"><img id="refreshImg" src="./img/refresh.png"></button>
             </div>
         </div>
         </div>
         <div class="lookup">
+            <div class="icons">
+                <h1 class="question-title search-title">Search questions:</h1>
+            </div>
+            <div class="search-question-wrapper">
             <div class="search-question">
                 <input class="search" type="text" id="searchInput" placeholder="Search for questions..." oninput="filterQuestions()" required>
+            <div id="search-results" class="search-results">
+                <ul id="questionList"></ul>
+            </div>
                 <select id="searchType" name="category" required>
                     <option value="science">Science</option>
                     <option value="history">History</option>
@@ -66,16 +81,15 @@
                     <option value="geography">Geography</option>
                     <option value="general">General</option>
                 </select>
-                <div id="search-results" class="search-results">
-                    <ul id="questionList"></ul>
-                </div>
             </div>
         </div>
-        
-            <div class="make-question">
-                <button id="question-input" onclick="window.location.href='/question_form.html'">Make Question</button>
-            </div>
         </div>
+        <div class="lookup">        
+            <button id="question-input" onclick="window.location.href='/question_form.html'">Make Question!</button>
+        </div>   
+        </div>
+        <h2 class="games-title">Mini-Games</h2>
+        <div class="bottom-line-f"></div>
         <div class="game-list">
             <div class="game-item" id="hangman" onclick="openGamePage('game1')">
                 <div class="info">
