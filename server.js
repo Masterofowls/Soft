@@ -151,6 +151,23 @@ app.post('/increment_answer_count', async (req, res) => {
   }
 });
 
+// Increment answer count
+app.post('/increment_answer_count', async (req, res) => {
+  const { question_id } = req.body;
+
+  try {
+    const result = await pool.query(
+      'UPDATE questions SET answer_count = answer_count + 1 WHERE id = $1 RETURNING *',
+      [question_id]
+    );
+    res.status(200).json(result.rows[0]);
+  } catch (error) {
+    console.error('Error incrementing answer count:', error);
+    res.status(500).send('Error incrementing answer count');
+  }
+});
+
+// Rate a question
 app.post('/rate_question', async (req, res) => {
   const { question_id, user_id, rate } = req.body;
 
@@ -179,19 +196,17 @@ app.post('/rate_question', async (req, res) => {
     // Update the questions table with the new rating
     const result = await pool.query(
       `UPDATE questions
-       SET total_rating = total_rating + $2,
-           rating_count = rating_count + 1,
-           current_rating = total_rating / rating_count
+       SET current_rating = $2,
+           total_rating = total_rating + $2,
+           rating_count = rating_count + 1
        WHERE id = $1
        RETURNING *`,
       [question_id, rate]
     );
 
-    const updatedQuestion = result.rows[0];
+    console.log('Questions table updated with new rating:', result.rows[0]);
 
-    console.log('Questions table updated with new rating:', updatedQuestion);
-
-    res.status(200).json(updatedQuestion);
+    res.status(200).json(result.rows[0]);
   } catch (error) {
     console.error('Error rating question:', error);
     res.status(500).send('Error rating question');
