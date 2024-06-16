@@ -49,9 +49,6 @@
                 <p id="question-text">Please wait while we fetch random questions.</p>
                 <ul id="questionList">
                     <li id="questionListItem"></li>
-                    <li id="questionListItem"></li>
-                    <li id="questionListItem"></li>
-                    <li id="questionListItem"></li>
                 </ul>
                 <button id="refreshButton"><img id="refreshImg" src="./img/refresh.png"></button>
             </div>
@@ -69,7 +66,12 @@
                     <option value="geography">Geography</option>
                     <option value="general">General</option>
                 </select>
+                <div id="search-results" class="search-results">
+                    <ul id="questionList"></ul>
+                </div>
             </div>
+        </div>
+        
             <div class="make-question">
                 <button id="question-input" onclick="window.location.href='/question_form.html'">Make Question</button>
             </div>
