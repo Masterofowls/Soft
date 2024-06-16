@@ -706,3 +706,19 @@ a:hover {
     padding: 5px;
     width: 80%;
 }
+.bottom-line-f {
+    width: 100%;
+    height: 3px;
+    background-color: white;
+    margin-bottom: 10px;
+    justify-self: center;
+    margin: 0;
+}
+
+.games-title {
+    text-align: center;
+    color: #fff;
+    font-size: 2rem;
+    margin-bottom: 20px;
+    font-family: 'Patsy';
+}
