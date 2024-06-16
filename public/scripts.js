@@ -19,6 +19,7 @@ window.onload = function() {
     // Проверка регистрации пользователя
     if (!localStorage.getItem('registered')) {
         document.getElementById('registration-form').style.display = 'block';
+        document.getElementById('blackout').style.display = 'block';
     }
 
     const gameId = localStorage.getItem('selectedGame');
