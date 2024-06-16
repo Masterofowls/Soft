@@ -115,6 +115,62 @@ app.post('/search_questions', async (req, res) => {
   }
 });
 
+// Increment answer count
+app.post('/increment_answer_count', async (req, res) => {
+  const { question_id } = req.body;
+
+  try {
+    const result = await pool.query(
+      'UPDATE questions SET answer_count = answer_count + 1 WHERE id = $1 RETURNING *',
+      [question_id]
+    );
+    res.status(200).json(result.rows[0]);
+  } catch (error) {
+    console.error('Error incrementing answer count:', error);
+    res.status(500).send('Error incrementing answer count');
+  }
+});
+
+// Rate a question
+app.post('/rate_question', async (req, res) => {
+  const { question_id, user_id, rate } = req.body;
+
+  try {
+    // Check if the user has already rated this question
+    const checkRating = await pool.query(
+      'SELECT * FROM question_rate WHERE question_id = $1 AND user_id = $2',
+      [question_id, user_id]
+    );
+
+    if (checkRating.rows.length > 0) {
+      return res.status(400).send('User has already rated this question');
+    }
+
+    // Insert the new rating
+    await pool.query(
+      'INSERT INTO question_rate (question_id, user_id, rate) VALUES ($1, $2, $3)',
+      [question_id, user_id, rate]
+    );
+
+    // Update the questions table with the new rating
+    const result = await pool.query(
+      `UPDATE questions
+       SET total_rating = total_rating + $2,
+           rating_count = rating_count + 1,
+           current_rating = (total_rating + $2) / (rating_count + 1)
+       WHERE id = $1
+       RETURNING *`,
+      [question_id, rate]
+    );
+
+    res.status(200).json(result.rows[0]);
+  } catch (error) {
+    console.error('Error rating question:', error);
+    res.status(500).send('Error rating question');
+  }
+});
+
+
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}/`);
 });

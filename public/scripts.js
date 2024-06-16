@@ -204,3 +204,47 @@ document.addEventListener('DOMContentLoaded', () => {
     window.showQuestionDetails = showQuestionDetails;
     window.checkAnswer = checkAnswer;
 });
+
+function incrementAnswerCount(questionId) {
+    fetch('/increment_answer_count', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ question_id: questionId })
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log('Answer count incremented:', data);
+        // Optionally update the UI to reflect the new answer count
+    })
+    .catch(error => {
+        console.error('Error incrementing answer count:', error);
+    });
+}
+
+function rateQuestion(questionId, userId, rate) {
+    fetch('/rate_question', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ question_id: questionId, user_id: userId, rate })
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log('Question rated successfully:', data);
+        // Optionally update the UI to reflect the new rating
+    })
+    .catch(error => {
+        console.error('Error rating question:', error);
+    });
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    const rateButtons = document.querySelectorAll('.rate-button');
+    rateButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            const questionId = button.getAttribute('data-question-id');
+            const userId = localStorage.getItem('user_id'); // Assuming user ID is stored in localStorage
+            const rate = button.getAttribute('data-rate');
+            rateQuestion(questionId, userId, rate);
+        });
+    });
+});
