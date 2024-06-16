@@ -264,18 +264,18 @@ body {
 
 /* Handle */
 ::-webkit-scrollbar-thumb {
-    background: #888;
+    background: #181818;
     border-radius: 10px;
 }
 
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
-    background: #555;
+    background: #151515;
     border-radius: 10px;
 }
 
 .question-of-the-day-wrapper {
-    width: 50%;
+    width: 70%;
     margin: 20px auto 0; /* Adjust the margin to position it slightly below the search block */
     padding: 20px;
     background: #1a1717; /* Dark background similar to the overall page background */
@@ -304,7 +304,7 @@ body {
 }
 
 .random-questions {
-    width: 50%;
+    width: 30%;
     margin: 20px auto 0; /* Adjust the margin to position it slightly below the search block */
     padding: 20px;
     background: #1a1717; /* Dark background similar to the overall page background */
@@ -333,8 +333,12 @@ body {
 }
 
 #refreshImg {
-    width: 100%;
-    height: auto;
+    width: 30px;
+    height: 30px;
+}
+
+#random-question-title {
+    font-size: 1.5rem;
 }
 
 .icons {
