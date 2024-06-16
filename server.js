@@ -177,7 +177,7 @@ app.post('/rate_question', async (req, res) => {
       `UPDATE questions
        SET total_rating = total_rating + $2,
            rating_count = rating_count + 1,
-           current_rating = (total_rating + $2) / (rating_count + 1)
+           current_rating = (total_rating + $2) / rating_count
        WHERE id = $1
        RETURNING *`,
       [question_id, rate]
@@ -192,19 +192,4 @@ app.post('/rate_question', async (req, res) => {
 
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}/`);
-});
-
-app.post('/search_questions', async (req, res) => {
-  const { query, category } = req.body;
-
-  try {
-    const result = await pool.query(
-      'SELECT * FROM questions WHERE LOWER(question) LIKE $1 AND category = $2',
-      [`%${query}%`, category]
-    );
-    res.status(200).json(result.rows);
-  } catch (error) {
-    console.error('Error fetching questions:', error);
-    res.status(500).send('Error fetching questions');
-  }
 });
