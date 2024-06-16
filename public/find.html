@@ -114,11 +114,10 @@
                 <button class="rate-button" data-rate="4">4</button>
                 <button class="rate-button" data-rate="5">5</button>
             </div>
-            
             <button class="back-button" onclick="window.location.href='index.html'">Back</button>
         </div>
     </div>
-
+    
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const urlParams = new URLSearchParams(window.location.search);
@@ -132,7 +131,7 @@
                         document.getElementById('questionText').innerText = data.question;
                         document.getElementById('questionAuthor').innerText = data.creator;
                         document.getElementById('answerCount').innerText = data.answer_count;
-                        document.getElementById('currentRating').innerText = data.current_rating;
+                        document.getElementById('currentRating').innerText = data.total_rating;
                         document.getElementById('ratingCount').innerText = data.rating_count;
                         window.correctAnswer = data.answer;
                     })
@@ -192,8 +191,8 @@
             .then(response => response.json())
             .then(data => {
                 console.log('Question rated successfully:', data);
-                document.getElementById('currentRating').innerText = parseFloat(data.current_rating).toFixed(2);
-                document.getElementById('ratingCount').innerText = parseFloat(data.rating_count).toFixed(2);
+                document.getElementById('currentRating').innerText = parseFloat(data.total_rating).toFixed(2);
+                document.getElementById('ratingCount').innerText = data.rating_count;
             })
             .catch(error => {
                 console.error('Error rating question:', error);

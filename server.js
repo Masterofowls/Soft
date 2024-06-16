@@ -33,7 +33,6 @@ app.get('/search_questions', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'search_questions.html'));
 });
 
-// Serve find.html
 app.get('/find', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'find.html'));
 });
@@ -176,23 +175,13 @@ app.post('/rate_question', async (req, res) => {
       return res.status(400).send('User has already rated this question');
     }
 
-    // Insert the new rating into question_rate
+    // Insert the new rating into rates
     await pool.query(
-      'INSERT INTO question_rate (question_id, user_id, rate) VALUES ($1, $2, $3)',
-      [question_id, user_id, rate]
+      'INSERT INTO rates (question_id, question, rating_count, total_rating) VALUES ($1, $2, 1, $3) ON CONFLICT (question_id) DO UPDATE SET rating_count = rates.rating_count + 1, total_rating = rates.total_rating + EXCLUDED.total_rating',
+      [question_id, rate, rate]
     );
 
-    console.log('New rating inserted into question_rate');
-
-    // Update the rates table
-    const rateColumn = `rate_${Date.now()}`;  // Create a unique column name for the rating
-    await pool.query(
-      `ALTER TABLE rates ADD COLUMN IF NOT EXISTS ${rateColumn} INTEGER;
-       UPDATE rates SET ${rateColumn} = $2, total_rating = total_rating + $2, rating_count = rating_count + 1 WHERE question_id = $1`,
-      [question_id, rate]
-    );
-
-    console.log('Rates table updated with new rating');
+    console.log('New rating inserted into rates');
 
     res.status(200).send('Rating submitted successfully');
   } catch (error) {
