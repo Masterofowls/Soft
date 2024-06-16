@@ -171,7 +171,7 @@ app.post('/increment_answer_count', async (req, res) => {
 app.post('/rate_question', async (req, res) => {
   const { question_id, user_id, rate } = req.body;
 
-  console.log('Received rating:', { question_id, user_id, rate });  // Logging the received rating
+  console.log('Received rating:', { question_id, user_id, rate });
 
   try {
     // Check if the user has already rated this question
@@ -193,25 +193,19 @@ app.post('/rate_question', async (req, res) => {
 
     console.log('New rating inserted into question_rate');
 
-    // Update the questions table with the new rating
-    const result = await pool.query(
-      `UPDATE questions
-       SET current_rating = $2,
-           total_rating = total_rating + $2,
-           rating_count = rating_count + 1
-       WHERE id = $1
-       RETURNING *`,
-      [question_id, rate]
+    // Fetch the updated question data
+    const updatedQuestion = await pool.query(
+      'SELECT current_rating, total_rating, rating_count FROM questions WHERE id = $1',
+      [question_id]
     );
 
-    console.log('Questions table updated with new rating:', result.rows[0]);
-
-    res.status(200).json(result.rows[0]);
+    res.status(200).json(updatedQuestion.rows[0]);
   } catch (error) {
     console.error('Error rating question:', error);
     res.status(500).send('Error rating question');
   }
 });
+
 
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}/`);
