@@ -136,6 +136,7 @@ app.post('/search_questions', async (req, res) => {
 });
 
 // Increment answer count
+// Increment answer count
 app.post('/increment_answer_count', async (req, res) => {
   const { question_id } = req.body;
 
@@ -177,7 +178,7 @@ app.post('/rate_question', async (req, res) => {
       `UPDATE questions
        SET total_rating = total_rating + $2,
            rating_count = rating_count + 1,
-           current_rating = (total_rating + $2) / rating_count
+           current_rating = (total_rating + $2) / (rating_count + 1)
        WHERE id = $1
        RETURNING *`,
       [question_id, rate]
@@ -189,6 +190,10 @@ app.post('/rate_question', async (req, res) => {
     res.status(500).send('Error rating question');
   }
 });
+
+
+// Rate a question
+
 
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}/`);
