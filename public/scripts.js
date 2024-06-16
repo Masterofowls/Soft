@@ -285,3 +285,68 @@ function checkAnswer() {
         resultDiv.style.color = 'red';
     }
 }
+
+document.addEventListener('DOMContentLoaded', () => {
+    const searchInput = document.getElementById('searchInput');
+    const searchCategory = document.getElementById('searchType');
+
+    searchInput.addEventListener('input', filterQuestions);
+    searchCategory.addEventListener('change', filterQuestions); // Also filter when category changes
+
+    // Fetch and display the question of the day
+    fetch('/get_question_of_the_day')
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('question-title').innerText = "Question of the Day";
+            document.getElementById('question-text').innerText = data.question;
+        })
+        .catch(error => {
+            document.getElementById('question-title').innerText = "Error";
+            document.getElementById('question-text').innerText = "Failed to fetch the question of the day.";
+            console.error('Error fetching question of the day:', error);
+        });
+
+    // Fetch and display all questions initially
+    fetch('/get_all_questions')
+        .then(response => response.json())
+        .then(data => {
+            displayResults(data.questions);
+        })
+        .catch(error => {
+            console.error('Error fetching questions:', error);
+        });
+});
+
+function filterQuestions() {
+    const query = document.getElementById('searchInput').value.toLowerCase();
+    const category = document.getElementById('searchType').value;
+
+    fetch('/search_questions', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ query, category })
+    })
+    .then(response => response.json())
+    .then(data => {
+        displayResults(data);
+    })
+    .catch(error => {
+        console.error('Error fetching questions:', error);
+    });
+}
+
+function displayResults(questions) {
+    const questionList = document.getElementById('questionList');
+    questionList.innerHTML = '';
+
+    questions.forEach(question => {
+        const li = document.createElement('li');
+        li.innerText = question.question;
+        li.onclick = () => {
+            window.location.href = `find.html?id=${question.id}`;
+        };
+        questionList.appendChild(li);
+    });
+}
+
+// Other existing functions remain the same...

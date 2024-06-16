@@ -193,3 +193,18 @@ app.post('/rate_question', async (req, res) => {
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}/`);
 });
+
+app.post('/search_questions', async (req, res) => {
+  const { query, category } = req.body;
+
+  try {
+    const result = await pool.query(
+      'SELECT * FROM questions WHERE LOWER(question) LIKE $1 AND category = $2',
+      [`%${query}%`, category]
+    );
+    res.status(200).json(result.rows);
+  } catch (error) {
+    console.error('Error fetching questions:', error);
+    res.status(500).send('Error fetching questions');
+  }
+});
