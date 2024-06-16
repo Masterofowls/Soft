@@ -52,8 +52,15 @@
         </div>
         </div>
         <div class="lookup">
+            <div class="icons">
+                <h1 class="question-title search-title">Search questions:</h1>
+            </div>
+            <div class="search-question-wrapper">
             <div class="search-question">
                 <input class="search" type="text" id="searchInput" placeholder="Search for questions..." oninput="filterQuestions()" required>
+            <div id="search-results" class="search-results">
+                <ul id="questionList"></ul>
+            </div>
                 <select id="searchType" name="category" required>
                     <option value="science">Science</option>
                     <option value="history">History</option>
@@ -63,15 +70,12 @@
                     <option value="geography">Geography</option>
                     <option value="general">General</option>
                 </select>
-                <div id="search-results" class="search-results">
-                    <ul id="questionList"></ul>
-                </div>
             </div>
         </div>
-        
-            <div class="make-question">
-                <button id="question-input" onclick="window.location.href='/question_form.html'">Make Question</button>
-            </div>
+        </div>
+        <div class="lookup">        
+            <button id="question-input" onclick="window.location.href='/question_form.html'">Make Question!</button>
+        </div>   
         </div>
         <div class="mini-games-menu">
             <h2> Mini Games</h2>

@@ -153,19 +153,20 @@ body {
 
 .lookup {
     width: 100%;
-    height: 200px;
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     align-items: center;
     justify-content: space-evenly;
     margin-top: 30px;
     margin-bottom: 20px;
     border-radius: 5px;
-    background-color: #1a1717;;
+    background-color: #1a1717;
+    padding: 5px;
 }
 
 .search-question {
-    width: 30%; /* Adjust width as needed */
+    width: 40%; /* Adjust width as needed */
+    height: 100%;
     position: relative;
 }
 
@@ -202,45 +203,31 @@ body {
 #searchType {
     width: 50%;
     padding: 10px;
-    font-size: 16px;
+    font-size: 0.9rem;
     border: 1px solid #ccc;
     border-radius: 5px;
     font-family: Patsy;
     text-overflow: ellipsis;
 }
 
-.make-question {
-    width: 30%;
-    padding: 3px; /* More space between search and make question */
-    font-size: 16px;
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-family: Patsy;
-}
-
 #question-input {
     width: 100%;
     padding: 10px;
-    font-size: 16px;
+    font-size: 2rem;
     cursor: pointer;
     font-family: Patsy;
     border: none;
+    border-radius: 10px;
     background-color: #4CAF50;
 }
 
-.make-question:hover {
+#question-input:hover {
     background-color: #45a049;
 }
 
 .search-results {
-    position: absolute;
-    top: 100%;
-    left: 0;
-    right: 0;
-    max-height: 0; /* Initially hidden */
+    height: 30%;
+    width: 20%; /* Initially hidden */
     overflow-y: scroll;
     background: #333; /* Dark gray background */
     border: 1px solid #ccc;
@@ -342,7 +329,7 @@ body {
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    width: 10%;
+    width: 100%;
     height: 10%;
     display: flex;
     justify-content: center;
@@ -411,9 +398,14 @@ h1 {
     }
 }
 
-.question-title {
-    position: relative;
+.question-title { 
     color: #fff;
+    font: 4rem 'Patsy', sans-serif;
+    margin-top: 10px
+}
+
+.search-title {
+    font-size: 2.5rem;
 }
 
 @keyframes neon {
@@ -700,4 +692,17 @@ a:hover {
 
 .registration-form button:hover {
     background-color: #45a049;
+}
+
+.search-question-wrapper {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    background-color: #1a1717;
+    padding: 5px;
+    width: 80%;
 }
