@@ -176,9 +176,9 @@ app.post('/rate_question', async (req, res) => {
     // Update the questions table with the new rating
     const result = await pool.query(
       `UPDATE questions
-       SET total_rating = total_rating + $2,
-           rating_count = rating_count + 1,
-           current_rating = (total_rating + $2) / (rating_count + 1)
+       SET current_rating = $2,
+           total_rating = total_rating + $2,
+           rating_count = total_rating / NULLIF(answer_count, 0) -- Avoid division by zero
        WHERE id = $1
        RETURNING *`,
       [question_id, rate]
@@ -190,7 +190,6 @@ app.post('/rate_question', async (req, res) => {
     res.status(500).send('Error rating question');
   }
 });
-
 
 // Rate a question
 

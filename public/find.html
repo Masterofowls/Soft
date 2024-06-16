@@ -99,7 +99,7 @@
             .then(data => {
                 console.log('Question rated successfully:', data);
                 document.getElementById('currentRating').innerText = data.current_rating.toFixed(2);
-                document.getElementById('ratingCount').innerText = data.rating_count;
+                document.getElementById('ratingCount').innerText = data.rating_count.toFixed(2);
             })
             .catch(error => {
                 console.error('Error rating question:', error);
