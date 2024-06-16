@@ -3,128 +3,201 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta lang="ru">
-    <title>Great Brain Games</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="icon" href="img/logo_closer.png">
-    <script defer src="scripts.js"></script>
+    <title>Find Question</title>
+    <style>
+        @font-face {
+            font-family: Patsy;
+            src: url(../fonts/PatsySans.otf);
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(to bottom, #1a1717, #000000);
+            display: flex;
+            flex-direction: column;
+            width: 100vw;
+            height: 100vh;
+            overflow-x: hidden;
+            color: white;
+        }
+        
+        .header {
+            display: flex;
+            justify-content: space-evenly;
+            flex-flow: column;
+            height: 10%;
+            background-color: #1a1717;
+            color: white;
+            padding: 10px 0;
+        }
+
+        .header-menu {
+            color: white;
+            text-decoration: none;
+            font-size: 1.6rem;
+            width: 100%;
+            text-align: center;
+            display: flex;
+            flex-flow: row;
+            height: 100%;
+            align-items: flex-end;
+            justify-content: space-around;
+        }
+
+        .header-menu-left, .header-menu-right {
+            display: flex;
+            flex-flow: row;
+            height: 100%;
+            width: 40%;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .main {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-grow: 1;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .content {
+            background: #1a1717;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            max-width: 600px;
+        }
+
+        .back-button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-family: Patsy;
+            font-size: 1.2rem;
+        }
+
+        .back-button:hover {
+            background-color: #45a049;
+        }
+
+    </style>
 </head>
 <body>
-    <div id="blackout"></div>
-    <div id="registration-form" class="registration-form">
-        <h2 id="register-title">Register</h2>
-        <form id="registerForm">
-            <label for="username">Username:</label>
-            <input type="text" id="username" name="username" placeholder="username" required>
-            <label for="password">Password:</label>
-            <input type="password" id="password" name="password" placeholder="password" required>
-            <button id="register-button" type="submit">Log in!</button>
-        </form>
-    </div>
     <header class="header">
-        <div class="header-menu">
-            <div class="header-menu-left">
-                <a class="header-menu header-about_us" href="about.html">About Us</a>
-                <a class="header-menu header-about_us" href="user.html">User</a>
-                <a class="header-menu header-games" href="index.html">Brain Game</a>
-            </div>
-            <div class="header-menu-right">
-                <a class="header-menu header-mini_games" href="index.html#mini_games">Mini Games</a>
-                <a class="header-menu header-contacts" href="login.html">Login</a>
-                <a class="header-menu header-contacts" href="contacts.html">Contacts</a>
-            </div>
-        </div>
-        <div class="bottom-line">    
-            <div class="bottom-line-l"></div>
-            <img class="logo" src="img/logo_closer.png" alt="logo">
-            <div class="bottom-line-r"></div>
-        </div>
     </header>
     <div class="main">
-        <div class="questions">
-        <div class="question-of-the-day-wrapper">
-            <div class="icons">
-                <h1 class="question-title">Daily brain teaser:</h1>
+        <div class="content">
+            <h1>Question Details</h1>
+            <p><strong>Question:</strong> <span id="questionText"></span></p>
+            <p><strong>Author:</strong> <span id="questionAuthor"></span></p>
+            <p><strong>Answer Count:</strong> <span id="answerCount"></span></p>
+            <p><strong>Total Rating:</strong> <span id="currentRating"></span></p>
+            <p><strong>Rating Count:</strong> <span id="ratingCount"></span></p>
+            <label for="userAnswer">Your Answer: </label>
+            <input type="text" id="userAnswer">
+            <button onclick="checkAnswer()">Submit Answer</button>
+            <p id="result"></p>
+            
+            <h2>Rate this Question</h2>
+            <div id="rateButtons">
+                <button class="rate-button" data-rate="1">1</button>
+                <button class="rate-button" data-rate="2">2</button>
+                <button class="rate-button" data-rate="3">3</button>
+                <button class="rate-button" data-rate="4">4</button>
+                <button class="rate-button" data-rate="5">5</button>
             </div>
-            <div id="question-of-the-day" class="question-of-the-day">
-                <div id="loading"></div>
-                <h2 id="question-title">Loading...</h2>
-                <p id="question-text">Please wait while we fetch the question of the day.</p>
-            </div>
+            <button class="back-button" onclick="window.location.href='index.html'">Back</button>
         </div>
-        <div class="random-questions">
-            <div class="icons">
-                <h1 id="random-question-title" class="question-title">Random question:</h1>
-            </div>
-            <div id="wrapperRandom">
-                <div id="loading"></div>
-                <h2 id="question-title">Loading...</h2>
-                <p id="question-text">Please wait while we fetch a random question.</p>
-                <button id="refreshButton"><img id="refreshImg" src="./img/refresh.png"></button>
-            </div>
-        </div>
-        </div>
-        <div class="lookup">
-            <div class="icons">
-                <h1 class="question-title search-title">Search questions:</h1>
-            </div>
-            <div class="search-question-wrapper">
-            <div class="search-question">
-                <input class="search" type="text" id="searchInput" placeholder="Search for questions..." oninput="filterQuestions()" required>
-            <div id="search-results" class="search-results">
-                <ul id="questionList"></ul>
-            </div>
-                <select id="searchType" name="category" required>
-                    <option value="science">Science</option>
-                    <option value="history">History</option>
-                    <option value="it">IT</option>
-                    <option value="social_studies">Social Studies</option>
-                    <option value="art">Art</option>
-                    <option value="geography">Geography</option>
-                    <option value="general">General</option>
-                </select>
-            </div>
-        </div>
-        </div>
-        <div class="lookup">        
-            <button id="question-input" onclick="window.location.href='/question_form.html'">Make Question!</button>
-        </div>   
-        </div>
-        <h2 class="games-title">Mini-Games</h2>
-        <div class="bottom-line-f"></div>
-        <div class="game-list">
-            <div class="game-item" id="hangman" onclick="openGamePage('game1')">
-                <div class="info">
-                    <h2>Hangman</h2>
-                    <p>Guess the right word... Or lose your head!</p>
-                </div>
-            </div>
-            <div class="game-item" id="blackjack" onclick="openGamePage('game2')">
-                <div class="info">
-                    <h2>Blackjack</h2>
-                    <p>Play the classic card game.</p>
-                </div>
-            </div>
-            <div class="game-item" id="snake" onclick="openGamePage('game3')">
-                <div class="info">
-                    <h2>Snake</h2>
-                    <p>Grow your snake and eat as much food as you can.</p>
-                </div>
-            </div>
-            <!-- <div class="game-item" id="nfs" onclick="openGamePage('game4')">
-                <div class="info">
-                    <h2>Speedy Road</h2>
-                    <p>Lightweight browser racing game.</p>
-                </div>
-            </div> -->
-            <div class="game-item" id="darts" onclick="openGamePage('game5')">
-                <div class="info">
-                    <h2>Darts</h2>
-                    <p>Go for the dead center.</p>
-                </div>
-            </div>
-        </div>
-        <div class="main-mini_games"></div>
     </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const questionId = urlParams.get('id');
+            window.questionId = questionId;
+
+            if (questionId) {
+                fetch(`/get_question_by_id?id=${questionId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        document.getElementById('questionText').innerText = data.question;
+                        document.getElementById('questionAuthor').innerText = data.creator;
+                        document.getElementById('answerCount').innerText = data.answer_count;
+                        document.getElementById('currentRating').innerText = data.total_rating;
+                        document.getElementById('ratingCount').innerText = data.rating_count;
+                        window.correctAnswer = data.answer;
+                    })
+                    .catch(error => {
+                        console.error('Error fetching question details:', error);
+                        alert('Error fetching question details');
+                    });
+            }
+
+            const rateButtons = document.querySelectorAll('.rate-button');
+            rateButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const rate = button.getAttribute('data-rate');
+                    const userId = localStorage.getItem('user_id'); // Assuming user ID is stored in localStorage
+                    console.log('Sending rating:', { questionId, userId, rate });  // Logging the rating data
+                    rateQuestion(questionId, userId, rate);
+                });
+            });
+        });
+
+        function checkAnswer() {
+            const userAnswer = document.getElementById('userAnswer').value;
+            const resultDiv = document.getElementById('result');
+
+            if (userAnswer === window.correctAnswer) {
+                resultDiv.innerText = 'Correct!';
+                resultDiv.style.color = 'green';
+                incrementAnswerCount(window.questionId); // Increment answer count when the correct answer is given
+            } else {
+                resultDiv.innerText = 'Incorrect!';
+                resultDiv.style.color = 'red';
+            }
+        }
+
+        function incrementAnswerCount(questionId) {
+            fetch('/increment_answer_count', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ question_id: questionId })
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Answer count incremented:', data);
+                document.getElementById('answerCount').innerText = data.answer_count;
+            })
+            .catch(error => {
+                console.error('Error incrementing answer count:', error);
+            });
+        }
+
+        function rateQuestion(questionId, userId, rate) {
+            fetch('/rate_question', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ question_id: questionId, user_id: userId, rate })
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Question rated successfully:', data);
+                document.getElementById('currentRating').innerText = parseFloat(data.total_rating).toFixed(2);
+                document.getElementById('ratingCount').innerText = data.rating_count;
+            })
+            .catch(error => {
+                console.error('Error rating question:', error);
+            });
+        }
+    </script>
 </body>
 </html>

@@ -67,7 +67,7 @@ app.get('/get_question_by_id', async (req, res) => {
 
     const question = questionResult.rows[0];
     const ratingResult = await pool.query(
-      'SELECT * FROM rates WHERE question_id = $1', [id]
+      'SELECT total_rating, rating_count FROM rates WHERE question_id = $1', [id]
     );
 
     if (ratingResult.rows.length > 0) {
@@ -177,8 +177,8 @@ app.post('/rate_question', async (req, res) => {
 
     // Insert the new rating into rates
     await pool.query(
-      'INSERT INTO rates (question_id, question, rating_count, total_rating) VALUES ($1, $2, 1, $3) ON CONFLICT (question_id) DO UPDATE SET rating_count = rates.rating_count + 1, total_rating = rates.total_rating + EXCLUDED.total_rating',
-      [question_id, rate, rate]
+      'INSERT INTO rates (question_id, rating_count, total_rating) VALUES ($1, 1, $2) ON CONFLICT (question_id) DO UPDATE SET rating_count = rates.rating_count + 1, total_rating = rates.total_rating + EXCLUDED.total_rating',
+      [question_id, rate]
     );
 
     console.log('New rating inserted into rates');
