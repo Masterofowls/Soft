@@ -202,3 +202,15 @@ app.post('/rate_question', async (req, res) => {
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}/`);
 });
+
+app.get('/get_user_questions', async (req, res) => {
+  const { username } = req.query;
+
+  try {
+    const result = await pool.query('SELECT id, question FROM questions WHERE creator = $1', [username]);
+    res.status(200).json({ questions: result.rows });
+  } catch (error) {
+    console.error('Error fetching user questions:', error);
+    res.status(500).send('Error fetching user questions');
+  }
+});
