@@ -1,106 +1,111 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta lang="ru" />
     <title>Contacts</title>
-    <link rel="icon" href="img/logo_closer.png">
+    <link rel="icon" href="img/logo_closer.png" />
     <style>
-        @font-face {
-            font-family: Patsy;
-            src: url(../fonts/PatsySans.otf);
-        }
-        
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background: linear-gradient(to bottom, #1a1717, #000000);
-            display: flex;
-            flex-direction: column;
-            width: 100vw;
-            height: 100vh;
-            overflow-x: hidden;
-            color: white;
-        }
-        
-        .header {
-            display: flex;
-            justify-content: space-evenly;
-            flex-flow: column;
-            height: 10%;
-            background-color: #1a1717;
-            color: white;
-            padding: 10px 0;
-        }
+      @font-face {
+        font-family: Patsy;
+        src: url(../fonts/PatsySans.otf);
+      }
 
-        .header-menu {
-            color: white;
-            text-decoration: none;
-            font-size: 1.6rem;
-            width: 100%;
-            text-align: center;
-            display: flex;
-            flex-flow: row;
-            height: 100%;
-            align-items: flex-end;
-            justify-content: space-around;
-        }
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background: linear-gradient(to bottom, #1a1717, #000000);
+        display: flex;
+        flex-direction: column;
+        width: 100vw;
+        height: 100vh;
+        overflow-x: hidden;
+        color: white;
+      }
 
-        .header-menu-left, .header-menu-right {
-            display: flex;
-            flex-flow: row;
-            height: 100%;
-            width: 40%;
-            align-items: center;
-            justify-content: space-between;
-        }
+      .header {
+        display: flex;
+        justify-content: space-evenly;
+        flex-flow: column;
+        height: 10%;
+        background-color: #1a1717;
+        color: white;
+        padding: 10px 0;
+      }
 
-        .main {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-grow: 1;
-            padding: 20px;
-            text-align: center;
-        }
+      .header-menu {
+        color: white;
+        text-decoration: none;
+        font-size: 1.6rem;
+        width: 100%;
+        text-align: center;
+        display: flex;
+        flex-flow: row;
+        height: 100%;
+        align-items: flex-end;
+        justify-content: space-around;
+      }
 
-        .content {
-            background: #1a1717;
-            padding: 20px;
-            border-radius: 5px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-            max-width: 600px;
-        }
+      .header-menu-left,
+      .header-menu-right {
+        display: flex;
+        flex-flow: row;
+        height: 100%;
+        width: 40%;
+        align-items: center;
+        justify-content: space-between;
+      }
 
-        .back-button {
-            margin-top: 20px;
-            padding: 10px 20px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-family: Patsy;
-            font-size: 1.2rem;
-        }
+      .main {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-grow: 1;
+        padding: 20px;
+        text-align: center;
+      }
 
-        .back-button:hover {
-            background-color: #45a049;
-        }
+      .content {
+        background: #1a1717;
+        padding: 20px;
+        border-radius: 5px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        max-width: 600px;
+      }
 
+      .back-button {
+        margin-top: 20px;
+        padding: 10px 20px;
+        background-color: #4caf50;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-family: Patsy;
+        font-size: 1.2rem;
+      }
+
+      .back-button:hover {
+        background-color: #45a049;
+      }
     </style>
-</head>
-<body>
-    <header class="header">
-    </header>
+  </head>
+  <body>
+    <header class="header"></header>
     <div class="main">
-        <div class="content">
-            <h1>Contacts</h1>
-            <p>If you have any questions, feedback, or would like to get in touch with us, please reach out via email at contact@greatbraingames.com. We look forward to hearing from you!</p>
-            <button class="back-button" onclick="window.location.href='index.html'">Back</button>
-        </div>
+      <div class="content">
+        <h1>Contacts</h1>
+        <p>
+          If you have any questions, feedback, or would like to get in touch
+          with us, please reach out via email at contact@greatbraingames.com. We
+          look forward to hearing from you!
+        </p>
+        <button class="back-button" onclick="window.location.href='index.html'">
+          Back
+        </button>
+      </div>
     </div>
-</body>
+  </body>
 </html>

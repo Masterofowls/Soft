@@ -1,16 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta lang="ru" />
     <title>Great Brain Games</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="icon" href="img/logo_closer.png">
-    <link rel="stylesheet" href="scrollbar.css">
+    <link rel="stylesheet" href="style.css" />
+    <link rel="icon" href="img/logo_closer.png" />
+    <link rel="stylesheet" href="scrollbar.css" />
     <script defer src="scripts.js"></script>
-</head>
-<!-- <body>
+  </head>
+  <body>
     <div id="blackout"></div>
     <div id="registration-form" class="registration-form">
         <h2 id="register-title">Register</h2>
@@ -21,100 +21,116 @@
             <input type="password" id="password" name="password" placeholder="password" required>
             <button id="register-button" type="submit">Log in!</button>
         </form>
-    </div> -->
+    </div> 
     <header class="header">
-        <div class="header-menu">
-            <div class="header-menu-left">
-                <a class="header-menu header-about_us" href="about.html">About Us</a>
-                <a class="header-menu header-about_us" href="user.html">User</a>
-                <a class="header-menu header-games" href="index.html">Brain Game</a>
-            </div>
-            <div class="header-menu-right">
-                <a class="header-menu header-mini_games" href="index.html#mini_games">Mini Games</a>
-                <a class="header-menu header-contacts" href="login.html">Login</a>
-                <a class="header-menu header-contacts" href="contacts.html">Contacts</a>
-            </div>
+      <div class="header-menu">
+        <div class="header-menu-left">
+          <a class="header-menu header-about_us" href="about.html">About Us</a>
+          <a class="header-menu header-about_us" href="user.html">User</a>
+          <a class="header-menu header-games" href="index.html">Brain Game</a>
         </div>
-        <div class="bottom-line">    
-            <div class="bottom-line-l"></div>
-            <img class="logo" src="img/logo_closer.png" alt="logo">
-            <div class="bottom-line-r"></div>
+        <div class="header-menu-right">
+          <a class="header-menu header-mini_games" href="index.html#mini_games"
+            >Mini Games</a
+          >
+          <a class="header-menu header-contacts" href="login.html">Login</a>
+          <a class="header-menu header-contacts" href="contacts.html"
+            >Contacts</a
+          >
         </div>
+      </div>
+      <div class="bottom-line">
+        <div class="bottom-line-l"></div>
+        <img class="logo" src="img/logo_closer.png" alt="logo" />
+        <div class="bottom-line-r"></div>
+      </div>
     </header>
     <div class="main">
-        <div class="questions">
+      <div class="questions">
         <div class="question-of-the-day-wrapper">
-            <div class="icons">
-                <h1 class="question-title">Daily brain teaser:</h1>
-            </div>
-            <div id="question-of-the-day" class="question-of-the-day">
-                <div id="loading"></div>
-                <h2 id="question-title">Loading...</h2>
-                <p id="question-text">Please wait while we fetch the question of the day.</p>
-            </div>
+          <div class="icons">
+            <h1 class="question-title">Daily brain teaser:</h1>
+          </div>
+          <div id="question-of-the-day" class="question-of-the-day">
+            <div id="loading"></div>
+            <h2 id="question-title">Loading...</h2>
+            <p id="question-text">
+              Please wait while we fetch the question of the day.
+            </p>
+          </div>
         </div>
+      </div>
+      <div class="lookup">
+        <div class="icons">
+          <h1 class="question-title search-title">Search questions:</h1>
         </div>
-        <div class="lookup">
-            <div class="icons">
-                <h1 class="question-title search-title">Search questions:</h1>
-            </div>
-            <div class="search-question-wrapper">
-            <div class="search-question">
-                <input class="search" type="text" id="searchInput" placeholder="Search for questions..." oninput="filterQuestions()" required>
+        <div class="search-question-wrapper">
+          <div class="search-question">
+            <input
+              class="search"
+              type="text"
+              id="searchInput"
+              placeholder="Search for questions..."
+              oninput="filterQuestions()"
+              required
+            />
             <div id="search-results" class="search-results">
-                <ul id="questionList"></ul>
+              <ul id="questionList"></ul>
             </div>
-                <select id="searchType" name="category" required>
-                    <option value="science">Science</option>
-                    <option value="history">History</option>
-                    <option value="it">IT</option>
-                    <option value="social_studies">Social Studies</option>
-                    <option value="art">Art</option>
-                    <option value="geography">Geography</option>
-                    <option value="general">General</option>
-                </select>
-            </div>
+            <select id="searchType" name="category" required>
+              <option value="science">Science</option>
+              <option value="history">History</option>
+              <option value="it">IT</option>
+              <option value="social_studies">Social Studies</option>
+              <option value="art">Art</option>
+              <option value="geography">Geography</option>
+              <option value="general">General</option>
+            </select>
+          </div>
         </div>
+      </div>
+      <div class="lookup">
+        <button
+          id="question-input"
+          onclick="window.location.href='/question_form.html'"
+        >
+          Make Question!
+        </button>
+      </div>
+    </div>
+    <h2 class="games-title">Mini-Games</h2>
+    <div class="bottom-line-f"></div>
+    <div class="game-list">
+      <div class="game-item" id="hangman" onclick="openGamePage('game1')">
+        <div class="info">
+          <h2>Hangman</h2>
+          <p>Guess the right word... Or lose your head!</p>
         </div>
-        <div class="lookup">        
-            <button id="question-input" onclick="window.location.href='/question_form.html'">Make Question!</button>
-        </div>   
+      </div>
+      <div class="game-item" id="blackjack" onclick="openGamePage('game2')">
+        <div class="info">
+          <h2>Blackjack</h2>
+          <p>Play the classic card game.</p>
         </div>
-        <h2 class="games-title">Mini-Games</h2>
-        <div class="bottom-line-f"></div>
-        <div class="game-list">
-            <div class="game-item" id="hangman" onclick="openGamePage('game1')">
-                <div class="info">
-                    <h2>Hangman</h2>
-                    <p>Guess the right word... Or lose your head!</p>
-                </div>
-            </div>
-            <div class="game-item" id="blackjack" onclick="openGamePage('game2')">
-                <div class="info">
-                    <h2>Blackjack</h2>
-                    <p>Play the classic card game.</p>
-                </div>
-            </div>
-            <div class="game-item" id="snake" onclick="openGamePage('game3')">
-                <div class="info">
-                    <h2>Snake</h2>
-                    <p>Grow your snake and eat as much food as you can.</p>
-                </div>
-            </div>
-            <!-- <div class="game-item" id="nfs" onclick="openGamePage('game4')">
+      </div>
+      <div class="game-item" id="snake" onclick="openGamePage('game3')">
+        <div class="info">
+          <h2>Snake</h2>
+          <p>Grow your snake and eat as much food as you can.</p>
+        </div>
+      </div>
+      <!-- <div class="game-item" id="nfs" onclick="openGamePage('game4')">
                 <div class="info">
                     <h2>Speedy Road</h2>
                     <p>Lightweight browser racing game.</p>
                 </div>
             </div> -->
-            <div class="game-item" id="darts" onclick="openGamePage('game5')">
-                <div class="info">
-                    <h2>Darts</h2>
-                    <p>Go for the dead center.</p>
-                </div>
-            </div>
+      <div class="game-item" id="darts" onclick="openGamePage('game5')">
+        <div class="info">
+          <h2>Darts</h2>
+          <p>Go for the dead center.</p>
         </div>
-        <div class="main-mini_games"></div>
+      </div>
     </div>
-</body>
+  </body>
 </html>

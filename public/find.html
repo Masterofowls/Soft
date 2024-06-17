@@ -5,7 +5,7 @@
     <link rel="stylesheet" href="find.css" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Find Question</title>
-    <link rel="stylesheet" href="scrollbar.css">
+    <link rel="stylesheet" href="scrollbar.css" />
   </head>
   <body>
     <h1 class="question">
@@ -47,8 +47,10 @@
         <button class="rate-button" data-rate="5">5</button>
       </div>
     </div>
-    <button id="goBack" onclick="window.location.href='index.html'">GO Back</button>
-    <script>
+    <button id="goBack" onclick="window.location.href='index.html'">
+      GO Back
+    </button>
+    <script type="module">
       document.addEventListener('DOMContentLoaded', () => {
         const urlParams = new URLSearchParams(window.location.search);
         const questionId = urlParams.get('id');
