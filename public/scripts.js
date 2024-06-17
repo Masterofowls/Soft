@@ -1,4 +1,4 @@
-// Функция для открытия страницы игры
+// Function to open game page
 function openGamePage(gameId) {
   localStorage.setItem('selectedGame', gameId);
   if (gameId === 'game1') {
@@ -14,9 +14,9 @@ function openGamePage(gameId) {
   }
 }
 
-// Функция для загрузки данных игры при загрузке страницы
+// Function to load game data when page loads
 window.onload = function () {
-  // Проверка регистрации пользователя
+  // Check for user registration
   if (!localStorage.getItem('registered')) {
       document.getElementById('registration-form').style.display = 'block';
       document.getElementById('blackout').style.display = 'block';
@@ -78,69 +78,14 @@ window.onload = function () {
       .catch((error) => {
           console.error('Error fetching questions:', error);
       });
-};
 
-// Функция для фильтрации вопросов в списке
-function filterQuestions() {
-  const input = document.getElementById('searchInput');
-  const filter = input.value.toLowerCase();
-  const ul = document.getElementById('questionList');
-  const li = ul.getElementsByTagName('li');
-
-  for (let i = 0; i < li.length; i++) {
-      const txtValue = li[i].textContent || li[i].innerText;
-      if (txtValue.toLowerCase().indexOf(filter) > -1) {
-          li[i].style.display = '';
-      } else {
-          li[i].style.display = 'none';
-      }
-  }
-}
-
-// Обработка формы регистрации
-document.getElementById('registerForm').addEventListener('submit', function (e) {
-  e.preventDefault();
-
-  const username = document.getElementById('username').value;
-  const password = document.getElementById('password').value;
-
-  console.log('Registering user:', username); // Debug information
-
-  fetch('/register', {
-      method: 'POST',
-      headers: {
-          'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ username, password }),
-  })
-      .then((response) => {
-          console.log('Registration response status:', response.status); // Debug information
-          if (response.ok) {
-              return response.json();
-          }
-          throw new Error('Network response was not ok.');
-      })
-      .then((data) => {
-          console.log('Registration successful:', data); // Debug information
-          localStorage.setItem('registered', true);
-          localStorage.setItem('username', username);
-          document.getElementById('blackout').style.display = 'none';
-          document.getElementById('registration-form').style.display = 'none';
-      })
-      .catch((error) => {
-          console.error('Error registering user:', error);
-      });
-});
-
-document.addEventListener('DOMContentLoaded', () => {
+  // Add event listeners for search form
   document.getElementById('searchForm').addEventListener('submit', async (e) => {
       e.preventDefault();
-
       const searchParams = {
+          query: document.getElementById('searchInput').value,
           category: document.getElementById('searchCategory').value,
-          type: document.getElementById('searchType').value,
       };
-
       try {
           const response = await fetch('/search_questions', {
               method: 'POST',
@@ -152,7 +97,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
           if (response.ok) {
               const questions = await response.json();
-              displayResults(questions);
+              displaySearchResults(questions);
           } else {
               const errorText = await response.text();
               console.error('Failed to fetch questions:', errorText);
@@ -164,7 +109,8 @@ document.addEventListener('DOMContentLoaded', () => {
       }
   });
 
-  function displayResults(questions) {
+  // Fetch and display the search results
+  function displaySearchResults(questions) {
       const resultsDiv = document.getElementById('results');
       resultsDiv.innerHTML = '';
 
@@ -174,25 +120,40 @@ document.addEventListener('DOMContentLoaded', () => {
               <p>Question: ${question.question}</p>
               <p>Type: ${question.type}</p>
               <p>Category: ${question.category}</p>
-              <button onclick="showQuestionDetails('${question.question}', '${question.creator}', '${question.answer}')">Select</button>
+              <button onclick="showQuestionDetails('${question.id}', '${question.question}', '${question.creator}', '${question.answer}')">Select</button>
           `;
           resultsDiv.appendChild(questionDiv);
       });
   }
 
-  function showQuestionDetails(questionText, creator, answer) {
+  // Display the question details
+  window.showQuestionDetails = function (questionId, questionText, creator, answer) {
       document.getElementById('questionText').innerText = questionText;
       document.getElementById('questionAuthor').innerText = creator;
       document.getElementById('question-details').style.display = 'block';
       document.getElementById('result').innerText = '';
 
       window.correctAnswer = answer;
+      window.questionId = questionId;
+  };
+};
+
+// Function to check the answer
+function checkAnswer() {
+  const userAnswer = document.getElementById('userAnswer').value;
+  const resultDiv = document.getElementById('result');
+
+  if (userAnswer === window.correctAnswer) {
+      resultDiv.innerText = 'Correct!';
+      resultDiv.style.color = 'green';
+      incrementAnswerCount(window.questionId);
+  } else {
+      resultDiv.innerText = 'Incorrect!';
+      resultDiv.style.color = 'red';
   }
+}
 
-  window.showQuestionDetails = showQuestionDetails;
-  window.checkAnswer = checkAnswer;
-});
-
+// Increment answer count
 function incrementAnswerCount(questionId) {
   fetch('/increment_answer_count', {
       method: 'POST',
@@ -209,13 +170,19 @@ function incrementAnswerCount(questionId) {
       });
 }
 
+// Rate question
 function rateQuestion(questionId, userId, rate) {
   fetch('/rate_question', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ question_id: questionId, user_id: userId, rate }),
   })
-      .then((response) => response.json())
+      .then((response) => {
+          if (!response.ok) {
+              return response.text().then(text => { throw new Error(text) });
+          }
+          return response.json();
+      })
       .then((data) => {
           console.log('Question rated successfully:', data);
           document.getElementById('currentRating').innerText = parseFloat(data.total_rating).toFixed(2);
@@ -223,6 +190,7 @@ function rateQuestion(questionId, userId, rate) {
       })
       .catch((error) => {
           console.error('Error rating question:', error);
+          alert('Error rating question: ' + error.message);
       });
 }
 
@@ -230,15 +198,12 @@ document.addEventListener('DOMContentLoaded', () => {
   const rateButtons = document.querySelectorAll('.rate-button');
   rateButtons.forEach((button) => {
       button.addEventListener('click', () => {
-          const questionId = button.getAttribute('data-question-id');
-          const userId = localStorage.getItem('user_id'); // Assuming user ID is stored in localStorage
           const rate = button.getAttribute('data-rate');
-          rateQuestion(questionId, userId, rate);
+          const userId = localStorage.getItem('user_id');
+          rateQuestion(window.questionId, userId, rate);
       });
   });
-});
 
-document.addEventListener('DOMContentLoaded', () => {
   const urlParams = new URLSearchParams(window.location.search);
   const questionId = urlParams.get('id');
 
@@ -259,17 +224,3 @@ document.addEventListener('DOMContentLoaded', () => {
           });
   }
 });
-
-function checkAnswer() {
-  const userAnswer = document.getElementById('userAnswer').value;
-  const resultDiv = document.getElementById('result');
-
-  if (userAnswer === window.correctAnswer) {
-      resultDiv.innerText = 'Correct!';
-      resultDiv.style.color = 'green';
-      incrementAnswerCount(window.questionId); // Increment answer count when the correct answer is given
-  } else {
-      resultDiv.innerText = 'Incorrect!';
-      resultDiv.style.color = 'red';
-  }
-}
