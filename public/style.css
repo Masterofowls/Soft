@@ -258,28 +258,6 @@ body {
     max-height: 100px; /* Show up to two questions */
 }
 
-/* width */
-::-webkit-scrollbar {
-    width: 10px;
-}
-
-/* Track */
-::-webkit-scrollbar-track {
-    background: #000000;
-}
-
-/* Handle */
-::-webkit-scrollbar-thumb {
-    background: #181818;
-    border-radius: 10px;
-}
-
-/* Handle on hover */
-::-webkit-scrollbar-thumb:hover {
-    background: #151515;
-    border-radius: 10px;
-}
-
 .question-of-the-day-wrapper {
     width: 70%;
     margin: 20px auto 0; /* Adjust the margin to position it slightly below the search block */
