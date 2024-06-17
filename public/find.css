@@ -116,6 +116,10 @@ p {
   width: 100%;
 }
 
+h1 {
+    padding-left: 30px;
+}
+
 .rate-button {
   border: 3px solid white;
   border-radius: 10px;
