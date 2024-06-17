@@ -143,6 +143,7 @@ app.post('/search_questions', async (req, res) => {
   }
 });
 
+// Increment answer count
 app.post('/increment_answer_count', async (req, res) => {
   const { question_id } = req.body;
 
@@ -158,6 +159,7 @@ app.post('/increment_answer_count', async (req, res) => {
   }
 });
 
+// Rate question
 app.post('/rate_question', async (req, res) => {
   const { question_id, user_id, rate } = req.body;
 
@@ -183,12 +185,19 @@ app.post('/rate_question', async (req, res) => {
 
     console.log('New rating inserted into rates');
 
-    res.status(200).send('Rating submitted successfully');
+    // Update questions table
+    const updateResult = await pool.query(
+      'UPDATE questions SET rating_count = rating_count + 1 WHERE id = $1 RETURNING *',
+      [question_id]
+    );
+
+    res.status(200).json(updateResult.rows[0]);
   } catch (error) {
     console.error('Error rating question:', error);
     res.status(500).send('Error rating question');
   }
 });
+
 
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}/`);

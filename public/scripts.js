@@ -138,7 +138,7 @@ window.onload = function () {
   };
 };
 
-// Function to check the answer
+// Function to check the answer and increment answer count if correct
 function checkAnswer() {
   const userAnswer = document.getElementById('userAnswer').value;
   const resultDiv = document.getElementById('result');
@@ -146,7 +146,7 @@ function checkAnswer() {
   if (userAnswer === window.correctAnswer) {
       resultDiv.innerText = 'Correct!';
       resultDiv.style.color = 'green';
-      incrementAnswerCount(window.questionId);
+      incrementAnswerCount(window.questionId); // Increment answer count when the correct answer is given
   } else {
       resultDiv.innerText = 'Incorrect!';
       resultDiv.style.color = 'red';
@@ -160,14 +160,14 @@ function incrementAnswerCount(questionId) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ question_id: questionId }),
   })
-      .then((response) => response.json())
-      .then((data) => {
-          console.log('Answer count incremented:', data);
-          document.getElementById('answerCount').innerText = data.answer_count;
-      })
-      .catch((error) => {
-          console.error('Error incrementing answer count:', error);
-      });
+  .then((response) => response.json())
+  .then((data) => {
+      console.log('Answer count incremented:', data);
+      document.getElementById('answerCount').innerText = data.answer_count;
+  })
+  .catch((error) => {
+      console.error('Error incrementing answer count:', error);
+  });
 }
 
 // Rate question
@@ -177,22 +177,24 @@ function rateQuestion(questionId, userId, rate) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ question_id: questionId, user_id: userId, rate }),
   })
-      .then((response) => {
-          if (!response.ok) {
-              return response.text().then(text => { throw new Error(text) });
-          }
-          return response.json();
-      })
-      .then((data) => {
-          console.log('Question rated successfully:', data);
-          document.getElementById('currentRating').innerText = parseFloat(data.total_rating).toFixed(2);
-          document.getElementById('ratingCount').innerText = data.rating_count;
-      })
-      .catch((error) => {
-          console.error('Error rating question:', error);
-          alert('Error rating question: ' + error.message);
-      });
+  .then((response) => {
+      if (!response.ok) {
+          return response.text().then(text => { throw new Error(text) });
+      }
+      return response.json();
+  })
+  .then((data) => {
+      console.log('Question rated successfully:', data);
+      document.getElementById('currentRating').innerText = parseFloat(data.total_rating).toFixed(2);
+      document.getElementById('ratingCount').innerText = data.rating_count;
+  })
+  .catch((error) => {
+      console.error('Error rating question:', error);
+      alert('Error rating question: ' + error.message);
+  });
 }
+
+
 
 document.addEventListener('DOMContentLoaded', () => {
   const rateButtons = document.querySelectorAll('.rate-button');
