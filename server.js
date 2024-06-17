@@ -33,7 +33,6 @@ app.get('/search_questions', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'search_questions.html'));
 });
 
-// Serve find.html
 app.get('/find', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'find.html'));
 });
@@ -62,20 +61,22 @@ app.get('/get_question_by_id', async (req, res) => {
   const { id } = req.query;
   try {
     const questionResult = await pool.query('SELECT * FROM questions WHERE id = $1', [id]);
-    const ratingResult = await pool.query(
-      'SELECT AVG(rate) as current_rating, COUNT(rate) as rating_count FROM question_rate WHERE question_id = $1',
-      [id]
-    );
-
     if (questionResult.rows.length === 0) {
       return res.status(404).send('Question not found');
     }
 
     const question = questionResult.rows[0];
-    const rating = ratingResult.rows[0];
+    const ratingResult = await pool.query(
+      'SELECT total_rating, rating_count FROM rates WHERE question_id = $1', [id]
+    );
 
-    question.current_rating = rating.current_rating ? parseFloat(rating.current_rating).toFixed(2) : 0;
-    question.rating_count = rating.rating_count;
+    if (ratingResult.rows.length > 0) {
+      question.total_rating = ratingResult.rows[0].total_rating;
+      question.rating_count = ratingResult.rows[0].rating_count;
+    } else {
+      question.total_rating = 0;
+      question.rating_count = 0;
+    }
 
     res.json(question);
   } catch (error) {
@@ -112,6 +113,13 @@ app.post('/submit_question', async (req, res) => {
       'INSERT INTO questions (question, type, category, answer, creator) VALUES ($1, $2, $3, $4, $5) RETURNING *',
       [question, type, category, answer, creator]
     );
+
+    // Insert into rates table
+    await pool.query(
+      'INSERT INTO rates (question_id, question) VALUES ($1, $2)',
+      [result.rows[0].id, question]
+    );
+
     console.log('Question submitted successfully:', result.rows[0]);  // Debug information
     res.status(200).json(result.rows[0]);
   } catch (error) {
@@ -135,8 +143,6 @@ app.post('/search_questions', async (req, res) => {
   }
 });
 
-// Increment answer count
-// Increment answer count
 app.post('/increment_answer_count', async (req, res) => {
   const { question_id } = req.body;
 
@@ -152,9 +158,10 @@ app.post('/increment_answer_count', async (req, res) => {
   }
 });
 
-// Rate a question
 app.post('/rate_question', async (req, res) => {
   const { question_id, user_id, rate } = req.body;
+
+  console.log('Received rating:', { question_id, user_id, rate });
 
   try {
     // Check if the user has already rated this question
@@ -164,36 +171,24 @@ app.post('/rate_question', async (req, res) => {
     );
 
     if (checkRating.rows.length > 0) {
+      console.log('User has already rated this question');
       return res.status(400).send('User has already rated this question');
     }
 
-    // Insert the new rating
+    // Insert the new rating into rates
     await pool.query(
-      'INSERT INTO question_rate (question_id, user_id, rate) VALUES ($1, $2, $3)',
-      [question_id, user_id, rate]
-    );
-
-    // Update the questions table with the new rating
-    const result = await pool.query(
-      `UPDATE questions
-       SET total_rating = total_rating + $2,
-           rating_count = rating_count + 1,
-           current_rating = (total_rating + $2) / (rating_count + 1)
-       WHERE id = $1
-       RETURNING *`,
+      'INSERT INTO rates (question_id, rating_count, total_rating) VALUES ($1, 1, $2) ON CONFLICT (question_id) DO UPDATE SET rating_count = rates.rating_count + 1, total_rating = rates.total_rating + EXCLUDED.total_rating',
       [question_id, rate]
     );
 
-    res.status(200).json(result.rows[0]);
+    console.log('New rating inserted into rates');
+
+    res.status(200).send('Rating submitted successfully');
   } catch (error) {
     console.error('Error rating question:', error);
     res.status(500).send('Error rating question');
   }
 });
-
-
-// Rate a question
-
 
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}/`);
