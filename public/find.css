@@ -145,3 +145,16 @@ h1 {
   font-size: 1.2rem;
   color: #6c6767;
 }
+
+#goBack {
+  border-radius: 10px;
+  padding: 10px;
+  font-size: 1.5rem;
+  border: none;
+  outline: none;
+  margin-top: 20px;
+  background-color: #de0808;
+  color: white;
+  cursor: pointer;
+  font-family: Patsy;
+}
