@@ -257,6 +257,73 @@ if (document.readyState === 'loading') {
     loadUserProfile();
 }
 
+// Function to handle registration without page refresh
+document.getElementById('registerForm').addEventListener('submit', function (e) {
+    e.preventDefault(); // Prevent form submission from refreshing the page
+
+    const username = document.getElementById('register-username').value;
+    const password = document.getElementById('register-password').value;
+
+    fetch('/register', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ username, password }),
+    })
+    .then(response => {
+        if (!response.ok) {
+            return response.text().then(text => { throw new Error(text) });
+        }
+        return response.json();
+    })
+    .then(data => {
+        localStorage.setItem('registered', true);
+        localStorage.setItem('username', username);
+        document.getElementById('blackout').style.display = 'none';
+        document.getElementById('registration-form').style.display = 'none';
+        alert('Registration successful!');
+    })
+    .catch(error => {
+        console.error('Error registering user:', error);
+        alert('Error registering user: ' + error.message);
+    });
+});
+
+// Function to handle login without page refresh
+document.getElementById('loginForm').addEventListener('submit', function (e) {
+    e.preventDefault(); // Prevent form submission from refreshing the page
+
+    const username = document.getElementById('login-username').value;
+    const password = document.getElementById('login-password').value;
+
+    fetch('/login', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ username, password }),
+    })
+    .then(response => {
+        if (!response.ok) {
+            return response.text().then(text => { throw new Error(text) });
+        }
+        return response.json();
+    })
+    .then(data => {
+        localStorage.setItem('registered', true);
+        localStorage.setItem('username', username);
+        localStorage.setItem('user_id', data.id); // Store the user ID
+        document.getElementById('blackout').style.display = 'none';
+        document.getElementById('registration-form').style.display = 'none';
+        alert('Login successful!');
+    })
+    .catch(error => {
+        console.error('Error logging in user:', error);
+        alert('Error logging in user: ' + error.message);
+    });
+});
+
 function logout() {
     localStorage.removeItem('registered');
     localStorage.removeItem('username');
@@ -264,38 +331,6 @@ function logout() {
     document.getElementById('registration-form').style.display = 'block';
     document.getElementById('logout-button').style.display = 'none';
     alert('You have been logged out.');
-}
-
-// Fetch user data and display on user.html
-function loadUserProfile() {
-    const username = localStorage.getItem('username');
-    document.getElementById('username').innerText = username;
-
-    fetch(`/get_user_questions?username=${username}`)
-        .then(response => response.json())
-        .then(data => {
-            const userQuestionsList = document.getElementById('userQuestions');
-            userQuestionsList.innerHTML = '';
-
-            data.questions.forEach(question => {
-                const li = document.createElement('li');
-                li.innerHTML = `<a href="find.html?id=${question.id}">${question.question}</a>`;
-                userQuestionsList.appendChild(li);
-            });
-
-            // Display the user's password (for demonstration purposes only, not recommended for production)
-            document.getElementById('password').innerText = data.password;
-        })
-        .catch(error => {
-            console.error('Error fetching user questions:', error);
-        });
-}
-
-// Call the function when the user.html page loads
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', loadUserProfile);
-} else {
-    loadUserProfile();
 }
 
 function toggleForms() {
@@ -316,86 +351,6 @@ function toggleForms() {
         formToggle.textContent = "Already have an account? Login here.";
     }
 }
-
-// Update the registration process to show the logout button after successful registration
-document.getElementById('registerForm').addEventListener('submit', function (e) {
-    e.preventDefault();
-
-    const username = document.getElementById('register-username').value;
-    const password = document.getElementById('register-password').value;
-
-    console.log('Registering user:', username); // Debug information
-
-    fetch('/register', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ username, password }),
-    })
-        .then((response) => {
-            console.log('Registration response status:', response.status); // Debug information
-            if (response.ok) {
-                return response.json();
-            }
-            throw new Error('Network response was not ok.');
-        })
-        .then((data) => {
-            console.log('Registration successful:', data); // Debug information
-            localStorage.setItem('registered', true);
-            localStorage.setItem('username', username);
-            localStorage.setItem('user_id', data.id); // Store the user ID
-            document.getElementById('blackout').style.display = 'none';
-            document.getElementById('registration-form').style.display = 'none';
-            document.getElementById('logout-button').style.display = 'block';
-        })
-        .catch((error) => {
-            console.error('Error registering user:', error);
-        });
-});
-
-// Show logout button if user is already logged in
-if (localStorage.getItem('registered')) {
-    document.getElementById('registration-form').style.display = 'none';
-    document.getElementById('logout-button').style.display = 'block';
-}
-
-// Add event listener for login form
-document.getElementById('loginForm').addEventListener('submit', function (e) {
-    e.preventDefault();
-
-    const username = document.getElementById('login-username').value;
-    const password = document.getElementById('login-password').value;
-
-    console.log('Logging in user:', username); // Debug information
-
-    fetch('/login', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ username, password }),
-    })
-        .then((response) => {
-            console.log('Login response status:', response.status); // Debug information
-            if (response.ok) {
-                return response.json();
-            }
-            throw new Error('Network response was not ok.');
-        })
-        .then((data) => {
-            console.log('Login successful:', data); // Debug information
-            localStorage.setItem('registered', true);
-            localStorage.setItem('username', username);
-            localStorage.setItem('user_id', data.id); // Store the user ID
-            document.getElementById('blackout').style.display = 'none';
-            document.getElementById('registration-form').style.display = 'none';
-            document.getElementById('logout-button').style.display = 'block';
-        })
-        .catch((error) => {
-            console.error('Error logging in user:', error);
-        });
-});
 
 // Show logout button if user is already logged in
 if (localStorage.getItem('registered')) {
