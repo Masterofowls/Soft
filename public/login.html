@@ -78,15 +78,6 @@
         .form-toggle:hover {
             color: #fff;
         }
-
-        #logout-button {
-            margin-top: 20px;
-            background-color: #f44336;
-        }
-
-        #logout-button:hover {
-            background-color: #d32f2f;
-        }
     </style>
 </head>
 <body>
@@ -106,8 +97,8 @@
             <input type="password" id="register-password" name="password" required>
             <button type="submit">Register</button>
         </form>
-        <button id="logout-button"  onclick="logout()">Logout</button>
         <div class="form-toggle" onclick="toggleForms()">Don't have an account? Register here.</div>
+        <button id="logout-button" onclick="logout()">Logout</button>
     </div>
     
     <script src="scripts.js"></script>
