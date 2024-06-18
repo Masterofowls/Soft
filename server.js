@@ -239,8 +239,8 @@ app.post('/rate_question', async (req, res) => {
 
     res.status(200).json(result.rows[0]);
   } catch (error) {
-    console.error('Error inserting rating:', error);
-    res.status(500).send('Error inserting rating');
+    console.error('Error rating question:', error);
+    res.status(500).send('Error rating question');
   }
 });
 
