@@ -1,5 +1,5 @@
 const request = require('supertest');
-const { app, server } = require('../../server'); // скорректируйте путь к вашему server.js
+const { app, server } = require('../server'); // adjust the path to your server.js
 
 afterAll((done) => {
   server.close(() => {

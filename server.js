@@ -3,7 +3,6 @@ const bodyParser = require('body-parser');
 const path = require('path');
 const cors = require('cors');
 const { Pool } = require('pg');
-const { exec } = require('child_process');
 require('dotenv').config();
 
 const app = express();
