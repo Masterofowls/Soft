@@ -3,19 +3,40 @@
 <head>
   <meta charset="UTF-8">
   <title>API Tests</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+    .test-result {
+      margin-bottom: 20px;
+    }
+    .test-result h2 {
+      margin: 0;
+    }
+    .test-result p {
+      margin: 0 0 10px;
+    }
+    .test-pass {
+      color: green;
+    }
+    .test-fail {
+      color: red;
+    }
+  </style>
 </head>
 <body>
   <h1>API Tests</h1>
-  <div id="test-results"></div>
+  <div id="test-results">Press "Run Tests" to see results.</div>
   <button onclick="runTests()">Run Tests</button>
 
   <script>
     async function runTests() {
       const response = await fetch('/run-tests');
       const resultsDiv = document.getElementById('test-results');
+      resultsDiv.innerHTML = '';
       if (!response.ok) {
         const errorText = await response.json();
-        resultsDiv.innerText = `Error running tests: ${errorText.error}`;
+        resultsDiv.innerHTML = `<p>Error running tests: ${errorText.error}</p>`;
         return;
       }
       const results = await response.json();
@@ -28,10 +49,12 @@
 
       results.testResults.forEach(testSuite => {
         const suiteDiv = document.createElement('div');
+        suiteDiv.classList.add('test-result');
         suiteDiv.innerHTML = `<h2>${testSuite.name}</h2>`;
         testSuite.assertionResults.forEach(test => {
-          const testDiv = document.createElement('div');
-          testDiv.innerHTML = `<p>${test.status}: ${test.title}</p>`;
+          const testDiv = document.createElement('p');
+          testDiv.classList.add(test.status === 'passed' ? 'test-pass' : 'test-fail');
+          testDiv.textContent = test.status === 'passed' ? `✔ ${test.title}` : `✘ ${test.title}`;
           suiteDiv.appendChild(testDiv);
         });
         resultsDiv.appendChild(suiteDiv);
