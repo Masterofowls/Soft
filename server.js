@@ -241,22 +241,18 @@ app.get('/get_user_questions', async (req, res) => {
   }
 });
 
-// Route to run Jest tests and return results
-app.post('/run-tests', (req, res) => {
-  exec('jest --json', (error, stdout, stderr) => {
+const { exec } = require('child_process');
+
+app.get('/run-tests', (req, res) => {
+  exec('npm test -- --json', (error, stdout, stderr) => {
     if (error) {
-      console.error(`Error running tests: ${stderr}`);
-      return res.status(500).send('Error running tests');
+      res.status(500).json({ error: stderr });
+    } else {
+      res.json(JSON.parse(stdout));
     }
-
-    const results = JSON.parse(stdout).testResults.map(test => ({
-      name: test.fullName,
-      status: test.status,
-    }));
-
-    res.json(results);
   });
 });
+
 
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}/`);

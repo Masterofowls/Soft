@@ -1,59 +1,36 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Run Tests</title>
-  <link rel="stylesheet" href="/js/mocha.css" />
-  <script src="/js/mocha.js"></script>
-  <script src="/js/chai.js"></script>
-  <script src="/js/superagent.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Run Tests</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        #test-results {
+            margin-top: 20px;
+        }
+    </style>
 </head>
 <body>
-  <h1>Run Tests</h1>
-  <button onclick="runTests()">Run Tests</button>
-  <div id="mocha"></div>
+    <h1>Run API Tests</h1>
+    <button id="run-tests">Run Tests</button>
+    <div id="test-results"></div>
 
-  <script>
-    mocha.setup('bdd');
-    const { expect } = chai;
-    const request = superagent;
+    <script>
+        document.getElementById('run-tests').addEventListener('click', async () => {
+            const resultsDiv = document.getElementById('test-results');
+            resultsDiv.innerHTML = 'Running tests...';
 
-    describe('API Tests', function() {
-      it('should register a new user', async function() {
-        const res = await request.post('/register').send({
-          username: 'testuser',
-          password: 'testpassword'
+            try {
+                const response = await fetch('/run-tests');
+                const results = await response.json();
+                resultsDiv.innerHTML = `<pre>${JSON.stringify(results, null, 2)}</pre>`;
+            } catch (error) {
+                resultsDiv.innerHTML = `Error: ${error.message}`;
+            }
         });
-        expect(res.status).to.equal(200);
-        expect(res.body).to.have.property('id');
-      });
-
-      it('should log in a user', async function() {
-        const res = await request.post('/login').send({
-          username: 'testuser',
-          password: 'testpassword'
-        });
-        expect(res.status).to.equal(200);
-        expect(res.body).to.have.property('id');
-      });
-
-      it('should submit a question', async function() {
-        const res = await request.post('/submit_question').send({
-          question: 'What is the capital of France?',
-          type: 'text',
-          category: 'geography',
-          answer: 'Paris',
-          creator: 'testuser'
-        });
-        expect(res.status).to.equal(200);
-        expect(res.body).to.have.property('id');
-      });
-    });
-
-    function runTests() {
-      mocha.run();
-    }
-  </script>
+    </script>
 </body>
 </html>
