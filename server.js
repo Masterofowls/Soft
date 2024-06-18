@@ -2,20 +2,8 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const path = require('path');
 const cors = require('cors');
-const { Pool } = require('pg');
 const { exec } = require('child_process');
-
-app.get('/run-tests', (req, res) => {
-  exec('jest --json --outputFile=test-results.json', (error, stdout, stderr) => {
-    if (error) {
-      res.status(500).json({ error: stderr || stdout || error.message });
-      return;
-    }
-    const results = require('./test-results.json');
-    res.json(results);
-  });
-});
-
+const { Pool } = require('pg');
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -34,70 +22,27 @@ app.use(cors());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.static(__dirname));
 
+// Define routes
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-app.get('/question_form', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'question_form.html'));
+app.get('/test', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'test.html'));
 });
 
-app.get('/search_questions', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'search_questions.html'));
-});
-
-app.get('/find', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'find.html'));
-});
-
-app.get('/get_question_of_the_day', async (req, res) => {
-  try {
-    const result = await pool.query('SELECT * FROM questions ORDER BY RANDOM() LIMIT 1');
-    res.json(result.rows[0]);
-  } catch (error) {
-    console.error('Error fetching question of the day:', error);
-    res.status(500).send('Error fetching question of the day');
-  }
-});
-
-app.get('/get_all_questions', async (req, res) => {
-  try {
-    const result = await pool.query('SELECT * FROM questions');
-    res.json({ questions: result.rows });
-  } catch (error) {
-    console.error('Error fetching questions:', error);
-    res.status(500).send('Error fetching questions');
-  }
-});
-
-app.get('/get_question_by_id', async (req, res) => {
-  const { id } = req.query;
-  try {
-    const questionResult = await pool.query('SELECT * FROM questions WHERE id = $1', [id]);
-    if (questionResult.rows.length === 0) {
-      return res.status(404).send('Question not found');
+app.get('/run-tests', (req, res) => {
+  exec('jest --json --outputFile=test-results.json', (error, stdout, stderr) => {
+    if (error) {
+      res.status(500).json({ error: stderr || stdout || error.message });
+      return;
     }
-
-    const question = questionResult.rows[0];
-    const ratingResult = await pool.query(
-      'SELECT total_rating, rating_count FROM rates WHERE question_id = $1', [id]
-    );
-
-    if (ratingResult.rows.length > 0) {
-      question.total_rating = ratingResult.rows[0].total_rating;
-      question.rating_count = ratingResult.rows[0].rating_count;
-    } else {
-      question.total_rating = 0;
-      question.rating_count = 0;
-    }
-
-    res.json(question);
-  } catch (error) {
-    console.error('Error fetching question by id:', error);
-    res.status(500).send('Error fetching question by id');
-  }
+    const results = require('./test-results.json');
+    res.json(results);
+  });
 });
 
+// Define other endpoints (register, login, submit_question, etc.)
 app.post('/register', async (req, res) => {
   const { username, password } = req.body;
 
@@ -252,4 +197,3 @@ app.get('/get_user_questions', async (req, res) => {
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}/`);
 });
-
