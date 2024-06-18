@@ -1,10 +1,11 @@
 const request = require('supertest');
-const { app, server } = require('../../server'); // измените путь на правильный
+const { app, server } = require('../../server'); // убедитесь, что путь корректен
 
 afterAll(async () => {
   await new Promise((resolve, reject) => {
     server.close((err) => {
       if (err) return reject(err);
+      console.log('Server closed');
       resolve();
     });
   });
