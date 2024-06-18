@@ -1,145 +1,57 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="stylesheet" href="find.css" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="find.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Find Question</title>
-    <link rel="stylesheet" href="scrollbar.css" />
-  </head>
-  <body>
-    <h1 class="question">
-      <strong
-        >Question
-        <span class="question-title"
-          >by <span id="questionAuthor">anonymous</span></span
-        ></strong
-      >
-      <div class="line"></div>
-      <span id="questionText">Loading your question...</span>
-      <div class="line"></div>
-    </h1>
-    <input type="text" id="userAnswer" placeholder="Your answer..." />
-    <button id="submitAnswer" onclick="checkAnswer()">Submit Answer</button>
-    <p id="result"></p>
-    <div class="rating-wrap">
-      <div class="rating">
-        <p>Answer Count:</p>
-        <span id="answerCount">20</span>
-      </div>
-      <div class="rating">
-        <p>Current Rating:</p>
-        <span id="currentRating">20</span>
-      </div>
-      <div class="rating">
-        <p>Rating Count:</p>
-        <span id="ratingCount">20</span>
-      </div>
+</head>
+<body>
+    <header class="header">
+        </div>
+        <div class="bottom-line">
+            <div class="bottom-line-l"></div>
+            <div class="bottom-line-r"></div>
+        </div>
+    </header>
+    <div class="main">
+        <div class="content">
+            <h1 class="question">
+                <strong>Question <span class="question-title">by <span id="questionAuthor">anonymous</span></span></strong>
+                <div class="line"></div>
+                <span id="questionText">Loading your question...</span>
+                <div class="line"></div>
+            </h1>
+            <input type="text" id="userAnswer" placeholder="Your answer...">
+            <button id="submitAnswer" onclick="checkAnswer()">Submit Answer</button>
+            <p id="result"></p>
+            <div class="rating-wrap">
+                <div class="rating">
+                    <p>Answer Count:</p>
+                    <span id="answerCount">20</span>
+                </div>
+                <div class="rating">
+                    <p>Total Rating:</p>
+                    <span id="currentRating">20</span>
+                </div>
+                <div class="rating">
+                    <p>Rating Count:</p>
+                    <span id="ratingCount">20</span>
+                </div>
+            </div>
+            <div class="user-rating">
+                <h2>Rate this Question:</h2>
+                <div id="rateButtons">
+                    <button class="rate-button" data-rate="1">1</button>
+                    <button class="rate-button" data-rate="2">2</button>
+                    <button class="rate-button" data-rate="3">3</button>
+                    <button class="rate-button" data-rate="4">4</button>
+                    <button class="rate-button" data-rate="5">5</button>
+                </div>
+            </div>
+            <button id="goBack" onclick="window.location.href='index.html'">GO Back</button>
+        </div>
     </div>
-
-    <div class="user-rating">
-      <h2>Rate this Question:</h2>
-      <div id="rateButtons">
-        <button class="rate-button" data-rate="1">1</button>
-        <button class="rate-button" data-rate="2">2</button>
-        <button class="rate-button" data-rate="3">3</button>
-        <button class="rate-button" data-rate="4">4</button>
-        <button class="rate-button" data-rate="5">5</button>
-      </div>
-    </div>
-    <button id="goBack" onclick="window.location.href='index.html'">
-      GO Back
-    </button>
-    <script type="module">
-      document.addEventListener('DOMContentLoaded', () => {
-        const urlParams = new URLSearchParams(window.location.search);
-        const questionId = urlParams.get('id');
-        window.questionId = questionId;
-
-        if (questionId) {
-          fetch(`/get_question_by_id?id=${questionId}`)
-            .then((response) => response.json())
-            .then((data) => {
-              document.getElementById('questionText').innerText = data.question;
-              document.getElementById('questionAuthor').innerText =
-                data.creator;
-              document.getElementById('answerCount').innerText =
-                data.answer_count;
-              document.getElementById('currentRating').innerText =
-                data.current_rating;
-              document.getElementById('ratingCount').innerText =
-                data.rating_count;
-              window.correctAnswer = data.answer;
-            })
-            .catch((error) => {
-              console.error('Error fetching question details:', error);
-              alert('Error fetching question details');
-            });
-        }
-
-        const rateButtons = document.querySelectorAll('.rate-button');
-        rateButtons.forEach((button) => {
-          button.addEventListener('click', () => {
-            const rate = button.getAttribute('data-rate');
-            const userId = localStorage.getItem('user_id'); // Assuming user ID is stored in localStorage
-            rateQuestion(questionId, userId, rate);
-          });
-        });
-      });
-
-      function checkAnswer() {
-        const userAnswer = document.getElementById('userAnswer').value;
-        const resultDiv = document.getElementById('result');
-
-        if (userAnswer === window.correctAnswer) {
-          resultDiv.innerText = 'Correct!';
-          resultDiv.style.color = 'green';
-          incrementAnswerCount(window.questionId); // Increment answer count when the correct answer is given
-        } else {
-          resultDiv.innerText = 'Incorrect!';
-          resultDiv.style.color = 'red';
-        }
-      }
-
-      function incrementAnswerCount(questionId) {
-        fetch('/increment_answer_count', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ question_id: questionId }),
-        })
-          .then((response) => response.json())
-          .then((data) => {
-            console.log('Answer count incremented:', data);
-            document.getElementById('answerCount').innerText =
-              data.answer_count;
-          })
-          .catch((error) => {
-            console.error('Error incrementing answer count:', error);
-          });
-      }
-
-      function rateQuestion(questionId, userId, rate) {
-        fetch('/rate_question', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            question_id: questionId,
-            user_id: userId,
-            rate,
-          }),
-        })
-          .then((response) => response.json())
-          .then((data) => {
-            console.log('Question rated successfully:', data);
-            document.getElementById('currentRating').innerText =
-              data.current_rating.toFixed(2);
-            document.getElementById('ratingCount').innerText =
-              data.rating_count;
-          })
-          .catch((error) => {
-            console.error('Error rating question:', error);
-          });
-      }
-    </script>
-  </body>
+    <script src="scripts.js"></script>
+</body>
 </html>
