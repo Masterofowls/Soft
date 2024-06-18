@@ -3,6 +3,7 @@ const bodyParser = require('body-parser');
 const path = require('path');
 const cors = require('cors');
 const { Pool } = require('pg');
+const { exec } = require('child_process');
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -35,6 +36,10 @@ app.get('/search_questions', (req, res) => {
 
 app.get('/find', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'find.html'));
+});
+
+app.get('/test', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'test.html'));
 });
 
 app.get('/get_question_of_the_day', async (req, res) => {
@@ -218,13 +223,13 @@ app.get('/get_user_questions', async (req, res) => {
   const { username } = req.query;
 
   try {
-    const userResult = await pool.query('SELECT userid, password FROM usernames WHERE username = $1', [username]);
+    const userResult = await pool.query('SELECT id, password FROM usernames WHERE username = $1', [username]);
 
     if (userResult.rows.length === 0) {
       return res.status(404).send('User not found');
     }
 
-    const userId = userResult.rows[0].userid;
+    const userId = userResult.rows[0].id;
     const userPassword = userResult.rows[0].password;
 
     const questionsResult = await pool.query('SELECT * FROM questions WHERE creator = $1', [username]);
@@ -234,6 +239,23 @@ app.get('/get_user_questions', async (req, res) => {
     console.error('Error fetching user questions:', error);
     res.status(500).send('Error fetching user questions');
   }
+});
+
+// Route to run Jest tests and return results
+app.post('/run-tests', (req, res) => {
+  exec('jest --json', (error, stdout, stderr) => {
+    if (error) {
+      console.error(`Error running tests: ${stderr}`);
+      return res.status(500).send('Error running tests');
+    }
+
+    const results = JSON.parse(stdout).testResults.map(test => ({
+      name: test.fullName,
+      status: test.status,
+    }));
+
+    res.json(results);
+  });
 });
 
 app.listen(port, () => {
