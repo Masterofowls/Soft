@@ -88,6 +88,9 @@
       <div class="lookup">
         <button id="question-input" onclick="window.location.href='/question_form.html'">Make Question!</button>
       </div>
+      <div class="lookup">
+        <button id="test-access-button" onclick="promptForPassword()">Access Test Page</button>
+      </div>
     </div>
     <h2 class="games-title">Mini-Games</h2>
     <div class="bottom-line-f"></div>
@@ -123,5 +126,15 @@
         </div>
       </div>
     </div>
+    <script>
+      function promptForPassword() {
+        const password = prompt('Enter the password to access the test page:');
+        if (password === '4567') {
+          window.location.href = 'test.html';
+        } else {
+          alert('Incorrect password.');
+        }
+      }
+    </script>
   </body>
 </html>
