@@ -78,21 +78,6 @@
         .form-toggle:hover {
             color: #fff;
         }
-
-        .logout-button {
-            margin-top: 20px;
-            padding: 10px;
-            background-color: #de0808;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 1.2rem;
-        }
-
-        .logout-button:hover {
-            background-color: #c30707;
-        }
     </style>
 </head>
 <body>
@@ -112,113 +97,118 @@
             <input type="password" id="register-password" name="password" required>
             <button type="submit">Register</button>
         </form>
+        <button id="logout-button" style="display: none;" onclick="logout()">Logout</button>
         <div class="form-toggle" onclick="toggleForms()">Don't have an account? Register here.</div>
-        <button class="logout-button" id="logout-button" style="display: none;" onclick="logout()">Logout</button>
     </div>
-
+    
     <script>
-      function toggleForms() {
-          const loginForm = document.getElementById('loginForm');
-          const registerForm = document.getElementById('registerForm');
-          const formTitle = document.getElementById('form-title');
-          const formToggle = document.querySelector('.form-toggle');
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
 
-          if (loginForm.style.display === 'none') {
-              loginForm.style.display = 'block';
-              registerForm.style.display = 'none';
-              formTitle.textContent = 'Login';
-              formToggle.textContent = "Don't have an account? Register here.";
-          } else {
-              loginForm.style.display = 'none';
-              registerForm.style.display = 'block';
-              formTitle.textContent = 'Register';
-              formToggle.textContent = "Already have an account? Login here.";
-          }
-      }
+            const loginData = {
+                username: document.getElementById('login-username').value,
+                password: document.getElementById('login-password').value,
+            };
 
-      document.getElementById('loginForm').addEventListener('submit', async (e) => {
-          e.preventDefault();
+            try {
+                const response = await fetch('/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(loginData),
+                });
 
-          const formData = {
-              username: document.getElementById('login-username').value,
-              password: document.getElementById('login-password').value,
-          };
+                if (response.ok) {
+                    const data = await response.json();
+                    localStorage.setItem('registered', true);
+                    localStorage.setItem('username', loginData.username);
+                    localStorage.setItem('user_id', data.userid);
+                    document.getElementById('logout-button').style.display = 'block';
+                    alert('Login successful!');
+                    window.location.href = 'user.html';
+                } else {
+                    const errorText = await response.text();
+                    console.error('Failed to log in:', errorText);
+                    alert(`Failed to log in: ${errorText}`);
+                }
+            } catch (error) {
+                console.error('Error logging in user:', error);
+                alert(`Error logging in user: ${error.message}`);
+            }
+        });
 
-          try {
-              const response = await fetch('/login', {
-                  method: 'POST',
-                  headers: {
-                      'Content-Type': 'application/json',
-                  },
-                  body: JSON.stringify(formData),
-              });
+        document.getElementById('registerForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
 
-              if (response.ok) {
-                  const data = await response.json();
-                  localStorage.setItem('registered', true);
-                  localStorage.setItem('username', formData.username);
-                  localStorage.setItem('user_id', data.id);
-                  alert('Login successful!');
-                  window.location.href = 'user.html';
-              } else {
-                  const errorText = await response.text();
-                  console.error('Failed to login:', errorText);
-                  alert(`Failed to login: ${errorText}`);
-              }
-          } catch (error) {
-              console.error('Error:', error);
-              alert(`An error occurred: ${error.message}`);
-          }
-      });
+            const registerData = {
+                username: document.getElementById('register-username').value,
+                password: document.getElementById('register-password').value,
+            };
 
-      document.getElementById('registerForm').addEventListener('submit', async (e) => {
-          e.preventDefault();
+            try {
+                const response = await fetch('/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(registerData),
+                });
 
-          const formData = {
-              username: document.getElementById('register-username').value,
-              password: document.getElementById('register-password').value,
-          };
+                if (response.ok) {
+                    const data = await response.json();
+                    localStorage.setItem('registered', true);
+                    localStorage.setItem('username', registerData.username);
+                    localStorage.setItem('user_id', data.userid);
+                    document.getElementById('logout-button').style.display = 'block';
+                    alert('Registration successful!');
+                    window.location.href = 'user.html';
+                } else {
+                    const errorText = await response.text();
+                    console.error('Failed to register:', errorText);
+                    alert(`Failed to register: ${errorText}`);
+                }
+            } catch (error) {
+                console.error('Error registering user:', error);
+                alert(`Error registering user: ${error.message}`);
+            }
+        });
 
-          try {
-              const response = await fetch('/register', {
-                  method: 'POST',
-                  headers: {
-                      'Content-Type': 'application/json',
-                  },
-                  body: JSON.stringify(formData),
-              });
+        function logout() {
+            localStorage.removeItem('registered');
+            localStorage.removeItem('username');
+            localStorage.removeItem('user_id');
+            document.getElementById('loginForm').style.display = 'block';
+            document.getElementById('registerForm').style.display = 'none';
+            document.getElementById('logout-button').style.display = 'none';
+            alert('You have been logged out.');
+        }
 
-              if (response.ok) {
-                  const data = await response.json();
-                  localStorage.setItem('registered', true);
-                  localStorage.setItem('username', formData.username);
-                  localStorage.setItem('user_id', data.id);
-                  alert('Registration successful!');
-                  window.location.href = 'user.html';
-              } else {
-                  const errorText = await response.text();
-                  console.error('Failed to register:', errorText);
-                  alert(`Failed to register: ${errorText}`);
-              }
-          } catch (error) {
-              console.error('Error:', error);
-              alert(`An error occurred: ${error.message}`);
-          }
-      });
+        function toggleForms() {
+            const loginForm = document.getElementById('loginForm');
+            const registerForm = document.getElementById('registerForm');
+            const formTitle = document.getElementById('form-title');
+            const formToggle = document.querySelector('.form-toggle');
 
-      function logout() {
-          localStorage.removeItem('registered');
-          localStorage.removeItem('username');
-          localStorage.removeItem('user_id');
-          document.getElementById('logout-button').style.display = 'none';
-          alert('You have been logged out.');
-          window.location.href = 'login.html';
-      }
+            if (loginForm.style.display === 'none') {
+                loginForm.style.display = 'block';
+                registerForm.style.display = 'none';
+                formTitle.textContent = 'Login';
+                formToggle.textContent = "Don't have an account? Register here.";
+            } else {
+                loginForm.style.display = 'none';
+                registerForm.style.display = 'block';
+                formTitle.textContent = 'Register';
+                formToggle.textContent = "Already have an account? Login here.";
+            }
+        }
 
-      // Show logout button if user is already logged in
-      if (localStorage.getItem('registered')) {
-          document.getElementById('logout-button').style.display = 'block';
-      }
+        // Show logout button if user is already logged in
+        if (localStorage.getItem('registered')) {
+            document.getElementById('loginForm').style.display = 'none';
+            document.getElementById('registerForm').style.display = 'none';
+            document.getElementById('logout-button').style.display = 'block';
+        }
     </script>
 </body>
 </html>

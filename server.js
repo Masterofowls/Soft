@@ -37,10 +37,6 @@ app.get('/find', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'find.html'));
 });
 
-app.get('/login', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'login.html'));
-});
-
 app.get('/get_question_of_the_day', async (req, res) => {
   try {
     const result = await pool.query('SELECT * FROM questions ORDER BY RANDOM() LIMIT 1');
@@ -114,7 +110,7 @@ app.post('/login', async (req, res) => {
 
   try {
     const result = await pool.query(
-      'SELECT id FROM usernames WHERE username = $1 AND password = $2',
+      'SELECT userid FROM usernames WHERE username = $1 AND password = $2',
       [username, password]
     );
 
@@ -222,13 +218,13 @@ app.get('/get_user_questions', async (req, res) => {
   const { username } = req.query;
 
   try {
-    const userResult = await pool.query('SELECT id, password FROM usernames WHERE username = $1', [username]);
+    const userResult = await pool.query('SELECT userid, password FROM usernames WHERE username = $1', [username]);
 
     if (userResult.rows.length === 0) {
       return res.status(404).send('User not found');
     }
 
-    const userId = userResult.rows[0].id;
+    const userId = userResult.rows[0].userid;
     const userPassword = userResult.rows[0].password;
 
     const questionsResult = await pool.query('SELECT * FROM questions WHERE creator = $1', [username]);
