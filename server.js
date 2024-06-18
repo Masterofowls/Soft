@@ -103,7 +103,6 @@ app.post('/register', async (req, res) => {
   }
 });
 
-
 app.post('/submit_question', async (req, res) => {
   const { question, type, category, answer, creator } = req.body;
 
@@ -144,7 +143,6 @@ app.post('/search_questions', async (req, res) => {
   }
 });
 
-// Increment answer count
 app.post('/increment_answer_count', async (req, res) => {
   const { question_id } = req.body;
 
@@ -160,7 +158,6 @@ app.post('/increment_answer_count', async (req, res) => {
   }
 });
 
-// Rate question
 app.post('/rate_question', async (req, res) => {
   const { question_id, user_id, rate } = req.body;
 
@@ -186,32 +183,13 @@ app.post('/rate_question', async (req, res) => {
 
     console.log('New rating inserted into rates');
 
-    // Update questions table
-    const updateResult = await pool.query(
-      'UPDATE questions SET rating_count = rating_count + 1 WHERE id = $1 RETURNING *',
-      [question_id]
-    );
-
-    res.status(200).json(updateResult.rows[0]);
+    res.status(200).send('Rating submitted successfully');
   } catch (error) {
     console.error('Error rating question:', error);
     res.status(500).send('Error rating question');
   }
 });
 
-
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}/`);
-});
-
-app.get('/get_user_questions', async (req, res) => {
-  const { username } = req.query;
-
-  try {
-    const result = await pool.query('SELECT id, question FROM questions WHERE creator = $1', [username]);
-    res.status(200).json({ questions: result.rows });
-  } catch (error) {
-    console.error('Error fetching user questions:', error);
-    res.status(500).send('Error fetching user questions');
-  }
 });

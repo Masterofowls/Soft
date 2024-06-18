@@ -267,7 +267,8 @@ if (document.readyState === 'loading') {
   }
   
   // Handle registration form submission via AJAX
-  document.getElementById('registerForm').addEventListener('submit', function (e) {
+// Handle registration form submission via AJAX
+document.getElementById('registerForm').addEventListener('submit', function (e) {
     e.preventDefault();
   
     const username = document.getElementById('username').value;
@@ -282,7 +283,7 @@ if (document.readyState === 'loading') {
     })
     .then(response => {
         if (!response.ok) {
-            throw new Error('Network response was not ok.');
+            return response.text().then(text => { throw new Error(text) });
         }
         return response.json();
     })
