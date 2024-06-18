@@ -13,7 +13,7 @@ const pool = new Pool({
   database: process.env.DATABASE_NAME,
   user: process.env.DATABASE_USER,
   password: process.env.DATABASE_PASSWORD,
-  ssl: { rejectUnauthorized: false }
+  ssl: process.env.DATABASE_SSL === 'true' ? { rejectUnauthorized: false } : false
 });
 
 app.use(bodyParser.json());
@@ -21,27 +21,22 @@ app.use(cors());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.static(__dirname));
 
-// Route to serve the homepage
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-// Route to serve the question form
 app.get('/question_form', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'question_form.html'));
 });
 
-// Route to serve the search questions page
 app.get('/search_questions', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'search_questions.html'));
 });
 
-// Route to serve the find page
 app.get('/find', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'find.html'));
 });
 
-// Route to get the question of the day
 app.get('/get_question_of_the_day', async (req, res) => {
   try {
     const result = await pool.query('SELECT * FROM questions ORDER BY RANDOM() LIMIT 1');
@@ -52,7 +47,6 @@ app.get('/get_question_of_the_day', async (req, res) => {
   }
 });
 
-// Route to get all questions
 app.get('/get_all_questions', async (req, res) => {
   try {
     const result = await pool.query('SELECT * FROM questions');
@@ -63,7 +57,6 @@ app.get('/get_all_questions', async (req, res) => {
   }
 });
 
-// Route to get a question by ID
 app.get('/get_question_by_id', async (req, res) => {
   const { id } = req.query;
   try {
@@ -92,18 +85,17 @@ app.get('/get_question_by_id', async (req, res) => {
   }
 });
 
-// Route to register a new user
 app.post('/register', async (req, res) => {
   const { username, password } = req.body;
 
-  console.log('Received registration request:', username, password);  // Debug information
+  console.log('Received registration request:', username, password);
 
   try {
     const result = await pool.query(
       'INSERT INTO usernames (username, password) VALUES ($1, $2) RETURNING *',
       [username, password]
     );
-    console.log('User registered successfully:', result.rows[0]);  // Debug information
+    console.log('User registered successfully:', result.rows[0]);
     res.status(200).json(result.rows[0]);
   } catch (error) {
     console.error('Error registering user:', error);
@@ -111,11 +103,10 @@ app.post('/register', async (req, res) => {
   }
 });
 
-// Route to log in a user
 app.post('/login', async (req, res) => {
   const { username, password } = req.body;
 
-  console.log('Received login request:', username, password);  // Debug information
+  console.log('Received login request:', username, password);
 
   try {
     const result = await pool.query(
@@ -124,7 +115,7 @@ app.post('/login', async (req, res) => {
     );
 
     if (result.rows.length > 0) {
-      console.log('User logged in successfully:', result.rows[0]);  // Debug information
+      console.log('User logged in successfully:', result.rows[0]);
       res.status(200).json(result.rows[0]);
     } else {
       console.error('Invalid username or password');
@@ -136,11 +127,10 @@ app.post('/login', async (req, res) => {
   }
 });
 
-// Route to submit a question
 app.post('/submit_question', async (req, res) => {
   const { question, type, category, answer, creator } = req.body;
 
-  console.log('Received question submission:', { question, type, category, answer, creator });  // Debug information
+  console.log('Received question submission:', { question, type, category, answer, creator });
 
   try {
     const result = await pool.query(
@@ -148,13 +138,12 @@ app.post('/submit_question', async (req, res) => {
       [question, type, category, answer, creator]
     );
 
-    // Insert into rates table
     await pool.query(
       'INSERT INTO rates (question_id, question) VALUES ($1, $2)',
       [result.rows[0].id, question]
     );
 
-    console.log('Question submitted successfully:', result.rows[0]);  // Debug information
+    console.log('Question submitted successfully:', result.rows[0]);
     res.status(200).json(result.rows[0]);
   } catch (error) {
     console.error('Error inserting question data:', error);
@@ -162,7 +151,6 @@ app.post('/submit_question', async (req, res) => {
   }
 });
 
-// Route to search questions
 app.post('/search_questions', async (req, res) => {
   const { query, category } = req.body;
 
@@ -178,7 +166,6 @@ app.post('/search_questions', async (req, res) => {
   }
 });
 
-// Route to increment answer count
 app.post('/increment_answer_count', async (req, res) => {
   const { question_id } = req.body;
 
@@ -194,14 +181,12 @@ app.post('/increment_answer_count', async (req, res) => {
   }
 });
 
-// Route to rate a question
 app.post('/rate_question', async (req, res) => {
   const { question_id, user_id, rate } = req.body;
 
   console.log('Received rating:', { question_id, user_id, rate });
 
   try {
-    // Check if the user has already rated this question
     const checkRating = await pool.query(
       'SELECT * FROM question_rate WHERE question_id = $1 AND user_id = $2',
       [question_id, user_id]
@@ -212,7 +197,6 @@ app.post('/rate_question', async (req, res) => {
       return res.status(400).send('User has already rated this question');
     }
 
-    // Insert the new rating into rates
     await pool.query(
       'INSERT INTO rates (question_id, rating_count, total_rating) VALUES ($1, 1, $2) ON CONFLICT (question_id) DO UPDATE SET rating_count = rates.rating_count + 1, total_rating = rates.total_rating + EXCLUDED.total_rating',
       [question_id, rate]
@@ -227,7 +211,6 @@ app.post('/rate_question', async (req, res) => {
   }
 });
 
-// Route to get user questions
 app.get('/get_user_questions', async (req, res) => {
   const { username } = req.query;
 
@@ -250,7 +233,6 @@ app.get('/get_user_questions', async (req, res) => {
   }
 });
 
-// Route to run Jest tests
 app.get('/run-tests', (req, res) => {
   const { exec } = require('child_process');
   exec('npm test -- --json --outputFile=test-results.json', (err, stdout, stderr) => {
