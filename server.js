@@ -2,6 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const path = require('path');
 const cors = require('cors');
+const { exec } = require('child_process');
 const { Pool } = require('pg');
 
 const app = express();
@@ -229,6 +230,17 @@ app.get('/get_user_questions', async (req, res) => {
     console.error('Error fetching user questions:', error);
     res.status(500).send('Error fetching user questions');
   }
+});
+
+app.get('/run-tests', (req, res) => {
+  exec('jest --json --outputFile=test-results.json', (error, stdout, stderr) => {
+    if (error) {
+      console.error('Error running tests:', error);
+      res.status(500).send('Error running tests');
+      return;
+    }
+    res.sendFile(path.join(__dirname, 'test-results.json'));
+  });
 });
 
 if (process.env.NODE_ENV !== 'test') {

@@ -2,62 +2,75 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>API Tests</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Run Tests</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-    }
-    .test-result {
-      margin-bottom: 20px;
-    }
-    .test-result h2 {
       margin: 0;
+      padding: 20px;
+      background: #f4f4f4;
     }
-    .test-result p {
-      margin: 0 0 10px;
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
     }
-    .test-pass {
-      color: green;
+    h1 {
+      text-align: center;
     }
-    .test-fail {
-      color: red;
+    .test-results {
+      margin-top: 20px;
+    }
+    .test-results .test {
+      margin-bottom: 10px;
+      padding: 10px;
+      background: #fff;
+      border-radius: 5px;
+      box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    }
+    .test-results .test.pass {
+      border-left: 5px solid green;
+    }
+    .test-results .test.fail {
+      border-left: 5px solid red;
+    }
+    .test-results .test p {
+      margin: 0;
     }
   </style>
 </head>
 <body>
-  <h1>API Tests</h1>
-  <div id="test-results">Press "Run Tests" to see results.</div>
-  <button onclick="runTests()">Run Tests</button>
+  <div class="container">
+    <h1>Run Tests</h1>
+    <button onclick="runTests()">Run Tests</button>
+    <div id="test-results" class="test-results"></div>
+  </div>
 
   <script>
     async function runTests() {
-      const response = await fetch('/run-tests');
-      const resultsDiv = document.getElementById('test-results');
-      resultsDiv.innerHTML = '';
-      if (!response.ok) {
-        const errorText = await response.json();
-        resultsDiv.innerHTML = `<p>Error running tests: ${errorText.error}</p>`;
-        return;
+      document.getElementById('test-results').innerHTML = 'Running tests...';
+
+      try {
+        const response = await fetch('/run-tests');
+        const results = await response.json();
+        displayTestResults(results);
+      } catch (error) {
+        document.getElementById('test-results').innerHTML = 'Error running tests';
+        console.error('Error running tests:', error);
       }
-      const results = await response.json();
-      displayResults(results);
     }
 
-    function displayResults(results) {
-      const resultsDiv = document.getElementById('test-results');
-      resultsDiv.innerHTML = '';
+    function displayTestResults(results) {
+      const testResultsContainer = document.getElementById('test-results');
+      testResultsContainer.innerHTML = '';
 
       results.testResults.forEach(testSuite => {
-        const suiteDiv = document.createElement('div');
-        suiteDiv.classList.add('test-result');
-        suiteDiv.innerHTML = `<h2>${testSuite.name}</h2>`;
         testSuite.assertionResults.forEach(test => {
-          const testDiv = document.createElement('p');
-          testDiv.classList.add(test.status === 'passed' ? 'test-pass' : 'test-fail');
-          testDiv.textContent = test.status === 'passed' ? `✔ ${test.title}` : `✘ ${test.title}`;
-          suiteDiv.appendChild(testDiv);
+          const testElement = document.createElement('div');
+          testElement.className = 'test ' + (test.status === 'passed' ? 'pass' : 'fail');
+          testElement.innerHTML = `<p>${test.title}</p>`;
+          testResultsContainer.appendChild(testElement);
         });
-        resultsDiv.appendChild(suiteDiv);
       });
     }
   </script>
