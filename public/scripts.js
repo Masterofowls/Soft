@@ -286,3 +286,12 @@ document.getElementById('registerForm').addEventListener('submit', function (e) 
         alert('Error registering user: ' + error.message);
     });
 });
+
+function logout() {
+    localStorage.removeItem('registered');
+    localStorage.removeItem('username');
+    localStorage.removeItem('user_id');
+    document.getElementById('registration-form').style.display = 'block';
+    document.getElementById('logout-button').style.display = 'none';
+    alert('You have been logged out.');
+}
