@@ -98,9 +98,97 @@
             <button type="submit">Register</button>
         </form>
         <div class="form-toggle" onclick="toggleForms()">Don't have an account? Register here.</div>
-        <button id="logout-button" onclick="logout()">Logout</button>
     </div>
-    
-    <script src="scripts.js"></script>
+
+    <script>
+      function toggleForms() {
+          const loginForm = document.getElementById('loginForm');
+          const registerForm = document.getElementById('registerForm');
+          const formTitle = document.getElementById('form-title');
+          const formToggle = document.querySelector('.form-toggle');
+
+          if (loginForm.style.display === 'none') {
+              loginForm.style.display = 'block';
+              registerForm.style.display = 'none';
+              formTitle.textContent = 'Login';
+              formToggle.textContent = "Don't have an account? Register here.";
+          } else {
+              loginForm.style.display = 'none';
+              registerForm.style.display = 'block';
+              formTitle.textContent = 'Register';
+              formToggle.textContent = "Already have an account? Login here.";
+          }
+      }
+
+      document.getElementById('loginForm').addEventListener('submit', async (e) => {
+          e.preventDefault();
+
+          const formData = {
+              username: document.getElementById('login-username').value,
+              password: document.getElementById('login-password').value,
+          };
+
+          try {
+              const response = await fetch('/login', {
+                  method: 'POST',
+                  headers: {
+                      'Content-Type': 'application/json',
+                  },
+                  body: JSON.stringify(formData),
+              });
+
+              if (response.ok) {
+                  const data = await response.json();
+                  localStorage.setItem('registered', true);
+                  localStorage.setItem('username', formData.username);
+                  localStorage.setItem('user_id', data.id);
+                  alert('Login successful!');
+                  window.location.href = 'index.html';
+              } else {
+                  const errorText = await response.text();
+                  console.error('Failed to login:', errorText);
+                  alert(`Failed to login: ${errorText}`);
+              }
+          } catch (error) {
+              console.error('Error:', error);
+              alert(`An error occurred: ${error.message}`);
+          }
+      });
+
+      document.getElementById('registerForm').addEventListener('submit', async (e) => {
+          e.preventDefault();
+
+          const formData = {
+              username: document.getElementById('register-username').value,
+              password: document.getElementById('register-password').value,
+          };
+
+          try {
+              const response = await fetch('/register', {
+                  method: 'POST',
+                  headers: {
+                      'Content-Type': 'application/json',
+                  },
+                  body: JSON.stringify(formData),
+              });
+
+              if (response.ok) {
+                  const data = await response.json();
+                  localStorage.setItem('registered', true);
+                  localStorage.setItem('username', formData.username);
+                  localStorage.setItem('user_id', data.id);
+                  alert('Registration successful!');
+                  window.location.href = 'index.html';
+              } else {
+                  const errorText = await response.text();
+                  console.error('Failed to register:', errorText);
+                  alert(`Failed to register: ${errorText}`);
+              }
+          } catch (error) {
+              console.error('Error:', error);
+              alert(`An error occurred: ${error.message}`);
+          }
+      });
+    </script>
 </body>
 </html>
