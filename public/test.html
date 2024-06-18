@@ -12,8 +12,10 @@
   <script>
     async function runTests() {
       const response = await fetch('/run-tests');
+      const resultsDiv = document.getElementById('test-results');
       if (!response.ok) {
-        document.getElementById('test-results').innerText = 'Error running tests';
+        const errorText = await response.json();
+        resultsDiv.innerText = `Error running tests: ${errorText.error}`;
         return;
       }
       const results = await response.json();

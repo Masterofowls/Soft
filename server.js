@@ -3,6 +3,19 @@ const bodyParser = require('body-parser');
 const path = require('path');
 const cors = require('cors');
 const { Pool } = require('pg');
+const { exec } = require('child_process');
+
+app.get('/run-tests', (req, res) => {
+  exec('jest --json --outputFile=test-results.json', (error, stdout, stderr) => {
+    if (error) {
+      res.status(500).json({ error: stderr || stdout || error.message });
+      return;
+    }
+    const results = require('./test-results.json');
+    res.json(results);
+  });
+});
+
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -239,3 +252,4 @@ app.get('/get_user_questions', async (req, res) => {
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}/`);
 });
+
