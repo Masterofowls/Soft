@@ -2,7 +2,6 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const path = require('path');
 const cors = require('cors');
-const { exec } = require('child_process');
 const { Pool } = require('pg');
 
 const app = express();
@@ -22,22 +21,27 @@ app.use(cors());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.static(__dirname));
 
+// Route to serve the homepage
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
+// Route to serve the question form
 app.get('/question_form', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'question_form.html'));
 });
 
+// Route to serve the search questions page
 app.get('/search_questions', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'search_questions.html'));
 });
 
+// Route to serve the find page
 app.get('/find', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'find.html'));
 });
 
+// Route to get the question of the day
 app.get('/get_question_of_the_day', async (req, res) => {
   try {
     const result = await pool.query('SELECT * FROM questions ORDER BY RANDOM() LIMIT 1');
@@ -48,6 +52,7 @@ app.get('/get_question_of_the_day', async (req, res) => {
   }
 });
 
+// Route to get all questions
 app.get('/get_all_questions', async (req, res) => {
   try {
     const result = await pool.query('SELECT * FROM questions');
@@ -58,6 +63,7 @@ app.get('/get_all_questions', async (req, res) => {
   }
 });
 
+// Route to get a question by ID
 app.get('/get_question_by_id', async (req, res) => {
   const { id } = req.query;
   try {
@@ -86,8 +92,10 @@ app.get('/get_question_by_id', async (req, res) => {
   }
 });
 
+// Route to register a new user
 app.post('/register', async (req, res) => {
   const { username, password } = req.body;
+
   console.log('Received registration request:', username, password);  // Debug information
 
   try {
@@ -103,8 +111,10 @@ app.post('/register', async (req, res) => {
   }
 });
 
+// Route to log in a user
 app.post('/login', async (req, res) => {
   const { username, password } = req.body;
+
   console.log('Received login request:', username, password);  // Debug information
 
   try {
@@ -126,8 +136,10 @@ app.post('/login', async (req, res) => {
   }
 });
 
+// Route to submit a question
 app.post('/submit_question', async (req, res) => {
   const { question, type, category, answer, creator } = req.body;
+
   console.log('Received question submission:', { question, type, category, answer, creator });  // Debug information
 
   try {
@@ -150,6 +162,7 @@ app.post('/submit_question', async (req, res) => {
   }
 });
 
+// Route to search questions
 app.post('/search_questions', async (req, res) => {
   const { query, category } = req.body;
 
@@ -165,6 +178,7 @@ app.post('/search_questions', async (req, res) => {
   }
 });
 
+// Route to increment answer count
 app.post('/increment_answer_count', async (req, res) => {
   const { question_id } = req.body;
 
@@ -180,8 +194,10 @@ app.post('/increment_answer_count', async (req, res) => {
   }
 });
 
+// Route to rate a question
 app.post('/rate_question', async (req, res) => {
   const { question_id, user_id, rate } = req.body;
+
   console.log('Received rating:', { question_id, user_id, rate });
 
   try {
@@ -203,6 +219,7 @@ app.post('/rate_question', async (req, res) => {
     );
 
     console.log('New rating inserted into rates');
+
     res.status(200).send('Rating submitted successfully');
   } catch (error) {
     console.error('Error rating question:', error);
@@ -210,6 +227,7 @@ app.post('/rate_question', async (req, res) => {
   }
 });
 
+// Route to get user questions
 app.get('/get_user_questions', async (req, res) => {
   const { username } = req.query;
 
@@ -232,21 +250,20 @@ app.get('/get_user_questions', async (req, res) => {
   }
 });
 
+// Route to run Jest tests
 app.get('/run-tests', (req, res) => {
-  exec('jest --json --outputFile=test-results.json', (error, stdout, stderr) => {
-    if (error) {
-      console.error('Error running tests:', error);
-      res.status(500).send('Error running tests');
-      return;
+  const { exec } = require('child_process');
+  exec('npm test -- --json --outputFile=test-results.json', (err, stdout, stderr) => {
+    if (err) {
+      console.error('Error running tests:', err);
+      return res.status(500).send('Error running tests');
     }
-    res.sendFile(path.join(__dirname, 'test-results.json'));
+    res.send(`<pre>${stdout}</pre>`);
   });
 });
 
-if (process.env.NODE_ENV !== 'test') {
-  app.listen(port, () => {
-    console.log(`Server running at http://localhost:${port}/`);
-  });
-}
+app.listen(port, () => {
+  console.log(`Server running at http://localhost:${port}/`);
+});
 
 module.exports = app;
