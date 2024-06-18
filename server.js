@@ -193,3 +193,25 @@ app.post('/rate_question', async (req, res) => {
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}/`);
 });
+
+app.get('/get_user_questions', async (req, res) => {
+  const { username } = req.query;
+
+  try {
+      const userResult = await pool.query('SELECT username, password FROM usernames WHERE username = $1', [username]);
+      if (userResult.rows.length === 0) {
+          return res.status(404).send('User not found');
+      }
+
+      const questionsResult = await pool.query('SELECT id, question FROM questions WHERE creator = $1', [username]);
+      
+      res.json({
+          username: userResult.rows[0].username,
+          password: userResult.rows[0].password,
+          questions: questionsResult.rows
+      });
+  } catch (error) {
+      console.error('Error fetching user questions:', error);
+      res.status(500).send('Error fetching user questions');
+  }
+});

@@ -295,3 +295,35 @@ function logout() {
     document.getElementById('logout-button').style.display = 'none';
     alert('You have been logged out.');
 }
+
+// Fetch user data and display on user.html
+function loadUserProfile() {
+    const username = localStorage.getItem('username');
+    document.getElementById('username').innerText = username;
+
+    fetch(`/get_user_questions?username=${username}`)
+        .then(response => response.json())
+        .then(data => {
+            const userQuestionsList = document.getElementById('userQuestions');
+            userQuestionsList.innerHTML = '';
+
+            data.questions.forEach(question => {
+                const li = document.createElement('li');
+                li.innerHTML = `<a href="find.html?id=${question.id}">${question.question}</a>`;
+                userQuestionsList.appendChild(li);
+            });
+
+            // Display the user's password (for demonstration purposes only, not recommended for production)
+            document.getElementById('password').innerText = data.password;
+        })
+        .catch(error => {
+            console.error('Error fetching user questions:', error);
+        });
+}
+
+// Call the function when the user.html page loads
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', loadUserProfile);
+} else {
+    loadUserProfile();
+}
