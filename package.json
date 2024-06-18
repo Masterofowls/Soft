@@ -1,4 +1,9 @@
 {
+  "jest": {
+    "transform": {
+      "^.+\\.jsx?$": "babel-jest"
+    }
+  },
   "name": "your-project",
   "version": "1.0.0",
   "description": "Your project description",
@@ -21,9 +26,6 @@
     "swiper": "^11.1.4"
   },
   "devDependencies": {
-    "@babel/core": "^7.24.7",
-    "@babel/preset-env": "^7.24.7",
-    "babel-jest": "^29.7.0",
     "chai": "^5.1.1",
     "eslint": "^9.4.0",
     "jest": "^29.7.0",

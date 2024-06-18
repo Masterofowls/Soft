@@ -1,30 +1,40 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>API Tests</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jest/26.6.3/jest.min.js"></script>
+  <meta charset="UTF-8">
+  <title>API Tests</title>
 </head>
 <body>
-    <h1>API Tests</h1>
-    <div id="test-results"></div>
-    <button onclick="runTests()">Run Tests</button>
+  <h1>API Tests</h1>
+  <div id="test-results"></div>
+  <button onclick="runTests()">Run Tests</button>
 
-    <script>
-        async function runTests() {
-            const { exec } = require('child_process');
-            exec('jest', (error, stdout, stderr) => {
-                if (error) {
-                    document.getElementById('test-results').innerText = `Error: ${error.message}`;
-                    return;
-                }
-                if (stderr) {
-                    document.getElementById('test-results').innerText = `Error: ${stderr}`;
-                    return;
-                }
-                document.getElementById('test-results').innerText = `Results: ${stdout}`;
-            });
-        }
-    </script>
+  <script>
+    async function runTests() {
+      const response = await fetch('/run-tests');
+      if (!response.ok) {
+        document.getElementById('test-results').innerText = 'Error running tests';
+        return;
+      }
+      const results = await response.json();
+      displayResults(results);
+    }
+
+    function displayResults(results) {
+      const resultsDiv = document.getElementById('test-results');
+      resultsDiv.innerHTML = '';
+
+      results.testResults.forEach(testSuite => {
+        const suiteDiv = document.createElement('div');
+        suiteDiv.innerHTML = `<h2>${testSuite.name}</h2>`;
+        testSuite.assertionResults.forEach(test => {
+          const testDiv = document.createElement('div');
+          testDiv.innerHTML = `<p>${test.status}: ${test.title}</p>`;
+          suiteDiv.appendChild(testDiv);
+        });
+        resultsDiv.appendChild(suiteDiv);
+      });
+    }
+  </script>
 </body>
 </html>
