@@ -20,10 +20,6 @@ window.onload = function () {
     if (!localStorage.getItem('registered')) {
         document.getElementById('registration-form').style.display = 'block';
         document.getElementById('blackout').style.display = 'block';
-    } else {
-        document.getElementById('registration-form').style.display = 'none';
-        document.getElementById('blackout').style.display = 'none';
-        document.getElementById('logout-button').style.display = 'block';
     }
 
     const gameId = localStorage.getItem('selectedGame');
@@ -362,6 +358,5 @@ function toggleForms() {
 // Show logout button if user is already logged in
 if (localStorage.getItem('registered')) {
     document.getElementById('registration-form').style.display = 'none';
-    document.getElementById('blackout').style.display = 'none';
     document.getElementById('logout-button').style.display = 'block';
 }
