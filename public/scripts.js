@@ -292,43 +292,12 @@ document.getElementById('registerForm').addEventListener('submit', function (e) 
     });
 });
 
-function logout() {
-    localStorage.removeItem('registered');
-    localStorage.removeItem('username');
-    localStorage.removeItem('user_id');
-    document.getElementById('registration-form').style.display = 'block';
-    document.getElementById('logout-button').style.display = 'none';
-    alert('You have been logged out.');
-}
-
-// Function to toggle between login and registration forms
-function toggleForms() {
-    const loginForm = document.getElementById('loginForm');
-    const registerForm = document.getElementById('registerForm');
-    const formTitle = document.getElementById('form-title');
-    const formToggle = document.querySelector('.form-toggle');
-
-    if (loginForm.style.display === 'none') {
-        loginForm.style.display = 'block';
-        registerForm.style.display = 'none';
-        formTitle.textContent = 'Login';
-        formToggle.textContent = "Don't have an account? Register here.";
-    } else {
-        loginForm.style.display = 'none';
-        registerForm.style.display = 'block';
-        formTitle.textContent = 'Register';
-        formToggle.textContent = "Already have an account? Login here.";
-    }
-}
-
-// Add event listener for login form
+// Function to handle login without page refresh
 document.getElementById('loginForm').addEventListener('submit', function (e) {
-    e.preventDefault();
+    e.preventDefault(); // Prevent form submission from refreshing the page
 
     const username = document.getElementById('login-username').value;
     const password = document.getElementById('login-password').value;
-
-    console.log('Logging in user:', username); // Debug information
 
     fetch('/login', {
         method: 'POST',
@@ -357,6 +326,15 @@ document.getElementById('loginForm').addEventListener('submit', function (e) {
         alert('Error logging in user: ' + error.message);
     });
 });
+
+function logout() {
+    localStorage.removeItem('registered');
+    localStorage.removeItem('username');
+    localStorage.removeItem('user_id');
+    document.getElementById('registration-form').style.display = 'block';
+    document.getElementById('logout-button').style.display = 'none';
+    alert('You have been logged out.');
+}
 
 // Show logout button if user is already logged in
 if (localStorage.getItem('registered')) {
