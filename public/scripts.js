@@ -20,6 +20,10 @@ window.onload = function () {
     if (!localStorage.getItem('registered')) {
         document.getElementById('registration-form').style.display = 'block';
         document.getElementById('blackout').style.display = 'block';
+    } else {
+        document.getElementById('registration-form').style.display = 'none';
+        document.getElementById('blackout').style.display = 'none';
+        document.getElementById('logout-button').style.display = 'block';
     }
 
     const gameId = localStorage.getItem('selectedGame');
@@ -336,8 +340,28 @@ function logout() {
     alert('You have been logged out.');
 }
 
+function toggleForms() {
+    const loginForm = document.getElementById('loginForm');
+    const registerForm = document.getElementById('registerForm');
+    const formTitle = document.getElementById('form-title');
+    const formToggle = document.querySelector('.form-toggle');
+
+    if (loginForm.style.display === 'none') {
+        loginForm.style.display = 'block';
+        registerForm.style.display = 'none';
+        formTitle.textContent = 'Login';
+        formToggle.textContent = "Don't have an account? Register here.";
+    } else {
+        loginForm.style.display = 'none';
+        registerForm.style.display = 'block';
+        formTitle.textContent = 'Register';
+        formToggle.textContent = "Already have an account? Login here.";
+    }
+}
+
 // Show logout button if user is already logged in
 if (localStorage.getItem('registered')) {
     document.getElementById('registration-form').style.display = 'none';
+    document.getElementById('blackout').style.display = 'none';
     document.getElementById('logout-button').style.display = 'block';
 }

@@ -103,6 +103,30 @@ app.post('/register', async (req, res) => {
   }
 });
 
+app.post('/login', async (req, res) => {
+  const { username, password } = req.body;
+
+  console.log('Received login request:', username, password);  // Debug information
+
+  try {
+    const result = await pool.query(
+      'SELECT id FROM usernames WHERE username = $1 AND password = $2',
+      [username, password]
+    );
+
+    if (result.rows.length > 0) {
+      console.log('User logged in successfully:', result.rows[0]);  // Debug information
+      res.status(200).json(result.rows[0]);
+    } else {
+      console.error('Invalid username or password');
+      res.status(401).send('Invalid username or password');
+    }
+  } catch (error) {
+    console.error('Error logging in user:', error);
+    res.status(500).send('Error logging in user');
+  }
+});
+
 app.post('/submit_question', async (req, res) => {
   const { question, type, category, answer, creator } = req.body;
 
@@ -190,28 +214,28 @@ app.post('/rate_question', async (req, res) => {
   }
 });
 
-app.listen(port, () => {
-  console.log(`Server running at http://localhost:${port}/`);
-});
-
 app.get('/get_user_questions', async (req, res) => {
   const { username } = req.query;
 
   try {
-      const userResult = await pool.query('SELECT username, password FROM usernames WHERE username = $1', [username]);
-      if (userResult.rows.length === 0) {
-          return res.status(404).send('User not found');
-      }
+    const userResult = await pool.query('SELECT id, password FROM usernames WHERE username = $1', [username]);
 
-      const questionsResult = await pool.query('SELECT id, question FROM questions WHERE creator = $1', [username]);
-      
-      res.json({
-          username: userResult.rows[0].username,
-          password: userResult.rows[0].password,
-          questions: questionsResult.rows
-      });
+    if (userResult.rows.length === 0) {
+      return res.status(404).send('User not found');
+    }
+
+    const userId = userResult.rows[0].id;
+    const userPassword = userResult.rows[0].password;
+
+    const questionsResult = await pool.query('SELECT * FROM questions WHERE creator = $1', [username]);
+
+    res.json({ questions: questionsResult.rows, password: userPassword });
   } catch (error) {
-      console.error('Error fetching user questions:', error);
-      res.status(500).send('Error fetching user questions');
+    console.error('Error fetching user questions:', error);
+    res.status(500).send('Error fetching user questions');
   }
+});
+
+app.listen(port, () => {
+  console.log(`Server running at http://localhost:${port}/`);
 });
