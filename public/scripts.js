@@ -321,48 +321,6 @@ function toggleForms() {
     }
 }
 
-// Update the registration process to show the logout button after successful registration
-document.getElementById('registerForm').addEventListener('submit', function (e) {
-    e.preventDefault();
-
-    const username = document.getElementById('register-username').value;
-    const password = document.getElementById('register-password').value;
-
-    console.log('Registering user:', username); // Debug information
-
-    fetch('/register', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ username, password }),
-    })
-        .then((response) => {
-            console.log('Registration response status:', response.status); // Debug information
-            if (response.ok) {
-                return response.json();
-            }
-            throw new Error('Network response was not ok.');
-        })
-        .then((data) => {
-            console.log('Registration successful:', data); // Debug information
-            localStorage.setItem('registered', true);
-            localStorage.setItem('username', username);
-            localStorage.setItem('user_id', data.id); // Store the user ID
-            document.getElementById('login-logout-section').style.display = 'none';
-            document.getElementById('logout-button').style.display = 'block';
-        })
-        .catch((error) => {
-            console.error('Error registering user:', error);
-        });
-});
-
-// Show logout button if user is already logged in
-if (localStorage.getItem('registered')) {
-    document.getElementById('registration-form').style.display = 'none';
-    document.getElementById('logout-button').style.display = 'block';
-}
-
 // Add event listener for login form
 document.getElementById('loginForm').addEventListener('submit', function (e) {
     e.preventDefault();
@@ -372,6 +330,36 @@ document.getElementById('loginForm').addEventListener('submit', function (e) {
 
     console.log('Logging in user:', username); // Debug information
 
-    // Implement login logic here, similar to registration
-    // ...
+    fetch('/login', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ username, password }),
+    })
+    .then(response => {
+        if (!response.ok) {
+            return response.text().then(text => { throw new Error(text) });
+        }
+        return response.json();
+    })
+    .then(data => {
+        localStorage.setItem('registered', true);
+        localStorage.setItem('username', username);
+        localStorage.setItem('user_id', data.id); // Store the user ID
+        document.getElementById('blackout').style.display = 'none';
+        document.getElementById('registration-form').style.display = 'none';
+        document.getElementById('logout-button').style.display = 'block';
+        alert('Login successful!');
+    })
+    .catch(error => {
+        console.error('Error logging in user:', error);
+        alert('Error logging in user: ' + error.message);
+    });
 });
+
+// Show logout button if user is already logged in
+if (localStorage.getItem('registered')) {
+    document.getElementById('registration-form').style.display = 'none';
+    document.getElementById('logout-button').style.display = 'block';
+}
