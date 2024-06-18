@@ -230,17 +230,27 @@ document.addEventListener('DOMContentLoaded', () => {
 // Fetch user data and display on user.html
 function loadUserProfile() {
     const username = localStorage.getItem('username');
-    document.getElementById('username').innerText = username;
+    document.getElementById('username').innerText = username ? username : "You're not logged in!";
+    if (!username) {
+        document.getElementById('userQuestions').innerHTML = "None, dummy.";
+        document.getElementById('userQuestions').style.color = "red";
+        document.getElementById('username').style.color = "red";
+    }
 
     fetch(`/get_user_questions?username=${username}`)
         .then(response => response.json())
         .then(data => {
             const userQuestionsList = document.getElementById('userQuestions');
             userQuestionsList.innerHTML = '';
-
+            data = [{ questions: data, rating_count: 0, total_rating: 0 }];
             data.questions.forEach(question => {
                 const li = document.createElement('li');
-                li.innerHTML = `<a href="find.html?id=${question.id}">${question.question}</a>`;
+                li.innerHTML = `<div class="question-link"><a href="find.html?id=${question.id}">${question.question}</a><div class="question-data"><p class="answer-count"><p class="current-rating"></p></div></div>`;
+                li.style.display = 'block';
+                li.style.padding = '20px';
+                li.style.marginBottom = '10px';
+                document.getElementsByClassName('answer-count').innerText = question.answer_count;
+                document.getElementsByClassName('current-rating').innerText = question.total_rating;
                 userQuestionsList.appendChild(li);
             });
         })
