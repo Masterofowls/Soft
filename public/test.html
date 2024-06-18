@@ -2,29 +2,96 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Run Jest Tests</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Page</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/mocha/9.1.3/mocha.min.css">
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            color: #333;
+            background: #f4f4f4;
+            padding: 20px;
         }
-        #test-results {
-            margin: 20px;
-        }
-        .test-pass {
-            color: green;
-        }
-        .test-fail {
-            color: red;
+        #mocha {
+            margin-top: 20px;
         }
     </style>
 </head>
 <body>
-    <h1>Run Jest Tests</h1>
-    <button id="run-tests">Run Tests</button>
-    <div id="test-results"></div>
+    <h1>Run Tests</h1>
+    <button id="runTests">Run Tests</button>
+    <div id="mocha"></div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mocha/9.1.3/mocha.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/chai/4.3.4/chai.min.js"></script>
+    <script>
+        mocha.setup('bdd');
+        const expect = chai.expect;
 
-    <script src="testRunner.js"></script>
+        // Test Suite for API
+        describe('API Tests', function() {
+            it('should register a new user', async function() {
+                try {
+                    const response = await fetch('http://localhost:3000/register', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ username: 'testuser', password: 'testpassword' })
+                    });
+                    const data = await response.json();
+                    expect(response.status).to.equal(200);
+                    expect(data).to.have.property('id');
+                } catch (error) {
+                    console.error('Error registering user:', error);
+                    throw error;
+                }
+            });
+
+            it('should log in a user', async function() {
+                try {
+                    const response = await fetch('http://localhost:3000/login', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ username: 'testuser', password: 'testpassword' })
+                    });
+                    const data = await response.json();
+                    expect(response.status).to.equal(200);
+                    expect(data).to.have.property('id');
+                } catch (error) {
+                    console.error('Error logging in user:', error);
+                    throw error;
+                }
+            });
+
+            it('should submit a question', async function() {
+                try {
+                    const response = await fetch('http://localhost:3000/submit_question', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            question: 'What is Mocha?',
+                            type: 'multiple_choice',
+                            category: 'IT',
+                            answer: 'A testing framework',
+                            creator: 'testuser'
+                        })
+                    });
+                    const data = await response.json();
+                    expect(response.status).to.equal(200);
+                    expect(data).to.have.property('id');
+                } catch (error) {
+                    console.error('Error submitting question:', error);
+                    throw error;
+                }
+            });
+        });
+
+        document.getElementById('runTests').addEventListener('click', function() {
+            mocha.run();
+        });
+    </script>
 </body>
 </html>
