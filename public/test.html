@@ -18,14 +18,16 @@
       color: green;
     }
   </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/mocha/8.4.0/mocha.min.css">
 </head>
 <body>
   <h1>Run Tests</h1>
   <button id="run-tests">Run Tests</button>
+  <div id="mocha"></div> <!-- Added Mocha div -->
   <div id="test-results" class="test-result"></div>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/mocha/8.4.0/mocha.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/chai/4.3.4/chai.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/superagent/6.1.0/superagent.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/superagent/6.1.0/superagent.min.js"></script> <!-- Added superagent -->
   <script>
     document.getElementById('run-tests').addEventListener('click', runTests);
 
