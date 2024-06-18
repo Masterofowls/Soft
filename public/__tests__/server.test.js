@@ -1,10 +1,13 @@
 const request = require('supertest');
 const { app, server } = require('../server'); // adjust the path to your server.js
 
-afterAll((done) => {
-  server.close(() => {
-    console.log('Server closed');
-    done();
+afterAll(async () => {
+  await new Promise((resolve, reject) => {
+    server.close((err) => {
+      if (err) return reject(err);
+      console.log('Server closed');
+      resolve();
+    });
   });
 });
 
