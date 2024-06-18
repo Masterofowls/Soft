@@ -37,6 +37,10 @@ app.get('/find', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'find.html'));
 });
 
+app.get('/login', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'login.html'));
+});
+
 app.get('/get_question_of_the_day', async (req, res) => {
   try {
     const result = await pool.query('SELECT * FROM questions ORDER BY RANDOM() LIMIT 1');

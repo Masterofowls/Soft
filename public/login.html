@@ -78,6 +78,21 @@
         .form-toggle:hover {
             color: #fff;
         }
+
+        .logout-button {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #de0808;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1.2rem;
+        }
+
+        .logout-button:hover {
+            background-color: #c30707;
+        }
     </style>
 </head>
 <body>
@@ -98,6 +113,7 @@
             <button type="submit">Register</button>
         </form>
         <div class="form-toggle" onclick="toggleForms()">Don't have an account? Register here.</div>
+        <button class="logout-button" id="logout-button" style="display: none;" onclick="logout()">Logout</button>
     </div>
 
     <script>
@@ -143,7 +159,7 @@
                   localStorage.setItem('username', formData.username);
                   localStorage.setItem('user_id', data.id);
                   alert('Login successful!');
-                  window.location.href = 'index.html';
+                  window.location.href = 'user.html';
               } else {
                   const errorText = await response.text();
                   console.error('Failed to login:', errorText);
@@ -178,7 +194,7 @@
                   localStorage.setItem('username', formData.username);
                   localStorage.setItem('user_id', data.id);
                   alert('Registration successful!');
-                  window.location.href = 'index.html';
+                  window.location.href = 'user.html';
               } else {
                   const errorText = await response.text();
                   console.error('Failed to register:', errorText);
@@ -189,6 +205,20 @@
               alert(`An error occurred: ${error.message}`);
           }
       });
+
+      function logout() {
+          localStorage.removeItem('registered');
+          localStorage.removeItem('username');
+          localStorage.removeItem('user_id');
+          document.getElementById('logout-button').style.display = 'none';
+          alert('You have been logged out.');
+          window.location.href = 'login.html';
+      }
+
+      // Show logout button if user is already logged in
+      if (localStorage.getItem('registered')) {
+          document.getElementById('logout-button').style.display = 'block';
+      }
     </script>
 </body>
 </html>
