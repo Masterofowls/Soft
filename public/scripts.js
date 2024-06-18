@@ -300,3 +300,82 @@ document.getElementById('registerForm').addEventListener('submit', function (e) 
     });
   });
   
+  // Toggle between login and registration forms
+function toggleForms() {
+    const loginForm = document.getElementById('loginForm');
+    const registerForm = document.getElementById('registerForm');
+    const formTitle = document.getElementById('form-title');
+    const formToggle = document.querySelector('.form-toggle');
+
+    if (loginForm.style.display === 'none') {
+        loginForm.style.display = 'block';
+        registerForm.style.display = 'none';
+        formTitle.innerText = 'Login';
+        formToggle.innerText = "Don't have an account? Register here.";
+    } else {
+        loginForm.style.display = 'none';
+        registerForm.style.display = 'block';
+        formTitle.innerText = 'Register';
+        formToggle.innerText = 'Already have an account? Login here.';
+    }
+}
+
+document.getElementById('registerForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+
+    const username = document.getElementById('register-username').value;
+    const password = document.getElementById('register-password').value;
+
+    fetch('/register', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ username, password }),
+    })
+    .then(response => {
+        if (!response.ok) {
+            return response.text().then(text => { throw new Error(text) });
+        }
+        return response.json();
+    })
+    .then(data => {
+        localStorage.setItem('registered', true);
+        localStorage.setItem('username', username);
+        window.location.href = 'index.html'; // Redirect to home page after registration
+    })
+    .catch(error => {
+        console.error('Error registering user:', error);
+        alert('Error registering user: ' + error.message);
+    });
+});
+
+document.getElementById('loginForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+
+    const username = document.getElementById('login-username').value;
+    const password = document.getElementById('login-password').value;
+
+    fetch('/login', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ username, password }),
+    })
+    .then(response => {
+        if (!response.ok) {
+            return response.text().then(text => { throw new Error(text) });
+        }
+        return response.json();
+    })
+    .then(data => {
+        localStorage.setItem('registered', true);
+        localStorage.setItem('username', username);
+        window.location.href = 'index.html'; // Redirect to home page after login
+    })
+    .catch(error => {
+        console.error('Error logging in user:', error);
+        alert('Error logging in user: ' + error.message);
+    });
+});
