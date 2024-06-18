@@ -3,12 +3,12 @@ const bodyParser = require('body-parser');
 const path = require('path');
 const cors = require('cors');
 const { Pool } = require('pg');
+const { exec } = require('child_process');
 require('dotenv').config();
 
 const app = express();
 const port = process.env.PORT || 3000;
 
-// Log the database connection settings
 console.log('Database connection settings:');
 console.log('Host:', process.env.DATABASE_HOST);
 console.log('Port:', process.env.DATABASE_PORT);
@@ -33,6 +33,29 @@ app.use(express.static(__dirname));
 
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
+app.get('/tests.html', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'tests.html'));
+});
+
+app.get('/run-tests', (req, res) => {
+  exec('npm test -- --json --outputFile=results.json', (error, stdout, stderr) => {
+    if (error) {
+      console.error(`Error running tests: ${error}`);
+      return res.status(500).json({ error: 'Error running tests', details: error.message });
+    }
+    console.log(`stdout: ${stdout}`);
+    console.error(`stderr: ${stderr}`);
+
+    try {
+      const results = require('./results.json');
+      res.json(results);
+    } catch (err) {
+      console.error(`Error reading test results: ${err}`);
+      res.status(500).json({ error: 'Error reading test results', details: err.message });
+    }
+  });
 });
 
 app.get('/question_form', (req, res) => {
@@ -216,8 +239,8 @@ app.post('/rate_question', async (req, res) => {
 
     res.status(200).json(result.rows[0]);
   } catch (error) {
-    console.error('Error rating question:', error);
-    res.status(500).send('Error rating question');
+    console.error('Error inserting rating:', error);
+    res.status(500).send('Error inserting rating');
   }
 });
 
