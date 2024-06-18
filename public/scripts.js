@@ -241,6 +241,9 @@ function loadUserProfile() {
                 li.innerHTML = `<a href="find.html?id=${question.id}">${question.question}</a>`;
                 userQuestionsList.appendChild(li);
             });
+
+            // Display the user's password (for demonstration purposes only, not recommended for production)
+            document.getElementById('password').innerText = data.password;
         })
         .catch(error => {
             console.error('Error fetching user questions:', error);
@@ -258,8 +261,8 @@ if (document.readyState === 'loading') {
 document.getElementById('registerForm').addEventListener('submit', function (e) {
     e.preventDefault(); // Prevent form submission from refreshing the page
 
-    const username = document.getElementById('username').value;
-    const password = document.getElementById('password').value;
+    const username = document.getElementById('register-username').value;
+    const password = document.getElementById('register-password').value;
 
     fetch('/register', {
         method: 'POST',
@@ -277,8 +280,10 @@ document.getElementById('registerForm').addEventListener('submit', function (e) 
     .then(data => {
         localStorage.setItem('registered', true);
         localStorage.setItem('username', username);
+        localStorage.setItem('user_id', data.id); // Store the user ID
         document.getElementById('blackout').style.display = 'none';
         document.getElementById('registration-form').style.display = 'none';
+        document.getElementById('logout-button').style.display = 'block';
         alert('Registration successful!');
     })
     .catch(error => {
@@ -296,34 +301,77 @@ function logout() {
     alert('You have been logged out.');
 }
 
-// Fetch user data and display on user.html
-function loadUserProfile() {
-    const username = localStorage.getItem('username');
-    document.getElementById('username').innerText = username;
+// Function to toggle between login and registration forms
+function toggleForms() {
+    const loginForm = document.getElementById('loginForm');
+    const registerForm = document.getElementById('registerForm');
+    const formTitle = document.getElementById('form-title');
+    const formToggle = document.querySelector('.form-toggle');
 
-    fetch(`/get_user_questions?username=${username}`)
-        .then(response => response.json())
-        .then(data => {
-            const userQuestionsList = document.getElementById('userQuestions');
-            userQuestionsList.innerHTML = '';
+    if (loginForm.style.display === 'none') {
+        loginForm.style.display = 'block';
+        registerForm.style.display = 'none';
+        formTitle.textContent = 'Login';
+        formToggle.textContent = "Don't have an account? Register here.";
+    } else {
+        loginForm.style.display = 'none';
+        registerForm.style.display = 'block';
+        formTitle.textContent = 'Register';
+        formToggle.textContent = "Already have an account? Login here.";
+    }
+}
 
-            data.questions.forEach(question => {
-                const li = document.createElement('li');
-                li.innerHTML = `<a href="find.html?id=${question.id}">${question.question}</a>`;
-                userQuestionsList.appendChild(li);
-            });
+// Update the registration process to show the logout button after successful registration
+document.getElementById('registerForm').addEventListener('submit', function (e) {
+    e.preventDefault();
 
-            // Display the user's password (for demonstration purposes only, not recommended for production)
-            document.getElementById('password').innerText = data.password;
+    const username = document.getElementById('register-username').value;
+    const password = document.getElementById('register-password').value;
+
+    console.log('Registering user:', username); // Debug information
+
+    fetch('/register', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ username, password }),
+    })
+        .then((response) => {
+            console.log('Registration response status:', response.status); // Debug information
+            if (response.ok) {
+                return response.json();
+            }
+            throw new Error('Network response was not ok.');
         })
-        .catch(error => {
-            console.error('Error fetching user questions:', error);
+        .then((data) => {
+            console.log('Registration successful:', data); // Debug information
+            localStorage.setItem('registered', true);
+            localStorage.setItem('username', username);
+            localStorage.setItem('user_id', data.id); // Store the user ID
+            document.getElementById('login-logout-section').style.display = 'none';
+            document.getElementById('logout-button').style.display = 'block';
+        })
+        .catch((error) => {
+            console.error('Error registering user:', error);
         });
+});
+
+// Show logout button if user is already logged in
+if (localStorage.getItem('registered')) {
+    document.getElementById('registration-form').style.display = 'none';
+    document.getElementById('logout-button').style.display = 'block';
 }
 
-// Call the function when the user.html page loads
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', loadUserProfile);
-} else {
-    loadUserProfile();
-}
+// Add event listener for login form
+document.getElementById('loginForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+
+    const username = document.getElementById('login-username').value;
+    const password = document.getElementById('login-password').value;
+
+    console.log('Logging in user:', username); // Debug information
+
+    // Implement login logic here, similar to registration
+    // ...
+});
