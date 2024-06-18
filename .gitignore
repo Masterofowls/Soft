@@ -1,4 +1,19 @@
-node_modules
+# Ignore everything in node_modules except the specified modules
+node_modules/*
+!node_modules/jest/
+!node_modules/supertest/
+!node_modules/mocha/
+!node_modules/chai/
+!node_modules/express/
+!node_modules/body-parser/
+!node_modules/path/
+!node_modules/cors/
+!node_modules/pg/
+!node_modules/child_process/
+
+# Ensure the parent directories are not ignored
+!node_modules
+
 # stryker temp files
 .stryker-tmp
 # reports from stryker
