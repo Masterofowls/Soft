@@ -12,19 +12,16 @@ function openGamePage(gameId) {
     } else if (gameId === 'game5') {
         window.location.href = 'darts.html';
     }
-  }
-  
-  // Function to load game data when page loads
-  window.onload = function () {
+}
+
+// Function to load game data when page loads
+window.onload = function () {
     // Check for user registration
     if (!localStorage.getItem('registered')) {
         document.getElementById('registration-form').style.display = 'block';
         document.getElementById('blackout').style.display = 'block';
-    } else {
-        document.getElementById('registration-form').style.display = 'none';
-        document.getElementById('blackout').style.display = 'none';
     }
-  
+
     const gameId = localStorage.getItem('selectedGame');
     if (gameId) {
         const gameData = {
@@ -40,7 +37,7 @@ function openGamePage(gameId) {
             },
             // Add more game data here
         };
-  
+
         const game = gameData[gameId];
         if (game) {
             document.getElementById('game-title').innerText = game.title;
@@ -48,7 +45,7 @@ function openGamePage(gameId) {
             document.getElementById('game-description').innerText = game.description;
         }
     }
-  
+
     // Fetch and display the question of the day
     fetch('/get_question_of_the_day')
         .then((response) => response.json())
@@ -61,14 +58,14 @@ function openGamePage(gameId) {
             document.getElementById('question-text').innerText = 'Failed to fetch the question of the day.';
             console.error('Error fetching question of the day:', error);
         });
-  
+
     // Fetch and display all questions
     fetch('/get_all_questions')
         .then((response) => response.json())
         .then((data) => {
             const questionList = document.getElementById('questionList');
             questionList.innerHTML = '';
-  
+
             data.questions.sort((a, b) => a.question.localeCompare(b.question)).forEach((question) => {
                 const li = document.createElement('li');
                 li.innerText = question.question;
@@ -81,7 +78,7 @@ function openGamePage(gameId) {
         .catch((error) => {
             console.error('Error fetching questions:', error);
         });
-  
+
     // Add event listeners for search form
     document.getElementById('searchForm').addEventListener('submit', async (e) => {
         e.preventDefault();
@@ -97,7 +94,7 @@ function openGamePage(gameId) {
                 },
                 body: JSON.stringify(searchParams),
             });
-  
+
             if (response.ok) {
                 const questions = await response.json();
                 displaySearchResults(questions);
@@ -111,12 +108,12 @@ function openGamePage(gameId) {
             alert(`An error occurred: ${error.message}`);
         }
     });
-  
+
     // Fetch and display the search results
     function displaySearchResults(questions) {
         const resultsDiv = document.getElementById('results');
         resultsDiv.innerHTML = '';
-  
+
         questions.forEach((question) => {
             const questionDiv = document.createElement('div');
             questionDiv.innerHTML = `
@@ -128,24 +125,24 @@ function openGamePage(gameId) {
             resultsDiv.appendChild(questionDiv);
         });
     }
-  
+
     // Display the question details
     window.showQuestionDetails = function (questionId, questionText, creator, answer) {
         document.getElementById('questionText').innerText = questionText;
         document.getElementById('questionAuthor').innerText = creator;
         document.getElementById('question-details').style.display = 'block';
         document.getElementById('result').innerText = '';
-  
+
         window.correctAnswer = answer;
         window.questionId = questionId;
     };
-  };
-  
-  // Function to check the answer and increment answer count if correct
-  function checkAnswer() {
+};
+
+// Function to check the answer and increment answer count if correct
+function checkAnswer() {
     const userAnswer = document.getElementById('userAnswer').value;
     const resultDiv = document.getElementById('result');
-  
+
     if (userAnswer === window.correctAnswer) {
         resultDiv.innerText = 'Correct!';
         resultDiv.style.color = 'green';
@@ -154,10 +151,10 @@ function openGamePage(gameId) {
         resultDiv.innerText = 'Incorrect!';
         resultDiv.style.color = 'red';
     }
-  }
-  
-  // Increment answer count
-  function incrementAnswerCount(questionId) {
+}
+
+// Increment answer count
+function incrementAnswerCount(questionId) {
     fetch('/increment_answer_count', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -171,10 +168,10 @@ function openGamePage(gameId) {
     .catch((error) => {
         console.error('Error incrementing answer count:', error);
     });
-  }
-  
-  // Rate question
-  function rateQuestion(questionId, userId, rate) {
+}
+
+// Rate question
+function rateQuestion(questionId, userId, rate) {
     fetch('/rate_question', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -195,9 +192,9 @@ function openGamePage(gameId) {
         console.error('Error rating question:', error);
         alert('Error rating question: ' + error.message);
     });
-  }
-  
-  document.addEventListener('DOMContentLoaded', () => {
+}
+
+document.addEventListener('DOMContentLoaded', () => {
     const rateButtons = document.querySelectorAll('.rate-button');
     rateButtons.forEach((button) => {
         button.addEventListener('click', () => {
@@ -206,10 +203,10 @@ function openGamePage(gameId) {
             rateQuestion(window.questionId, userId, rate);
         });
     });
-  
+
     const urlParams = new URLSearchParams(window.location.search);
     const questionId = urlParams.get('id');
-  
+
     if (questionId) {
         fetch(`/get_question_by_id?id=${questionId}`)
             .then((response) => response.json())
@@ -226,32 +223,23 @@ function openGamePage(gameId) {
                 alert('Error fetching question details');
             });
     }
-  });
-  
-  // Fetch user data and display on user.html
-  function loadUserProfile() {
+});
+
+// Fetch user data and display on user.html
+function loadUserProfile() {
     const username = localStorage.getItem('username');
-    document.getElementById('username').innerText = username ? username : "You're not logged in!";
-    if (!username) {
-        document.getElementById('userQuestions').innerHTML = "None, dummy.";
-        document.getElementById('userQuestions').style.color = "red";
-        document.getElementById('username').style.color = "red";
-    }
+    document.getElementById('username').innerText = username;
 
     fetch(`/get_user_questions?username=${username}`)
         .then(response => response.json())
         .then(data => {
             const userQuestionsList = document.getElementById('userQuestions');
             userQuestionsList.innerHTML = '';
+
             data.questions.forEach(question => {
                 const li = document.createElement('li');
-                li.innerHTML = `<div class="question-link"><a href="find.html?id=${question.id}">${question.question}</a><div class="question-data"><p class="answer-count"><p class="current-rating"></p></div></div>`;
-                li.style.display = 'block';
-                li.style.padding = '20px';
-                li.style.marginBottom = '10px';
+                li.innerHTML = `<a href="find.html?id=${question.id}">${question.question}</a>`;
                 userQuestionsList.appendChild(li);
-                document.getElementsByClassName('answer-count').innerText = question.answer_count;
-                document.getElementsByClassName('current-rating').innerText = question.total_rating;
             });
         })
         .catch(error => {
@@ -262,18 +250,17 @@ function openGamePage(gameId) {
 // Call the function when the user.html page loads
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', loadUserProfile);
-  } else {
+} else {
     loadUserProfile();
-  }
-  
-  // Handle registration form submission via AJAX
-// Handle registration form submission via AJAX
+}
+
+// Function to handle registration without page refresh
 document.getElementById('registerForm').addEventListener('submit', function (e) {
-    e.preventDefault();
-  
+    e.preventDefault(); // Prevent form submission from refreshing the page
+
     const username = document.getElementById('username').value;
     const password = document.getElementById('password').value;
-  
+
     fetch('/register', {
         method: 'POST',
         headers: {
@@ -297,85 +284,5 @@ document.getElementById('registerForm').addEventListener('submit', function (e) 
     .catch(error => {
         console.error('Error registering user:', error);
         alert('Error registering user: ' + error.message);
-    });
-  });
-  
-  // Toggle between login and registration forms
-function toggleForms() {
-    const loginForm = document.getElementById('loginForm');
-    const registerForm = document.getElementById('registerForm');
-    const formTitle = document.getElementById('form-title');
-    const formToggle = document.querySelector('.form-toggle');
-
-    if (loginForm.style.display === 'none') {
-        loginForm.style.display = 'block';
-        registerForm.style.display = 'none';
-        formTitle.innerText = 'Login';
-        formToggle.innerText = "Don't have an account? Register here.";
-    } else {
-        loginForm.style.display = 'none';
-        registerForm.style.display = 'block';
-        formTitle.innerText = 'Register';
-        formToggle.innerText = 'Already have an account? Login here.';
-    }
-}
-
-document.getElementById('registerForm').addEventListener('submit', function (e) {
-    e.preventDefault();
-
-    const username = document.getElementById('register-username').value;
-    const password = document.getElementById('register-password').value;
-
-    fetch('/register', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ username, password }),
-    })
-    .then(response => {
-        if (!response.ok) {
-            return response.text().then(text => { throw new Error(text) });
-        }
-        return response.json();
-    })
-    .then(data => {
-        localStorage.setItem('registered', true);
-        localStorage.setItem('username', username);
-        window.location.href = 'index.html'; // Redirect to home page after registration
-    })
-    .catch(error => {
-        console.error('Error registering user:', error);
-        alert('Error registering user: ' + error.message);
-    });
-});
-
-document.getElementById('loginForm').addEventListener('submit', function (e) {
-    e.preventDefault();
-
-    const username = document.getElementById('login-username').value;
-    const password = document.getElementById('login-password').value;
-
-    fetch('/login', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ username, password }),
-    })
-    .then(response => {
-        if (!response.ok) {
-            return response.text().then(text => { throw new Error(text) });
-        }
-        return response.json();
-    })
-    .then(data => {
-        localStorage.setItem('registered', true);
-        localStorage.setItem('username', username);
-        window.location.href = 'index.html'; // Redirect to home page after login
-    })
-    .catch(error => {
-        console.error('Error logging in user:', error);
-        alert('Error logging in user: ' + error.message);
     });
 });
