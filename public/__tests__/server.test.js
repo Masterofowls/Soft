@@ -1,5 +1,5 @@
 const request = require('supertest');
-const { app, server } = require('../server'); // adjust the path to your server.js
+const { app, server } = require('../../server'); // adjust the path to your server.js
 
 afterAll(async () => {
   await new Promise((resolve, reject) => {
