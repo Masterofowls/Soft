@@ -3,7 +3,6 @@ const bodyParser = require('body-parser');
 const path = require('path');
 const cors = require('cors');
 const { Pool } = require('pg');
-const { exec } = require('child_process'); // Ensure this is declared only once
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -235,16 +234,6 @@ app.get('/get_user_questions', async (req, res) => {
     console.error('Error fetching user questions:', error);
     res.status(500).send('Error fetching user questions');
   }
-});
-
-app.get('/run-tests', (req, res) => {
-  exec('npm test -- --json', (error, stdout, stderr) => {
-    if (error) {
-      res.status(500).json({ error: stderr });
-    } else {
-      res.json(JSON.parse(stdout));
-    }
-  });
 });
 
 app.listen(port, () => {
