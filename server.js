@@ -3,7 +3,7 @@ const bodyParser = require('body-parser');
 const path = require('path');
 const cors = require('cors');
 const { Pool } = require('pg');
-const { exec } = require('child_process');
+const { exec } = require('child_process'); // Ensure this is declared only once
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -36,10 +36,6 @@ app.get('/search_questions', (req, res) => {
 
 app.get('/find', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'find.html'));
-});
-
-app.get('/test', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'test.html'));
 });
 
 app.get('/get_question_of_the_day', async (req, res) => {
@@ -115,7 +111,7 @@ app.post('/login', async (req, res) => {
 
   try {
     const result = await pool.query(
-      'SELECT userid FROM usernames WHERE username = $1 AND password = $2',
+      'SELECT id FROM usernames WHERE username = $1 AND password = $2',
       [username, password]
     );
 
@@ -241,8 +237,6 @@ app.get('/get_user_questions', async (req, res) => {
   }
 });
 
-const { exec } = require('child_process');
-
 app.get('/run-tests', (req, res) => {
   exec('npm test -- --json', (error, stdout, stderr) => {
     if (error) {
@@ -252,7 +246,6 @@ app.get('/run-tests', (req, res) => {
     }
   });
 });
-
 
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}/`);
