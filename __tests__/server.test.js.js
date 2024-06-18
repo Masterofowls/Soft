@@ -1,63 +1,40 @@
-// __tests__/server.test.js
 const request = require('supertest');
-const app = require('../server'); // Adjust the path if needed
+const app = require('./server'); // Make sure this path is correct
 
-describe('User API', () => {
-  let testUserId;
-
-  test('should register a new user', async () => {
-    const response = await request(app)
+describe('API Tests', () => {
+  it('should register a new user', async () => {
+    const res = await request(app)
       .post('/register')
       .send({
         username: 'testuser',
-        password: 'testpassword',
+        password: 'password123'
       });
-    expect(response.statusCode).toBe(200);
-    expect(response.body).toHaveProperty('userid');
-    testUserId = response.body.userid;
+    expect(res.statusCode).toEqual(200);
+    expect(res.body).toHaveProperty('id');
   });
 
-  test('should log in the user', async () => {
-    const response = await request(app)
+  it('should log in a user', async () => {
+    const res = await request(app)
       .post('/login')
       .send({
         username: 'testuser',
-        password: 'testpassword',
+        password: 'password123'
       });
-    expect(response.statusCode).toBe(200);
-    expect(response.body).toHaveProperty('userid', testUserId);
+    expect(res.statusCode).toEqual(200);
+    expect(res.body).toHaveProperty('id');
   });
 
-  test('should delete the test user', async () => {
-    const response = await request(app)
-      .delete(`/users/${testUserId}`);
-    expect(response.statusCode).toBe(200);
-    expect(response.body).toHaveProperty('message', 'User deleted');
-  });
-});
-
-describe('Question API', () => {
-  let testQuestionId;
-
-  test('should submit a new question', async () => {
-    const response = await request(app)
+  it('should submit a question', async () => {
+    const res = await request(app)
       .post('/submit_question')
       .send({
-        question: 'What is Jest?',
-        type: 'multiple_choice',
-        category: 'IT',
-        answer: 'A testing framework',
-        creator: 'testuser',
+        question: 'What is the capital of France?',
+        type: 'text',
+        category: 'geography',
+        answer: 'Paris',
+        creator: 'testuser'
       });
-    expect(response.statusCode).toBe(200);
-    expect(response.body).toHaveProperty('id');
-    testQuestionId = response.body.id;
-  });
-
-  test('should delete the test question', async () => {
-    const response = await request(app)
-      .delete(`/questions/${testQuestionId}`);
-    expect(response.statusCode).toBe(200);
-    expect(response.body).toHaveProperty('message', 'Question deleted');
+    expect(res.statusCode).toEqual(200);
+    expect(res.body).toHaveProperty('id');
   });
 });

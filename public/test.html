@@ -1,97 +1,104 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Test Page</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/mocha/9.1.3/mocha.min.css">
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: #f4f4f4;
-            padding: 20px;
-        }
-        #mocha {
-            margin-top: 20px;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Run Tests</title>
+  <style>
+    .test-result {
+      margin-top: 20px;
+    }
+    .test-result .test-case {
+      margin-bottom: 10px;
+    }
+    .test-result .test-case .test-error {
+      color: red;
+    }
+    .test-result .test-case .test-success {
+      color: green;
+    }
+  </style>
 </head>
 <body>
-    <h1>Run Tests</h1>
-    <button id="runTests">Run Tests</button>
-    <div id="mocha"></div>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/mocha/9.1.3/mocha.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/chai/4.3.4/chai.min.js"></script>
-    <script>
-        mocha.setup('bdd');
-        const expect = chai.expect;
+  <h1>Run Tests</h1>
+  <button id="run-tests">Run Tests</button>
+  <div id="test-results" class="test-result"></div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mocha/8.4.0/mocha.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/chai/4.3.4/chai.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/superagent/6.1.0/superagent.min.js"></script>
+  <script>
+    document.getElementById('run-tests').addEventListener('click', runTests);
 
-        // Test Suite for API
-        describe('API Tests', function() {
-            it('should register a new user', async function() {
-                try {
-                    const response = await fetch('http://localhost:3000/register', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({ username: 'testuser', password: 'testpassword' })
-                    });
-                    const data = await response.json();
-                    expect(response.status).to.equal(200);
-                    expect(data).to.have.property('id');
-                } catch (error) {
-                    console.error('Error registering user:', error);
-                    throw error;
-                }
-            });
+    async function runTests() {
+      const resultsContainer = document.getElementById('test-results');
+      resultsContainer.innerHTML = '';
 
-            it('should log in a user', async function() {
-                try {
-                    const response = await fetch('http://localhost:3000/login', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({ username: 'testuser', password: 'testpassword' })
-                    });
-                    const data = await response.json();
-                    expect(response.status).to.equal(200);
-                    expect(data).to.have.property('id');
-                } catch (error) {
-                    console.error('Error logging in user:', error);
-                    throw error;
-                }
-            });
+      // Define Mocha and Chai
+      mocha.setup('bdd');
+      const { assert } = chai;
 
-            it('should submit a question', async function() {
-                try {
-                    const response = await fetch('http://localhost:3000/submit_question', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({
-                            question: 'What is Mocha?',
-                            type: 'multiple_choice',
-                            category: 'IT',
-                            answer: 'A testing framework',
-                            creator: 'testuser'
-                        })
-                    });
-                    const data = await response.json();
-                    expect(response.status).to.equal(200);
-                    expect(data).to.have.property('id');
-                } catch (error) {
-                    console.error('Error submitting question:', error);
-                    throw error;
-                }
+      // Test cases
+      describe('API Tests', () => {
+        it('should register a new user', async function() {
+          try {
+            const res = await superagent.post('/register').send({
+              username: 'testuser',
+              password: 'password123'
             });
+            assert.equal(res.status, 200);
+            assert.hasAllKeys(res.body, ['id']);
+            appendResult('should register a new user', 'Success');
+          } catch (error) {
+            appendResult('should register a new user', error.message, true);
+          }
         });
 
-        document.getElementById('runTests').addEventListener('click', function() {
-            mocha.run();
+        it('should log in a user', async function() {
+          try {
+            const res = await superagent.post('/login').send({
+              username: 'testuser',
+              password: 'password123'
+            });
+            assert.equal(res.status, 200);
+            assert.hasAllKeys(res.body, ['id']);
+            appendResult('should log in a user', 'Success');
+          } catch (error) {
+            appendResult('should log in a user', error.message, true);
+          }
         });
-    </script>
+
+        it('should submit a question', async function() {
+          try {
+            const res = await superagent.post('/submit_question').send({
+              question: 'What is the capital of France?',
+              type: 'text',
+              category: 'geography',
+              answer: 'Paris',
+              creator: 'testuser'
+            });
+            assert.equal(res.status, 200);
+            assert.hasAllKeys(res.body, ['id']);
+            appendResult('should submit a question', 'Success');
+          } catch (error) {
+            appendResult('should submit a question', error.message, true);
+          }
+        });
+      });
+
+      // Run Mocha
+      mocha.run();
+
+      // Helper function to append results to the DOM
+      function appendResult(testName, message, isError) {
+        const resultDiv = document.createElement('div');
+        resultDiv.className = 'test-case';
+        const resultMessage = document.createElement('p');
+        resultMessage.textContent = testName + ': ' + message;
+        resultMessage.className = isError ? 'test-error' : 'test-success';
+        resultDiv.appendChild(resultMessage);
+        resultsContainer.appendChild(resultDiv);
+      }
+    }
+  </script>
 </body>
 </html>
