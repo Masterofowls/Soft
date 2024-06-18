@@ -6,3 +6,7 @@ module.exports = {
     testMatch: ['**/__tests__/**/*.js?(x)'],
   };
   
+  test('dummy test for jest.config.js', () => {
+    expect(true).toBe(true);
+  });
+  

@@ -3,9 +3,19 @@ const bodyParser = require('body-parser');
 const path = require('path');
 const cors = require('cors');
 const { Pool } = require('pg');
+require('dotenv').config();
 
 const app = express();
 const port = process.env.PORT || 3000;
+
+// Log the database connection settings
+console.log('Database connection settings:');
+console.log('Host:', process.env.DATABASE_HOST);
+console.log('Port:', process.env.DATABASE_PORT);
+console.log('Database:', process.env.DATABASE_NAME);
+console.log('User:', process.env.DATABASE_USER);
+console.log('Password:', typeof process.env.DATABASE_PASSWORD);
+console.log('SSL:', process.env.DATABASE_SSL);
 
 const pool = new Pool({
   host: process.env.DATABASE_HOST,
@@ -13,7 +23,7 @@ const pool = new Pool({
   database: process.env.DATABASE_NAME,
   user: process.env.DATABASE_USER,
   password: process.env.DATABASE_PASSWORD,
-  ssl: process.env.DATABASE_SSL === 'true' ? { rejectUnauthorized: false } : false
+  ssl: process.env.DATABASE_SSL === 'true' ? { rejectUnauthorized: false } : false,
 });
 
 app.use(bodyParser.json());
@@ -198,54 +208,21 @@ app.post('/rate_question', async (req, res) => {
     }
 
     await pool.query(
-      'INSERT INTO rates (question_id, rating_count, total_rating) VALUES ($1, 1, $2) ON CONFLICT (question_id) DO UPDATE SET rating_count = rates.rating_count + 1, total_rating = rates.total_rating + EXCLUDED.total_rating',
+      'INSERT INTO rates (question_id, rating_count, total_rating) VALUES ($1, 1, $2) ON CONFLICT (question_id) DO UPDATE SET rating_count = rates.rating_count + 1, total_rating = rates.total_rating + $2',
       [question_id, rate]
     );
 
-    console.log('New rating inserted into rates');
+    const result = await pool.query('SELECT * FROM rates WHERE question_id = $1', [question_id]);
 
-    res.status(200).send('Rating submitted successfully');
+    res.status(200).json(result.rows[0]);
   } catch (error) {
     console.error('Error rating question:', error);
     res.status(500).send('Error rating question');
   }
 });
 
-app.get('/get_user_questions', async (req, res) => {
-  const { username } = req.query;
-
-  try {
-    const userResult = await pool.query('SELECT userid, password FROM usernames WHERE username = $1', [username]);
-
-    if (userResult.rows.length === 0) {
-      return res.status(404).send('User not found');
-    }
-
-    const userId = userResult.rows[0].userid;
-    const userPassword = userResult.rows[0].password;
-
-    const questionsResult = await pool.query('SELECT * FROM questions WHERE creator = $1', [username]);
-
-    res.json({ questions: questionsResult.rows, password: userPassword });
-  } catch (error) {
-    console.error('Error fetching user questions:', error);
-    res.status(500).send('Error fetching user questions');
-  }
-});
-
-app.get('/run-tests', (req, res) => {
-  const { exec } = require('child_process');
-  exec('npm test -- --json --outputFile=test-results.json', (err, stdout, stderr) => {
-    if (err) {
-      console.error('Error running tests:', err);
-      return res.status(500).send('Error running tests');
-    }
-    res.send(`<pre>${stdout}</pre>`);
-  });
-});
-
-app.listen(port, () => {
+const server = app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}/`);
 });
 
-module.exports = app;
+module.exports = { app, server };

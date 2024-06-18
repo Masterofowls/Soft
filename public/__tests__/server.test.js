@@ -1,11 +1,18 @@
 const request = require('supertest');
-const app = require('../../server');
+const { app, server } = require('../../server'); // скорректируйте путь к вашему server.js
+
+afterAll((done) => {
+  server.close(() => {
+    console.log('Server closed');
+    done();
+  });
+});
 
 describe('API Tests', () => {
   test('should register a new user', async () => {
     const response = await request(app)
       .post('/register')
-      .send({ username: 'testuser', password: 'password123' });
+      .send({ username: `testuser_${Date.now()}`, password: 'password123' });
     expect(response.statusCode).toBe(200);
     expect(response.body).toHaveProperty('userid');
   });
