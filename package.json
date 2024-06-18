@@ -1,9 +1,4 @@
 {
-  "jest": {
-    "transform": {
-      "^.+\\.jsx?$": "babel-jest"
-    }
-  },
   "name": "your-project",
   "version": "1.0.0",
   "description": "Your project description",
@@ -31,6 +26,11 @@
     "jest": "^29.7.0",
     "mocha": "^10.4.0",
     "supertest": "^7.0.0"
+  },
+  "jest": {
+    "transform": {
+      "^.+\\.jsx?$": "babel-jest"
+    }
   },
   "keywords": []
 }
