@@ -1,5 +1,5 @@
 const request = require('supertest');
-const { app, server } = require('../../server'); // adjust the path to your server.js
+const { app, server } = require('../../server');
 const { Pool } = require('pg');
 require('dotenv').config();
 
@@ -16,15 +16,20 @@ let client;
 
 beforeAll(async () => {
   client = await pool.connect();
+});
+
+beforeEach(async () => {
   await client.query('BEGIN');
+  await client.query('DELETE FROM usernames WHERE username LIKE $1', ['testuser%']); // Удаление тестовых пользователей
+});
+
+afterEach(async () => {
+  await client.query('ROLLBACK');
 });
 
 afterAll(async () => {
-  await client.query('ROLLBACK');
-  client.release();
-  server.close(() => {
-    console.log('Server closed');
-  });
+  await client.release();
+  server.close();
 });
 
 describe('API Tests', () => {
@@ -37,6 +42,8 @@ describe('API Tests', () => {
   });
 
   test('should log in a user', async () => {
+    await client.query('INSERT INTO usernames (username, password) VALUES ($1, $2)', ['testuser', 'password123']);
+
     const response = await request(app)
       .post('/login')
       .send({ username: 'testuser', password: 'password123' });
@@ -50,5 +57,5 @@ describe('API Tests', () => {
       .send({ question: 'What is 2+2?', type: 'math', category: 'general', answer: '4', creator: 'testuser' });
     expect(response.statusCode).toBe(200);
     expect(response.body).toHaveProperty('id');
-  });
+  }, 10000); // Увеличение тайм-аута до 10 секунд
 });

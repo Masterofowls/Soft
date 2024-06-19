@@ -164,7 +164,6 @@ app.get('/tests', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'tests.html'));
 });
 
-
 app.post('/submit_question', async (req, res) => {
   const { question, type, category, answer, creator } = req.body;
 
@@ -176,10 +175,18 @@ app.post('/submit_question', async (req, res) => {
       [question, type, category, answer, creator]
     );
 
-    await pool.query(
-      'INSERT INTO rates (question_id, question) VALUES ($1, $2)',
-      [result.rows[0].id, question]
+    // Проверка перед вставкой
+    const existingRate = await pool.query(
+      'SELECT * FROM question_rate WHERE question_id = $1 AND user_id = -1',
+      [result.rows[0].id]
     );
+
+    if (existingRate.rows.length === 0) {
+      await pool.query(
+        'INSERT INTO question_rate (question_id, user_id, rate) VALUES ($1, -1, 0)',
+        [result.rows[0].id]
+      );
+    }
 
     console.log('Question submitted successfully:', result.rows[0]);
     res.status(200).json(result.rows[0]);
