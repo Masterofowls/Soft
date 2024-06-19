@@ -12,7 +12,10 @@
     <script>
         document.getElementById('run-tests-btn').addEventListener('click', async () => {
             try {
-                const response = await fetch('/run-tests');
+                const response = await fetch('/run-tests', { method: 'POST' });
+                if (!response.ok) {
+                    throw new Error('Error running tests');
+                }
                 const result = await response.json();
                 document.getElementById('test-results').innerText = JSON.stringify(result, null, 2);
             } catch (error) {
@@ -23,4 +26,3 @@
     </script>
 </body>
 </html>
-

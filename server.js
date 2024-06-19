@@ -160,6 +160,11 @@ app.post('/login', async (req, res) => {
   }
 });
 
+app.get('/tests', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'tests.html'));
+});
+
+
 app.post('/submit_question', async (req, res) => {
   const { question, type, category, answer, creator } = req.body;
 
