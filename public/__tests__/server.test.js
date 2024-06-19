@@ -1,13 +1,29 @@
 const request = require('supertest');
-const { app, server } = require('../../server'); // убедитесь, что путь корректен
+const { app, server } = require('../server'); // adjust the path to your server.js
+const { Pool } = require('pg');
+require('dotenv').config();
+
+const pool = new Pool({
+  host: process.env.DATABASE_HOST,
+  port: process.env.DATABASE_PORT,
+  database: process.env.DATABASE_NAME,
+  user: process.env.DATABASE_USER,
+  password: process.env.DATABASE_PASSWORD,
+  ssl: process.env.DATABASE_SSL === 'true' ? { rejectUnauthorized: false } : false,
+});
+
+let client;
+
+beforeAll(async () => {
+  client = await pool.connect();
+  await client.query('BEGIN');
+});
 
 afterAll(async () => {
-  await new Promise((resolve, reject) => {
-    server.close((err) => {
-      if (err) return reject(err);
-      console.log('Server closed');
-      resolve();
-    });
+  await client.query('ROLLBACK');
+  client.release();
+  server.close(() => {
+    console.log('Server closed');
   });
 });
 
